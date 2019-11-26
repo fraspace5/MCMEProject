@@ -1,0 +1,6 @@
+# Time in weeks before send a notification to update a project
+time: 3
+# true|false player notification for update
+playernotification: true
+# if the plugin is in a world where you can make projects
+mainworld: true

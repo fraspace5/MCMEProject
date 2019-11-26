@@ -1,0 +1,11 @@
+name: McMeProject
+main: com.mcme.mcmeproject.Mcproject
+author: Fraspace5
+version: 2.6
+website: ${project.url}
+softdepend: [TheGaffer,Dynmap]
+description: A plugin for the MCME server
+commands:
+ project:
+    aliases: [p,pj,prj]
+    description: Command for the Project Plugin
