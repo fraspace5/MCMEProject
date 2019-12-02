@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author fraspace5
  */
 public class UpdaterCheck {
+
     private HttpURLConnection connection;
     private String WRITE_STRING;
 
@@ -26,10 +27,11 @@ public class UpdaterCheck {
     public UpdaterCheck(JavaPlugin plugin) {
 
         oldVersion = plugin.getDescription().getVersion();
-
+        System.out.println(oldVersion);
         try {
-            connection = (HttpURLConnection) new URL("https://raw.githubusercontent.com/ShayBox/DropChest/master/src/main/resources/plugin.yml").openConnection();
+            connection = (HttpURLConnection) new URL("https://github.com/fraspace5/MCMEProject/blob/master/src/main/resources/plugin.yml").openConnection();
             connection.connect();
+
             newVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
             System.out.println(newVersion);
         } catch (IOException e) {

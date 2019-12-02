@@ -82,7 +82,7 @@ public class Mcproject extends JavaPlugin implements Listener {
         }
 
         onStart();
-        
+        checkUpdate();
         if (PluginData.getMain() == true) {
 
             try {
