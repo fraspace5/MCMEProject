@@ -101,6 +101,28 @@ public class ProjectData {
          */
     }
 
+    public ProjectData(String namem, ProjectStatus projectstatus,String descriptions,Integer minutess,Double perc,String linkk) {
+
+        name = namem;
+        updated = System.currentTimeMillis();
+        status = projectstatus;
+        description = descriptions;
+        minutes = minutes;
+        percentage = perc;
+        link = linkk;
+        managers = new ArrayList<>();
+        people = new HashMap<>();
+        time = System.currentTimeMillis();
+        head = pl.getUniqueId();
+        regions = new HashMap<>();
+        warps = new HashMap<>();
+        jobs = new ArrayList<>();
+        informed = new ArrayList<>();
+        main = false;
+        news = new ArrayList<>();
+
+    }
+
     public void save(File file) throws IOException {
 
         YamlConfiguration config = new YamlConfiguration();

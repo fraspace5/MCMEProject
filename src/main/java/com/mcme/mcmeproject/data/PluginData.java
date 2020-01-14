@@ -6,6 +6,7 @@
 package com.mcme.mcmeproject.data;
 
 import com.mcme.mcmeproject.Mcproject;
+import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import lombok.Getter;
@@ -16,6 +17,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.Long.parseLong;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -24,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -31,6 +37,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+import static java.lang.Integer.parseInt;
+import static java.lang.Double.parseDouble;
+import com.mcmiddleearth.pluginutil.region.CuboidRegion;
+import org.bukkit.Location;
+import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
 
 /**
  *
@@ -46,7 +59,13 @@ public class PluginData {
     }
 
     @Getter
-    private final static Map<String, ProjectData> projectdata = new HashMap<>();
+    public static Map<String, ProjectGotData> projectsAll = new HashMap<>();
+
+    @Getter
+    public static Map<UUID, RegionData> regions = new HashMap<>();
+
+    @Getter
+    public static Map<UUID, WarpData> warps = new HashMap<>();
 
     @Getter
     private static Long time = Mcproject.getPluginInstance().getConfig().getLong("time");
@@ -57,9 +76,6 @@ public class PluginData {
     @Getter
     private static Map<UUID, Boolean> min = new HashMap<>();
 
-    @Getter
-    private static Map<UUID, Boolean> news = new HashMap<>();
-
     @Setter
     @Getter
     private static Long t;
@@ -67,124 +83,239 @@ public class PluginData {
     @Getter
     private static List<String> today = new ArrayList();
 
-    public static void onSave(File projectFolder) throws IOException {
-        Mcproject.getPluginInstance().getClogger().sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.BLUE + "Saving " + ChatColor.DARK_GRAY + projectdata.size() + " projects...");
-        for (String projectName : projectdata.keySet()) {
-
-            //create a file object
-            File projectFile = new File(projectFolder, projectName + ".yml");
-
-            //save the project data to that section
-            projectdata.get(projectName).save(projectFile);
-
-        }
-
-    }
-
-    public static void onLoad(File projectFolder) throws IOException, FileNotFoundException, InvalidConfigurationException {
-
-        //clear old data in case of a reload
-        projectdata.clear();
-        Mcproject.getPluginInstance().getClogger().sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.BLUE + "Loading projects: " + ChatColor.DARK_GRAY + projectFolder.listFiles().length + ChatColor.BLUE + " Found");
-        for (File projectFile : projectFolder.listFiles()) {
-
-            //create a new ProjectData object from the data in the file and put it in the projectData map
-            projectdata.put(projectFile.getName().substring(0, projectFile.getName().length() - 4), new ProjectData(projectFile));
-        }
-
-    }
-
-    public static void saveTime(File file, Long l) throws FileNotFoundException {
-        String s = l.toString();
-
-        try (PrintWriter out = new PrintWriter(new FileOutputStream(file))) {
-            out.println(s);
-        }
-
-    }
-
-    public static void loadTime(File file) throws FileNotFoundException {
-
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
-                Long l = parseLong(line);
-                setT(l);
-            }
-        }
-
-    }
-
     public static String serialize(UUID uuid, Boolean bool) {
         return uuid + ";" + bool;
     }
 
-    public static void unserialize(String line) {
-
+    public static String[] unserialize(String line) {
         String[] dataArray = line.split(";");
-        UUID uuid = UUID.fromString(dataArray[0]);
-        Boolean bool = Boolean.getBoolean(dataArray[1]);
-        news.put(uuid, bool);
-    }
 
-    public static void saveBoolean(File file) throws FileNotFoundException {
-        for (Entry<UUID, Boolean> data : news.entrySet()) {
+        return dataArray;
 
-            String storageData = PluginData.serialize(data.getKey(), data.getValue());
-
-            try (PrintWriter out = new PrintWriter(new FileOutputStream(file))) {
-                out.println(storageData);
-            }
-        }
-    }
-
-    public static void loadBoolean(File file) throws FileNotFoundException {
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNext()) {
-                String line = scanner.nextLine();
-                unserialize(line);
-
-            }
-        }
     }
 
     public static void setTodayEnd() {
         today.clear();
-        Calendar cal = Calendar.getInstance();
-        Calendar now = Calendar.getInstance();
-        for (String project : projectdata.keySet()) {
+        final Calendar cal = Calendar.getInstance();
+        final Calendar now = Calendar.getInstance();
+        for (final String name : projectsAll.keySet()) {
+            new BukkitRunnable() {
 
-            Integer milliweeks = 1000 * 60 * 60 * 24 * 7;
+                @Override
+                public void run() {
+                    try {
+                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject =" + projectsAll.get(name).idproject.toString() + " ;";
 
-            Long l = projectdata.get(project).updated + (milliweeks * time);
+                        final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                        if (r.first()) {
 
-            cal.setTimeInMillis(l);
-            int d = cal.get(Calendar.DAY_OF_MONTH);
-            int m = cal.get(Calendar.MONTH);
-            int dd = now.get(Calendar.DAY_OF_MONTH);
-            int mm = now.get(Calendar.MONTH);
+                            Integer milliweeks = 1000 * 60 * 60 * 24 * 7;
 
-            if (d == dd && m == mm) {
+                            Long l = r.getLong("updated") + (milliweeks * time);
 
-                today.add(project);
+                            cal.setTimeInMillis(l);
+                            int d = cal.get(Calendar.DAY_OF_MONTH);
+                            int m = cal.get(Calendar.MONTH);
+                            int dd = now.get(Calendar.DAY_OF_MONTH);
+                            int mm = now.get(Calendar.MONTH);
 
-            }
+                            if (d == dd && m == mm) {
+
+                                today.add(r.getString("name"));
+
+                            }
+
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+
+            }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
         }
 
     }
 
-    public static void sendNews(Player pl) {
+    public static UUID createId() {
 
-        List<String> projects = new ArrayList<>();
+        UUID uuid = UUID.randomUUID();
 
-        for (String name : projectdata.keySet()) {
+        return uuid;
 
-            if (!projectdata.get(name).news.contains(name)) {
+    }
 
-                projects.add(name);
+    public static void loadRegions() {
+        regions.clear();
+
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+
+                try {
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".regions_data ;";
+
+                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
+                    if (r.first()) {
+                        do {
+
+                            if (r.getString("type").equalsIgnoreCase("cuboid")) {
+
+                                String[] xlist = unserialize(r.getString("xlist"));
+                                String[] zlist = unserialize(r.getString("zlist"));
+                                String[] location = unserialize(r.getString("location"));
+
+                                Integer ymin = r.getInt("ymin");
+                                Integer ymax = r.getInt("ymax");
+                                Vector minCorner = new Vector(parseInt(xlist[0]),
+                                        ymin,
+                                        parseInt(zlist[0]));
+                                Vector maxCorner = new Vector(parseInt(xlist[1]),
+                                        ymax,
+                                        parseInt(zlist[1]));
+
+                                Location loc = new Location(Bukkit.getWorld(UUID.fromString(location[0])), parseDouble(location[1]), parseDouble(location[2]), parseDouble(location[3]));
+
+                                CuboidRegion rr = new CuboidRegion(loc, minCorner, maxCorner);
+
+                                regions.put(UUID.fromString(r.getString("idproject")), new RegionData(r.getString("name"), UUID.fromString(r.getString("idregion")), UUID.fromString(r.getString("idproject")), rr));
+
+                            } else {
+
+                                String[] xl = unserialize(r.getString("xlist"));
+                                String[] zl = unserialize(r.getString("zlist"));
+                                String[] location = unserialize(r.getString("location"));
+                                Integer ymin = r.getInt("ymin");
+                                Integer ymax = r.getInt("ymax");
+                                List<Integer> xlist = StringtoListInt(unserialize(r.getString("xlist")));
+                                List<Integer> zlist = StringtoListInt(unserialize(r.getString("zlist")));
+                                Location loc = new Location(Bukkit.getWorld(UUID.fromString(location[0])), parseDouble(location[1]), parseDouble(location[2]), parseDouble(location[3]));
+
+                                PrismoidRegion rr = new PrismoidRegion(loc, xlist, zlist, ymin, ymax);
+                                regions.put(UUID.fromString(r.getString("idproject")), new RegionData(r.getString("name"), UUID.fromString(r.getString("idregion")), UUID.fromString(r.getString("idproject")), rr));
+                            }
+
+                        } while (r.next());
+
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
             }
+
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+    }
+
+    public static void loadWarps() {
+        warps.clear();
+
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+
+                try {
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".warps_data ;";
+
+                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
+                    if (r.first()) {
+                        do {
+
+                            Location loc = new Location(Bukkit.getWorld(UUID.fromString(r.getString("world"))), r.getFloat("x"), r.getFloat("y"), r.getFloat("z"));
+
+                            warps.put(UUID.fromString(r.getString("idproject")), new WarpData(UUID.fromString(r.getString("idproject")), UUID.fromString(r.getString("idregion")), loc));
+
+                        } while (r.next());
+
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+    }
+
+    public static void loadProjects() {
+        projectsAll.clear();
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                try {
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data ;";
+
+                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
+                    if (r.first()) {
+                        do {
+
+                            projectsAll.put(r.getString("name"), new ProjectGotData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main")));
+
+                        } while (r.next());
+
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+    }
+
+    /*
+    
+     new BukkitRunnable() {
+            
+     @Override
+     public void run() {
+                
+                
+     }
+            
+     }.runTaskAsynchronously(Mcproject.getPluginInstance());
+    
+    
+     */
+    public static void sendNews(Player pl) {
+
+        final List<String> projects = new ArrayList<>();
+
+        for (final String name : projectsAll.keySet()) {
+
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+
+                    try {
+                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE idproject =" + projectsAll.get(name).idproject.toString() + " ;";
+
+                        final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
+                        if (!r.first()) {
+
+                            projects.add(name);
+
+                        }
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+
+            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
         }
 
         if (projects.size() == 1) {
@@ -221,6 +352,26 @@ public class PluginData {
             }
 
         }
+    }
+
+    public static List<Integer> StringtoListInt(String[] s) {
+
+        List<Integer> list = new ArrayList();
+
+        for (int i = 0; i < s.length; i++) {
+            list.add(Integer.parseInt(s[i]));
+        }
+        return list;
+    }
+
+    public static List<String> convertListString(String[] s) {
+
+        List<String> list = new ArrayList();
+
+        for (int i = 0; i < s.length; i++) {
+            list.add(s[i]);
+        }
+        return list;
     }
 
 }

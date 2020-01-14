@@ -135,7 +135,10 @@ public class ProjectArea extends ProjectCommand {
             return false;
         }
     }
-     public void checkRegion(){
+     
+    //TODO in another version
+    
+    public void checkRegion(){
     
     
     

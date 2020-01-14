@@ -5,13 +5,22 @@
  */
 package com.mcme.mcmeproject.commands;
 
+import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
+import com.mcme.mcmeproject.data.ProjectGotData;
+import com.mcme.mcmeproject.util.ProjectStatus;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -27,29 +36,67 @@ public class ProjectMain extends ProjectCommand {
 
     public static List<String> mainproject;
 
+    private boolean manager;
+
+    private boolean head;
+
     @Override
-    protected void execute(CommandSender cs, String... args) {
+    protected void execute(CommandSender cs, final String... args) {
 
         if (cs instanceof Player) {
-
-            if (PluginData.getProjectdata().containsKey(args[0])) {
+            manager = false;
+            head = false;
+            if (PluginData.projectsAll.containsKey(args[0])) {
                 if (playerPermission(args[0], cs)) {
 
-                    ProjectData pr = PluginData.getProjectdata().get(args[0]);
+                    ProjectGotData pr = PluginData.projectsAll.get(args[0]);
                     createList();
                     if (pr.main == true) {
                         sendAlreadyMain(cs);
                     } else {
-
                         for (String s : mainproject) {
-                            ProjectData p = PluginData.getProjectdata().get(s);
+                            final ProjectGotData p = PluginData.projectsAll.get(s);
 
-                            p.main = false;
+                            new BukkitRunnable() {
+
+                                @Override
+                                public void run() {
+
+                                    try {
+                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET main = false WHERE idproject = '" + p.idproject.toString() + "' ;";
+                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+
+                                        
+                                    } catch (SQLException ex) {
+                                        Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+
+                                }
+
+                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
                         }
 
-                        pr.main = true;
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
+                                try {
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET main = true WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+
+                                    //TODO SERVER LOADING
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                            }
+
+                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
                         sendDone(cs, args[0]);
+                        PluginData.loadProjects();
 
                     }
                 }
@@ -65,9 +112,9 @@ public class ProjectMain extends ProjectCommand {
 
     public static void createList() {
         mainproject.clear();
-        for (String name : PluginData.getProjectdata().keySet()) {
+        for (String name : PluginData.projectsAll.keySet()) {
 
-            if (PluginData.getProjectdata().get(name).main == true) {
+            if (PluginData.projectsAll.get(name).main) {
                 mainproject.add(name);
             }
 
@@ -75,15 +122,44 @@ public class ProjectMain extends ProjectCommand {
 
     }
 
-   public boolean playerPermission(String prr, CommandSender cs) {
-        ProjectData pr = PluginData.getProjectdata().get(prr);
-        Player pl = (Player) cs;
-        if (pl.hasPermission("project.owner")) {
+    public boolean playerPermission(final String prr, CommandSender cs) {
+        final Player pl = (Player) cs;
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                try {
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " AND staff_uuid =" + pl.getUniqueId().toString() + " ;";
+
+                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
+                    String st = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " ;";
+
+                    final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
+                    if (r.first()) {
+                        manager = true;
+
+                    }
+                    if (UUID.fromString(r2.getString("staff_uuid")).equals(pl.getUniqueId())) {
+                        head = true;
+
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProjectAdd.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+        if (manager || head || pl.hasPermission("project.owner")) {
             return true;
         } else {
             sendNoPermission(cs);
             return false;
         }
+
     }
 
     private void sendNoPermission(CommandSender cs) {

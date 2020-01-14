@@ -9,10 +9,14 @@ import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -27,20 +31,35 @@ public class ProjectCreate extends ProjectCommand {
     }
 
     @Override
-    protected void execute(CommandSender cs, String... args) {
+    protected void execute(final CommandSender cs, final String... args) {
 
         if (cs instanceof Player) {
-            Player pl = (Player) cs;
-            if (!PluginData.getProjectdata().containsKey(args[0])) {
-                ProjectData n = new ProjectData(args[0], pl);
+            final Player pl = (Player) cs;
+            if (!PluginData.getProjectsAll().containsKey(args[0])) {
 
-                PluginData.getProjectdata().put(args[0], n);
-                sendCreated(cs, args[0]);
-                try {
-                    PluginData.onSave(Mcproject.getPluginInstance().getProjectFolder());
-                } catch (IOException ex) {
-                    Logger.getLogger(ProjectCreate.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                new BukkitRunnable() {
+
+                    @Override
+                    public void run() {
+
+                        try {
+                            Date d = new Date(System.currentTimeMillis());
+                            
+                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".project_data (idproject, name, staff_uuid, startDate ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.getProjectsAll().get(args[0]).name + "','" + pl.getUniqueId().toString() + "','" + d.toString() + "') ;";
+                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
+                            //SEND TO OTHER SERVERS
+                            
+                            PluginData.loadProjects();
+                            
+                            sendCreated(cs, args[0]);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ProjectCreate.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+               
             } else {
 
                 sendAlreadyProject(cs);
@@ -50,8 +69,6 @@ public class ProjectCreate extends ProjectCommand {
         }
 
     }
-
-    
 
     private void sendAlreadyProject(CommandSender cs) {
         PluginData.getMessageUtil().sendErrorMessage(cs, "This Project already exists");

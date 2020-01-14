@@ -5,18 +5,24 @@
  */
 package com.mcme.mcmeproject.util;
 
+import com.mcme.mcmeproject.Mcproject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import static java.lang.Double.parseDouble;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
  * @author fraspace5
  */
-public class UpdaterCheck {
+public final class UpdaterCheck {
 
     private HttpURLConnection connection;
     private String WRITE_STRING;
@@ -27,16 +33,34 @@ public class UpdaterCheck {
     public UpdaterCheck(JavaPlugin plugin) {
 
         oldVersion = plugin.getDescription().getVersion();
-        System.out.println(oldVersion);
-        try {
-            connection = (HttpURLConnection) new URL("https://github.com/fraspace5/MCMEProject/blob/master/src/main/resources/plugin.yml").openConnection();
-            connection.connect();
 
-            newVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
-            System.out.println(newVersion);
-        } catch (IOException e) {
-            return;
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                try {
+                    //update link
+                    
+                    connection = (HttpURLConnection) new URL("https://raw.githubusercontent.com/fraspace5/MyBirthday/1.13.2/src/main/resources/plugin.yml").openConnection();
+
+                    connection.connect();
+
+                    newVersion = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine().substring(9);
+
+                    if (parseDouble(newVersion) > parseDouble(oldVersion)) {
+
+                        Mcproject.getPluginInstance().clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "MyBirthday" + ChatColor.DARK_GRAY + "] - " + "New version " + newVersion + " available for this Plugin");
+
+                    } else {
+                        Mcproject.getPluginInstance().clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "MyBirthday" + ChatColor.DARK_GRAY + "] - " + "No new version found!");
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(UpdaterCheck.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
     }
+
 }

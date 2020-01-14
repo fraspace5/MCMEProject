@@ -1,6 +1,15 @@
 # Time in weeks before send a notification to update a project
 time: 3
-# true|false player notification for update
+# Set as true|false player notification for update
 playernotification: true
 # if the plugin is in a world where you can make projects
 mainworld: true
+#Check if there is a new version of this plugin
+findupdates: true
+
+#***DATABASE CONNECTION***
+host: localhost
+port: 3306
+database: mcmeproject_data
+username: root
+password: default

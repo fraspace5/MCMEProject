@@ -7,6 +7,7 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
+import com.mcme.mcmeproject.data.ProjectGotData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.NumericUtil;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
@@ -46,9 +47,9 @@ public class ProjectList extends ProjectCommand {
         FancyMessage header = new FancyMessage(MessageType.WHITE, PluginData.getMessageUtil())
                 .addSimple(ChatColor.DARK_GREEN + "Project opens (click for details)" + "\n" + ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
         List<FancyMessage> messages = new ArrayList<>();
-        for (String project : PluginData.getProjectdata().keySet()) {
+        for (String project : PluginData.projectsAll.keySet()) {
 
-            ProjectData pr = PluginData.getProjectdata().get(project);
+            ProjectGotData pr = PluginData.projectsAll.get(project);
 
             if (pl.hasPermission("project.manager") && args.length > 1 && args[1].equalsIgnoreCase("historic")) {
                 if (pr.status.equals(ProjectStatus.SHOWED)) {
