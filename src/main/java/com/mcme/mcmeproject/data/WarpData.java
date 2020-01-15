@@ -7,7 +7,9 @@ package com.mcme.mcmeproject.data;
 
 import com.mcmiddleearth.pluginutil.region.Region;
 import java.util.UUID;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 /**
  *
@@ -21,7 +23,11 @@ public class WarpData {
 
     public final Location location;
 
-    public WarpData(UUID idp, UUID idr, Location l) {
+    public final World wl;
+    
+    public final String server;
+
+    public WarpData(UUID idp, UUID idr, Location l, String nameserver) {
 
         idregion = idr;
 
@@ -29,5 +35,8 @@ public class WarpData {
 
         location = l;
 
+        wl = l.getWorld();
+
+        server = nameserver;
     }
 }

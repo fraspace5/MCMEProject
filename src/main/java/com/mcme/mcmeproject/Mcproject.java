@@ -9,6 +9,7 @@ import com.mcme.mcmeproject.commands.ProjectCommandExecutor;
 import com.mcme.mcmeproject.runnables.PlayersRunnable;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
+import com.mcme.mcmeproject.data.ProjectGotData;
 import com.mcme.mcmeproject.listener.JobListener;
 import com.mcme.mcmeproject.listener.PlayerListener;
 import com.mcme.mcmeproject.runnables.SystemRunnable;
@@ -190,7 +191,6 @@ public class Mcproject extends JavaPlugin implements Listener {
                         String st1 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`news_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(50) NOT NULL,\n"
-                                + "  `bool` TINYINT NOT NULL,\n"
                                 + "  PRIMARY KEY (`player_uuid`)); ";
                         String st2 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`news_bool` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
@@ -210,12 +210,13 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `link` VARCHAR(100) ,\n"
                                 + "  `time` MEDIUMTEXT ,\n"
                                 + "  `informed` LONGTEXT ,\n"
+                                + "  `jobs` LONGTEXT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
                         String st4 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`staff_data` (\n"
                                 + "  `staff_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  PRIMARY KEY (`staff_uuid`));";
-                        String st5 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`workinghours` (\n"
+                        String st5 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`working_hours` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  `minutes` INT NOT NULL,\n"
@@ -224,6 +225,7 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `idregion` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NULL,\n"
                                 + "  `world` VARCHAR(100) NOT NULL,\n"
+                                + "  `server` VARCHAR(100) NOT NULL,\n"
                                 + "  `x` FLOAT NOT NULL,\n"
                                 + "  `y` FLOAT NOT NULL,\n"
                                 + "  `z` FLOAT NOT NULL,\n"
@@ -257,8 +259,8 @@ public class Mcproject extends JavaPlugin implements Listener {
         SystemRunnable.startDatabaseRecoveryRunnable();
     }
 
-    public Map<UUID, String> getProjects() {
-        return PluginData.getProjectsAll();
+    public Map<String, ProjectGotData> getProjects() {
+        return PluginData.projectsAll;
     }
 
 }

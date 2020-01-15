@@ -319,16 +319,10 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 List<String> fotherlist = new ArrayList<>();
                 List<String> fo2 = new ArrayList<>();
                 if (PluginData.projectsAll.containsKey(args[1])) {
-
-                    for (Entry<UUID, RegionData> entry : PluginData.regions.entrySet()) {
-                        if (entry.getKey().equals(PluginData.projectsAll.get(args[1]).idproject)) {
-
-                            RegionList.add(entry.getValue().name);
-                        }
-
-                    }
+                    RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
 
                 }
+
                 if (args[0].equalsIgnoreCase("add")) {
 
                     return null;
@@ -398,14 +392,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 List<String> fregion = new ArrayList<>();
                 List<String> fo2 = new ArrayList<>();
                 if (PluginData.projectsAll.containsKey(args[1])) {
-
-                    for (Entry<UUID, RegionData> entry : PluginData.regions.entrySet()) {
-                        if (entry.getKey().equals(PluginData.projectsAll.get(args[1]).idproject)) {
-
-                            RegionList.add(entry.getValue().name);
-                        }
-
-                    }
+                    RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
 
                 }
 

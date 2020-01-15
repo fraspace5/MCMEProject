@@ -7,6 +7,7 @@ package com.mcme.mcmeproject.data;
 
 import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.region.Region;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -20,22 +21,26 @@ public class ProjectGotData {
     public UUID idproject;
 
     public ProjectStatus status;
-    
+
     public Boolean main;
-    
+
     public String description;
 
-    public ProjectGotData(String namem, UUID idpr, ProjectStatus rn, Boolean bol) {
+    public List<String> jobs;
+
+    public ProjectGotData(String namem, UUID idpr, ProjectStatus rn, Boolean bol,List jj) {
 
         name = namem;
 
         idproject = idpr;
 
         status = rn;
-        
+
         main = bol;
-        
+
         description = "nothing";
+        
+        jobs = jj;
 
     }
 

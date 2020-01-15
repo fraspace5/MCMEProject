@@ -6,10 +6,13 @@
 package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.data.PluginData;
-import com.mcme.mcmeproject.data.ProjectData;
+import com.mcmiddleearth.connect.ConnectPlugin;
+import com.mcmiddleearth.connect.util.ConnectUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -28,38 +31,31 @@ public class ProjectTp extends ProjectCommand {
 //attenzione, usa quello di eriol che supporta il bungeecord così non ci sono problemi
         if (cs instanceof Player) {
             Player pl = (Player) cs;
-            if (PluginData.getProjectdata().containsKey(args[0])) {
-                if (PluginData.getProjectdata().get(args[0]).warps.size() > 0) {
-                    if (PluginData.getProjectdata().get(args[0]).warps.size() == 1) {
+            if (PluginData.projectsAll.containsKey(args[0])) {
+                if (args.length < 2 || args.length > 2) {
 
-                        Location loc = PluginData.getProjectdata().get(args[0]).warps.get(args[1]);
-                        pl.teleport(loc);
+                    sendArgument(cs);
 
-                    } else {
+                } else {
+                    if (PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject).contains(args[1])) {
 
-                        if (args.length < 2 || args.length > 2) {
+                        if (PluginData.warps.containsKey(PluginData.regions.get(args[1]).idr)) {
 
-                            sendArgument(cs);
+                            ConnectUtil.teleportPlayer(pl, PluginData.warps.get(PluginData.regions.get(args[1]).idr).server, PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName(), PluginData.warps.get(PluginData.regions.get(args[1]).idr).location);
 
                         } else {
 
-                            if (!PluginData.getProjectdata().containsKey(args[1])) {
-                                sendNoRegion(cs);
-                            } else {
-
-                                Location loc = PluginData.getProjectdata().get(args[0]).warps.get(args[1]);
-                                pl.teleport(loc);
-
-                            }
-
+                            sendNoTp(cs);
                         }
+
+                    } else {
+
+                        sendNoRegion(cs);
 
                     }
 
-                } else {
-
-                    sendNoTp(cs);
                 }
+
             } else {
 
                 sendNoProject(cs);
