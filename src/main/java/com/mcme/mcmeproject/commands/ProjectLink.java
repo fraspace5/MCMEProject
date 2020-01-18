@@ -93,8 +93,11 @@ public class ProjectLink extends ProjectCommand {
                         manager = true;
 
                     }
-                    if (UUID.fromString(r2.getString("staff_uuid")).equals(pl.getUniqueId())) {
-                        head = true;
+                    if (r2.first()) {
+                        if (UUID.fromString(r2.getString("staff_uuid")).equals(pl.getUniqueId())) {
+                            head = true;
+
+                        }
 
                     }
                 } catch (SQLException ex) {

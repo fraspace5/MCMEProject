@@ -8,6 +8,7 @@ package com.mcme.mcmeproject.util;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
+import com.mcme.mcmeproject.data.ProjectGotData;
 import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
@@ -150,7 +151,7 @@ public class DynmapUtil {
             init();
         }
         if (init) {
-            ProjectData pr = PluginData.getProjectdata().get(project);
+            ProjectGotData pr = PluginData.projectsAll.get(project);
 
             String newMarkerId = region.toLowerCase() + ".marker";
             for (AreaMarker marker : markerSet.getAreaMarkers()) {
@@ -180,8 +181,8 @@ public class DynmapUtil {
             init();
         }
         if (init) {
-            ProjectData pr = PluginData.getProjectdata().get(project);
 
+            ProjectGotData pr = PluginData.projectsAll.get(project);
             Integer[] xx = r.getXPoints();
             Integer[] zz = r.getZPoints();
 
@@ -227,7 +228,7 @@ public class DynmapUtil {
             init();
         }
         if (init) {
-            ProjectData pr = PluginData.getProjectdata().get(project);
+            ProjectGotData pr = PluginData.projectsAll.get(project);
 
             String newMarkerId = region.toLowerCase() + ".marker";
             for (AreaMarker marker : markerSet.getAreaMarkers()) {

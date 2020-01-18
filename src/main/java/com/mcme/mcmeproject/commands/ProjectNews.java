@@ -45,35 +45,59 @@ public class ProjectNews extends ProjectCommand {
                         try {
                             String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_bool WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
                             final ResultSet r = Mcproject.getPluginInstance().con.createStatement().executeQuery(statement);
-                            switch (args[0]) {
-                                case "true":
 
-                                    if (r.getBoolean("bool") == false) {
-                                        new BukkitRunnable() {
+                            if (r.first()) {
+                                switch (args[0]) {
+                                    case "true":
 
-                                            @Override
-                                            public void run() {
+                                        if (r.getBoolean("bool") == false) {
+                                            new BukkitRunnable() {
 
-                                                try {
-                                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".news_bool SET bool = true WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
-                                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-                                                } catch (SQLException ex) {
-                                                    Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                                @Override
+                                                public void run() {
+
+                                                    try {
+                                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".news_bool SET bool = true WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                    } catch (SQLException ex) {
+                                                        Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
+
                                                 }
 
-                                            }
+                                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-                                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                            sendDone(cs);
+                                        } else {
+                                            sendTrue(cs);
+                                        }
 
-                                        sendDone(cs);
-                                    } else {
-                                        sendTrue(cs);
-                                    }
+                                        break;
 
-                                    break;
+                                    case "false":
+                                        if (r.getBoolean("bool") == true) {
 
-                                case "false":
-                                    if (r.getBoolean("bool") == true) {
+                                            new BukkitRunnable() {
+
+                                                @Override
+                                                public void run() {
+
+                                                    try {
+                                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".news_bool SET bool = false WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                    } catch (SQLException ex) {
+                                                        Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
+
+                                                }
+
+                                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                            sendDone(cs);
+                                        } else {
+                                            sendFalse(cs);
+                                        }
+                                        break;
+                                    default:
 
                                         new BukkitRunnable() {
 
@@ -90,30 +114,10 @@ public class ProjectNews extends ProjectCommand {
                                             }
 
                                         }.runTaskAsynchronously(Mcproject.getPluginInstance());
-                                        sendDone(cs);
-                                    } else {
-                                        sendFalse(cs);
-                                    }
-                                    break;
-                                default:
 
-                                    new BukkitRunnable() {
+                                        break;
 
-                                        @Override
-                                        public void run() {
-
-                                            try {
-                                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".news_bool SET bool = false WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
-                                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-                                            } catch (SQLException ex) {
-                                                Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
-                                            }
-
-                                        }
-
-                                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                                    break;
+                                }
 
                             }
 

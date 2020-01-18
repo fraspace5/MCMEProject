@@ -45,8 +45,7 @@ public class Mcproject extends JavaPlugin implements Listener {
     public ConsoleCommandSender clogger = this.getServer().getConsoleSender();
     @Getter
     public Connection con;
-    @Getter
-    private File projectFolder;
+
     @Getter
     String host = this.getConfig().getString("host");
     @Getter
@@ -57,12 +56,10 @@ public class Mcproject extends JavaPlugin implements Listener {
     String username = this.getConfig().getString("username");
     @Getter
     String password = this.getConfig().getString("password");
-    private File databool;
 
     private void checkUpdate() {
         final UpdaterCheck updater = new UpdaterCheck(this);
     }
-    private File time;
 
     @Getter
     private static Mcproject pluginInstance;
@@ -80,20 +77,6 @@ public class Mcproject extends JavaPlugin implements Listener {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        try {
-            onInitiateFile();
-        } catch (IOException ex) {
-            Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            PluginData.onLoad(projectFolder);
-        } catch (IOException ex) {
-            Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidConfigurationException ex) {
-            Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         getCommand("project").setExecutor(new ProjectCommandExecutor());
         getCommand("project").setTabCompleter(new ProjectCommandExecutor());
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
@@ -101,23 +84,9 @@ public class Mcproject extends JavaPlugin implements Listener {
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
         clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.6 enabled!");
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
-        try {
-            PluginData.loadBoolean(databool);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         onStart();
         checkUpdate();
-        if (PluginData.getMain() == true) {
-
-            try {
-                PluginData.loadTime(time);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        }
 
     }
 
@@ -127,46 +96,38 @@ public class Mcproject extends JavaPlugin implements Listener {
         clogger.sendMessage(ChatColor.RED + "---------------------------------------");
         clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.6 disabled!");
         clogger.sendMessage(ChatColor.RED + "---------------------------------------");
-        try {
-            PluginData.onSave(projectFolder);
-        } catch (IOException ex) {
-            Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            PluginData.saveBoolean(databool);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    public void onInitiateFile() throws IOException {
-        projectFolder = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "project");
-        databool = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "databool.yml");
-        time = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "otherdata.yml");
-
-        if (!projectFolder.exists()) {
-
-            projectFolder.mkdir();
-
-        }
-
-        if (!databool.exists()) {
-
-            databool.createNewFile();
-        }
-
-        if (PluginData.getMain() == true) {
-
-            if (!time.exists()) {
-
-                time.createNewFile();
-                PluginData.saveTime(time, System.currentTimeMillis());
-            }
-
-        }
 
     }
 
+    /*
+     public void onInitiateFile() throws IOException {
+     projectFolder = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "project");
+     databool = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "databool.yml");
+     time = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "otherdata.yml");
+
+     if (!projectFolder.exists()) {
+
+     projectFolder.mkdir();
+
+     }
+
+     if (!databool.exists()) {
+
+     databool.createNewFile();
+     }
+
+     if (PluginData.getMain() == true) {
+
+     if (!time.exists()) {
+
+     time.createNewFile();
+     PluginData.saveTime(time, System.currentTimeMillis());
+     }
+
+     }
+
+     }
+     */
     public void openConnection() throws SQLException {
         if (con != null && !con.isClosed()) {
             return;
@@ -196,7 +157,7 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `bool` TINYINT NOT NULL,\n"
                                 + "  PRIMARY KEY (`player_uuid`)); ";
-                        String st3 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`project_data` (\n"
+                        final String st3 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`project_data` (\n"
                                 + "  `idproject` VARCHAR(50) NOT NULL,\n"
                                 + "  `name` VARCHAR(80) NOT NULL,\n"
                                 + "  `staff_uuid` VARCHAR(45) NOT NULL,\n"
@@ -212,16 +173,19 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `informed` LONGTEXT ,\n"
                                 + "  `jobs` LONGTEXT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
-                        String st4 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`staff_data` (\n"
+                        final String st4 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`staff_data` (\n"
                                 + "  `staff_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  PRIMARY KEY (`staff_uuid`));";
-                        String st5 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`working_hours` (\n"
+
+                        final String st5 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`people_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  `minutes` INT NOT NULL,\n"
+                                + "  `blocks` MEDIUMTEXT,\n"
+                                + "  `lastplayed` MEDIUMTEXT,\n"
                                 + "  PRIMARY KEY (`player_uuid`));";
-                        String st6 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`warps_data` (\n"
+                        final String st6 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`warps_data` (\n"
                                 + "  `idregion` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NULL,\n"
                                 + "  `world` VARCHAR(100) NOT NULL,\n"
@@ -230,7 +194,7 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `y` FLOAT NOT NULL,\n"
                                 + "  `z` FLOAT NOT NULL,\n"
                                 + "  PRIMARY KEY (`idregion`));";
-                        String st7 = "CREATE TABLE IF NOT EXISTS`mcmeproject_data`.`regions_data` (\n"
+                        final String st7 = "CREATE TABLE IF NOT EXISTS`mcmeproject_data`.`regions_data` (\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  `idregion` VARCHAR(45) NOT NULL,\n"
                                 + "  `name` VARCHAR(45) NOT NULL,\n"
@@ -242,7 +206,61 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `location` LONGTEXT NOT NULL,\n"
                                 + "  PRIMARY KEY (`idproject`));";
 
-                        con.createStatement().execute(st1 + st2 + st3 + st4 + st5 + st6 + st7);
+                        con.createStatement().execute(st1);
+                        con.createStatement().execute(st2);
+
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
+                                try {
+                                    con.createStatement().execute(st3);
+                                    con.createStatement().execute(st4);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                            }
+
+                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
+                                try {
+                                    con.createStatement().execute(st5);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                try {
+                                    con.createStatement().execute(st6);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                            }
+
+                        }.runTaskLater(Mcproject.getPluginInstance(), 40L);
+
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
+                                try {
+                                    con.createStatement().execute(st7);
+
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                            }
+
+                        }.runTaskLater(Mcproject.getPluginInstance(), 60L);
+
                     } catch (SQLException ex) {
                         Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                     }
