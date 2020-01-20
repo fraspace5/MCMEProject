@@ -9,7 +9,7 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectGotData;
+import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
@@ -56,17 +56,25 @@ public class ProjectDetails extends ProjectCommand {
 
                     @Override
                     public void run() {
-                        try {
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = " + pl.getUniqueId().toString() + " AND idproject = " + PluginData.projectsAll.get(args[0]).idproject.toString() + " ;";
 
-                            final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                        new BukkitRunnable() {
 
-                            if (!r.first()) {
-                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_data (idproject, player_uuid) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + pl.getUniqueId().toString() + "') ;";
+                            @Override
+                            public void run() {
+                                try {
+                                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = " + pl.getUniqueId().toString() + " AND idproject = " + PluginData.projectsAll.get(args[0]).idproject.toString() + " ;";
+
+                                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
+                                    if (!r.first()) {
+                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_data (idproject, player_uuid) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + pl.getUniqueId().toString() + "') ;";
+                                    }
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                             }
-                        } catch (SQLException ex) {
-                            Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+
+                        }.runTaskLater(Mcproject.getPluginInstance(), 60L);
 
                     }
 
@@ -80,68 +88,67 @@ public class ProjectDetails extends ProjectCommand {
                             @Override
                             public void run() {
                                 try {
-                                    ProjectGotData pr = PluginData.projectsAll.get(args[0]);
-                                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject = " + pr.idproject.toString() + " ;";
+                                    ProjectData pr = PluginData.projectsAll.get(args[0]);
+
                                     String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = " + pr.idproject.toString() + " ;";
                                     String stat3 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = " + pr.idproject.toString() + " ;";
-                                    final ResultSet result = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
                                     final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
                                     final ResultSet r3 = Mcproject.getPluginInstance().con.prepareStatement(stat3).executeQuery();
-                                    if (result.first()) {
-                                        Long r = (result.getLong("time") - System.currentTimeMillis()) / 1000;
 
-                                        //seconds
-                                        FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
-                                                .addSimple("Informations about " + pr.name);
-                                        List<FancyMessage> messages = new ArrayList<>();
+                                    Long r = (pr.time - System.currentTimeMillis()) / 1000;
 
-                                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                        String ps = Bukkit.getPlayer(UUID.fromString(result.getString("staff_uuid"))).getName();
-                                        message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + "\n"
-                                                + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
-                                                + ChatColor.GOLD + pr.description + "\n"
-                                                + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
-                                                + ChatColor.GOLD + "~--------------------~" + "\n"
-                                                + ChatColor.GREEN + "Current percentage: " + result.getString("percentage") + "%" + "\n"
-                                                + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
-                                                + ChatColor.GOLD + "Other statistics:" + "\n"
-                                                + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
-                                                + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
-                                                + ChatColor.GOLD + "~--------------------~"
-                                        );
-                                        jj(pr);
+                                    //seconds
+                                    FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
+                                            .addSimple("Informations about " + pr.name);
+                                    List<FancyMessage> messages = new ArrayList<>();
 
-                                        if (!jobs.isEmpty()) {
-                                            message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
+                                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                    String ps = Bukkit.getPlayer(pr.head).getName();
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + "\n"
+                                            + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
+                                            + ChatColor.GOLD + pr.description + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
+                                            + ChatColor.GOLD + "~--------------------~" + "\n"
+                                            + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
+                                            + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
+                                            + ChatColor.GOLD + "Other statistics:" + "\n"
+                                            + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
+                                            + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
+                                            + ChatColor.GOLD + "~--------------------~"
+                                    );
+                                    jj(pr);
 
-                                            message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                    if (!jobs.isEmpty()) {
+                                        message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
+
+                                        message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                    } else {
+                                        message.addSimple(ChatColor.RED + "\n" + "No jobs linked to this project");
+                                        message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                    }
+
+                                    for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
+
+                                        message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
+                                        if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
+                                            message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
+
                                         } else {
-                                            message.addSimple(ChatColor.RED + "\n" + "No jobs linked to this project");
-                                            message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
-                                        }
+                                            message.addSimple(ChatColor.RED + "No warp avaible for this region");
 
-                                        for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
-
-                                            message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
-                                            if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
-                                                message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
-
-                                            } else {
-                                                message.addSimple(ChatColor.RED + "No warp avaible for this region");
-
-                                            }
-
-                                            messages.add(message);
-
-                                        }
-                                        if (!result.getString("link").equalsIgnoreCase("Nothing")) {
-                                            message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "Forum Thread", result.getString("link"), "Click to go on the forum");
                                         }
 
                                         messages.add(message);
 
-                                        PluginData.getMessageUtil().sendFancyListMessage((Player) cs, header, messages, "/project details " + pr.name, 1);
                                     }
+                                    if (!pr.link.equalsIgnoreCase("Nothing")) {
+                                        message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "Forum Thread", pr.link, "Click to go on the forum");
+                                    }
+
+                                    messages.add(message);
+
+                                    PluginData.getMessageUtil().sendFancyListMessage((Player) cs, header, messages, "/project details " + pr.name, 1);
 
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
@@ -162,104 +169,101 @@ public class ProjectDetails extends ProjectCommand {
                         @Override
                         public void run() {
                             try {
-                                ProjectGotData pr = PluginData.projectsAll.get(args[0]);
-                                String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject = " + pr.idproject.toString() + " ;";
+                                ProjectData pr = PluginData.projectsAll.get(args[0]);
+
                                 String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = " + pr.idproject.toString() + " ;";
                                 String stat3 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = " + pr.idproject.toString() + " ;";
 
-                                final ResultSet result = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
                                 final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
                                 final ResultSet r3 = Mcproject.getPluginInstance().con.prepareStatement(stat3).executeQuery();
-                                if (result.first()) {
-                                    Long r = (result.getLong("time") - System.currentTimeMillis()) / 1000;
 
-                                    //seconds
-                                    FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
-                                            .addSimple("Informations about " + pr.name);
-                                    List<FancyMessage> messages = new ArrayList<>();
+                                Long r = (pr.time - System.currentTimeMillis()) / 1000;
 
-                                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                    String ps = Bukkit.getPlayer(UUID.fromString(result.getString("staff_uuid"))).getName();
-                                    if (pr.status.equals(ProjectStatus.FINISHED)) {
+                                //seconds
+                                FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
+                                        .addSimple("Informations about " + pr.name);
+                                List<FancyMessage> messages = new ArrayList<>();
 
-                                        message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + " (Finished)" + "\n"
-                                                + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
-                                                + ChatColor.GOLD + pr.description + "\n"
-                                                + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
-                                                + ChatColor.GOLD + "~--------------------~" + "\n"
-                                                + ChatColor.GREEN + "Current percentage: " + result.getString("percentage") + "%" + "\n"
-                                                + ChatColor.GOLD + "Other statistics:" + "\n"
-                                                + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
-                                                + ChatColor.GOLD + "~--------------------~"
-                                        );
+                                FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                String ps = Bukkit.getPlayer(pr.head).getName();
+                                if (pr.status.equals(ProjectStatus.FINISHED)) {
 
-                                    } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + " (Finished)" + "\n"
+                                            + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
+                                            + ChatColor.GOLD + pr.description + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
+                                            + ChatColor.GOLD + "~--------------------~" + "\n"
+                                            + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
+                                            + ChatColor.GOLD + "Other statistics:" + "\n"
+                                            + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
+                                            + ChatColor.GOLD + "~--------------------~"
+                                    );
 
-                                        message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + " (Hidden)" + "\n"
-                                                + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
-                                                + ChatColor.GOLD + pr.description + "\n"
-                                                + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
-                                                + ChatColor.GOLD + "~--------------------~" + "\n"
-                                                + ChatColor.GREEN + "Current percentage: " + result.getString("percentage") + "%" + "\n"
-                                                + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
-                                                + ChatColor.GOLD + "Other statistics:" + "\n"
-                                                + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
-                                                + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
-                                                + ChatColor.GOLD + "~--------------------~");
+                                } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
 
-                                    } else {
-                                        message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + "\n"
-                                                + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
-                                                + ChatColor.GOLD + pr.description + "\n"
-                                                + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
-                                                + ChatColor.GOLD + "~--------------------~" + "\n"
-                                                + ChatColor.GREEN + "Current percentage: " + result.getString("percentage") + "%" + "\n"
-                                                + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
-                                                + ChatColor.GOLD + "Other statistics:" + "\n"
-                                                + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
-                                                + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
-                                                + ChatColor.GOLD + "~--------------------~"
-                                        );
-                                    }
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + " (Hidden)" + "\n"
+                                            + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
+                                            + ChatColor.GOLD + pr.description + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
+                                            + ChatColor.GOLD + "~--------------------~" + "\n"
+                                            + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
+                                            + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
+                                            + ChatColor.GOLD + "Other statistics:" + "\n"
+                                            + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
+                                            + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
+                                            + ChatColor.GOLD + "~--------------------~");
 
-                                    if (!pr.status.equals(ProjectStatus.FINISHED)) {
-
-                                        jj(pr);
-                                        if (jobs.size() != 0) {
-                                            message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
-
-                                            message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
-                                        } else {
-                                            message.addSimple(ChatColor.AQUA + "\n" + "No jobs linked to this project");
-                                            message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
-                                        }
-                                    }
-                                    if (!pr.status.equals(ProjectStatus.FINISHED)) {
-                                        for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
-
-                                            message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
-                                            if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
-                                                message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
-
-                                            } else {
-                                                message.addSimple(ChatColor.RED + "No warp avaible for this region");
-
-                                            }
-
-                                            messages.add(message);
-
-                                        }
-                                    }
-
-                                    if (!result.getString("link").equalsIgnoreCase("Nothing")) {
-                                        message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "Forum Thread", result.getString("link"), "Click to go on the forum");
-                                    }
-
-                                    messages.add(message);
-
-                                    PluginData.getMessageUtil().sendFancyListMessage((Player) cs, header, messages, "/project details " + pr.name, 1);
-
+                                } else {
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + "\n"
+                                            + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
+                                            + ChatColor.GOLD + pr.description + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
+                                            + ChatColor.GOLD + "~--------------------~" + "\n"
+                                            + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
+                                            + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
+                                            + ChatColor.GOLD + "Other statistics:" + "\n"
+                                            + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
+                                            + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
+                                            + ChatColor.GOLD + "~--------------------~"
+                                    );
                                 }
+
+                                if (!pr.status.equals(ProjectStatus.FINISHED)) {
+
+                                    jj(pr);
+                                    if (jobs.size() != 0) {
+                                        message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
+
+                                        message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                    } else {
+                                        message.addSimple(ChatColor.AQUA + "\n" + "No jobs linked to this project");
+                                        message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                    }
+                                }
+                                if (!pr.status.equals(ProjectStatus.FINISHED)) {
+                                    for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
+
+                                        message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
+                                        if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
+                                            message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
+
+                                        } else {
+                                            message.addSimple(ChatColor.RED + "No warp avaible for this region");
+
+                                        }
+
+                                        messages.add(message);
+
+                                    }
+                                }
+
+                                if (!pr.link.equalsIgnoreCase("Nothing")) {
+                                    message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "Forum Thread", pr.link, "Click to go on the forum");
+                                }
+
+                                messages.add(message);
+
+                                PluginData.getMessageUtil().sendFancyListMessage((Player) cs, header, messages, "/project details " + pr.name, 1);
 
                             } catch (SQLException ex) {
                                 Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
@@ -290,8 +294,9 @@ public class ProjectDetails extends ProjectCommand {
 
             do {
 
-                if (r.getLong("blocks") > 100) {
-
+                if (r.getLong("blocks") > 150
+                        && ((System.currentTimeMillis() - r.getLong("lastplayed")) * 1000) < 604800) {
+//1 week
                     OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(r.getString("player_uuid")));
 
                     pers.add(p.getName());
@@ -376,7 +381,7 @@ public class ProjectDetails extends ProjectCommand {
 
     }
 
-    public static void jj(ProjectGotData pr) {
+    public static void jj(ProjectData pr) {
         jobs.clear();
 
         for (String value : pr.jobs) {

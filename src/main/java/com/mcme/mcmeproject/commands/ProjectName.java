@@ -8,7 +8,7 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectGotData;
+import com.mcme.mcmeproject.data.ProjectData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
@@ -45,7 +45,7 @@ public class ProjectName extends ProjectCommand {
                 if (playerPermission(args[0], cs)) {
                     if (!args[0].equals(args[1])) {
 
-                        final ProjectGotData p = PluginData.projectsAll.get(args[0]);
+                        final ProjectData p = PluginData.projectsAll.get(args[0]);
 
                         new BukkitRunnable() {
 
@@ -57,7 +57,6 @@ public class ProjectName extends ProjectCommand {
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     PluginData.loadProjects();
                                     //TODO SERVER LOADING
-                                    
 
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
@@ -94,19 +93,13 @@ public class ProjectName extends ProjectCommand {
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
-                    String st = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " ;";
-
-                    final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-
                     if (r.first()) {
                         manager = true;
 
                     }
-                    if (r2.first()) {
-                        if (UUID.fromString(r2.getString("staff_uuid")).equals(pl.getUniqueId())) {
-                            head = true;
 
-                        }
+                    if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
+                        head = true;
 
                     }
                 } catch (SQLException ex) {

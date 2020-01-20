@@ -7,7 +7,7 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectGotData;
+import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.NumericUtil;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
@@ -49,7 +49,7 @@ public class ProjectList extends ProjectCommand {
         List<FancyMessage> messages = new ArrayList<>();
         for (String project : PluginData.projectsAll.keySet()) {
 
-            ProjectGotData pr = PluginData.projectsAll.get(project);
+            ProjectData pr = PluginData.projectsAll.get(project);
 
             if (pl.hasPermission("project.manager") && args.length > 1 && args[1].equalsIgnoreCase("historic")) {
                 if (pr.status.equals(ProjectStatus.SHOWED)) {

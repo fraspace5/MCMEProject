@@ -8,6 +8,7 @@ package com.mcme.mcmeproject.runnables;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
+import com.mcme.mcmeproject.data.ProjectData;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import com.mcmiddleearth.pluginutil.region.Region;
@@ -39,21 +40,25 @@ public class PlayersRunnable {
 
                     OfflinePlayer n = Bukkit.getOfflinePlayer(player);
                     Location loc = n.getPlayer().getLocation();
-                    if (PluginData.getMin().get(player).booleanValue() == true) {
+                    if (PluginData.getMin().get(player)) {
 
-                        for (String project : PluginData.getProjectdata().keySet()) {
+                        for (String region : PluginData.regions.keySet()) {
 
-                            for (String region : PluginData.getProjectdata().get(project).regions.keySet()) {
+                            Region r = PluginData.regions.get(region).region;
 
-                                Region r = PluginData.getProjectdata().get(project).regions.get(region);
+                            if (r.isInside(loc)) {
 
-                                if (r.isInside(loc)) {
+                                if (PluginData.getTemporaryMinute().containsKey(PluginData.regions.get(region).idproject)) {
 
-                                    PluginData.getProjectdata().get(project).minutes = PluginData.getProjectdata().get(project).minutes + 1;
-                                    PluginData.getMin().remove(player);
-                                    PluginData.getMin().put(player, Boolean.FALSE);
+                                    Integer l = PluginData.getTemporaryMinute().get(PluginData.regions.get(region).idproject) + 1;
+                                    PluginData.getTemporaryMinute().remove(PluginData.regions.get(region).idproject);
+                                    PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, l);
+
+                                } else {
+                                    PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, 1);
                                 }
-
+                                PluginData.getMin().remove(player);
+                                PluginData.getMin().put(player, Boolean.FALSE);
                             }
 
                         }
@@ -103,7 +108,7 @@ public class PlayersRunnable {
             @Override
             public void run() {
 
-                ProjectData d = PluginData.getProjectdata().get(project);
+                ProjectData d = PluginData.projectsAll.get(project);
                 if (time.equals(d.updated)) {
 
                     Player p = pl;
@@ -126,28 +131,6 @@ public class PlayersRunnable {
 
         }.runTaskTimer(Mcproject.getPluginInstance(), 200L, 800L);
 
-    }
-
-    public static void restorePeople() {
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-
-                Long r = PluginData.getT() + 86400;
-
-                if (r < System.currentTimeMillis()) {
-
-                    for (String n : PluginData.getProjectdata().keySet()) {
-
-                        PluginData.getProjectdata().get(n).people.clear();
-                        PluginData.setT(System.currentTimeMillis());
-                    }
-                }
-            }
-
-        }
-                .runTaskTimer(Mcproject.getPluginInstance(), 1200L, 36000L);
     }
 
 }

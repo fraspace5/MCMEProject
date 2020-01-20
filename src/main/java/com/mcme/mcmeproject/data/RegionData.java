@@ -11,13 +11,11 @@ import org.bukkit.Location;
 import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
 import com.mcmiddleearth.pluginutil.region.CuboidRegion;
 
-
 /**
  *
  * @author Fraspace5
  */
 public class RegionData {
-
 
     public final String name;
 
@@ -27,22 +25,27 @@ public class RegionData {
 
     public final Region region;
 
-    public RegionData(String namem, UUID idregion, UUID idpr, Region rn) {
+    public final String server;
+
+    public final String type;
+
+    public RegionData(String namem, UUID idregion, UUID idpr, Region rn, String sr, String t) {
 
         name = namem;
-        
+
         idr = idregion;
-        
+
         idproject = idpr;
-        
+
         region = rn;
 
+        server = sr;
+
+        type = t;
+
     }
-   
-    
-    
-    
-     public Location getLocation() {
+
+    public Location getLocation() {
         return region.getLocation();
     }
 

@@ -8,19 +8,16 @@ package com.mcme.mcmeproject.commands;
 import com.boydti.fawe.object.FawePlayer;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
-import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.DynmapUtil;
-import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.region.CuboidRegion;
 import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -74,10 +71,11 @@ public class ProjectArea extends ProjectCommand {
                                         try {
                                             PrismoidRegion r = new PrismoidRegion(loc, (com.sk89q.worldedit.regions.Polygonal2DRegion) weRegion);
 
-                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "') ;";
+                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Bukkit.getServer().getName() + "' ) ;";
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                             PluginData.loadProjects();
                                             PluginData.loadWarps();
+                                           
                                             //TODO SERVER LOADING
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,10 +104,11 @@ public class ProjectArea extends ProjectCommand {
                                             Vector minCorner = r.getMinCorner();
                                             Vector maxCorner = r.getMaxCorner();
 
-                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "') ;";
+                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Bukkit.getServer().getName() + "' ) ;";
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();
+                                            
                                             //TODO SERVER LOADING
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
@@ -151,6 +150,7 @@ public class ProjectArea extends ProjectCommand {
                                         Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate();
                                         PluginData.loadRegions();
                                         PluginData.loadWarps();
+                                        
 
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectArea.class.getName()).log(Level.SEVERE, null, ex);
@@ -196,23 +196,15 @@ public class ProjectArea extends ProjectCommand {
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
-                    String st = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " ;";
-
-                    final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-
                     if (r.first()) {
                         manager = true;
 
                     }
 
-                    if (r2.first()) {
-                        if (UUID.fromString(r2.getString("staff_uuid")).equals(pl.getUniqueId())) {
-                            head = true;
-
-                        }
+                    if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
+                        head = true;
 
                     }
-
                 } catch (SQLException ex) {
                     Logger.getLogger(ProjectAdd.class.getName()).log(Level.SEVERE, null, ex);
                 }

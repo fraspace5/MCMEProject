@@ -44,13 +44,13 @@ public class ProjectCreate extends ProjectCommand {
 
                         try {
                             Date d = new Date(System.currentTimeMillis());
-                            
-                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".project_data (idproject, name, staff_uuid, startDate ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.getProjectsAll().get(args[0]).name + "','" + pl.getUniqueId().toString() + "','" + d.toString() + "') ;";
+
+                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, update ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.getProjectsAll().get(args[0]).name + "','" + pl.getUniqueId().toString() + "','" + d.toString() + "','0','nothing','" + System.currentTimeMillis() + "',' '," + System.currentTimeMillis() + ") ;";
                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                             //SEND TO OTHER SERVERS
-                            
+
                             PluginData.loadProjects();
-                            
+
                             sendCreated(cs, args[0]);
                         } catch (SQLException ex) {
                             Logger.getLogger(ProjectCreate.class.getName()).log(Level.SEVERE, null, ex);
@@ -59,7 +59,6 @@ public class ProjectCreate extends ProjectCommand {
 
                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-               
             } else {
 
                 sendAlreadyProject(cs);

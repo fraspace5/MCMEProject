@@ -91,19 +91,13 @@ public class ProjectFinish extends ProjectCommand {
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
-                    String st = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " ;";
-
-                    final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-
                     if (r.first()) {
                         manager = true;
 
                     }
-                    if (r2.first()) {
-                        if (UUID.fromString(r2.getString("staff_uuid")).equals(pl.getUniqueId())) {
-                            head = true;
 
-                        }
+                    if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
+                        head = true;
 
                     }
                 } catch (SQLException ex) {

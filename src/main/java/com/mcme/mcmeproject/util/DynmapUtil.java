@@ -8,7 +8,7 @@ package com.mcme.mcmeproject.util;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectGotData;
+import com.mcme.mcmeproject.data.ProjectData;
 import com.sk89q.worldedit.BlockVector2D;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
@@ -88,12 +88,33 @@ public class DynmapUtil {
     }
 
     public static void deleteWarp(String n) {
-
-        markerWarpSet.findMarker(n).deleteMarker();
-
+        if (!enabled) {
+            return;
+        }
+        if (!init) {
+            init();
+        }
+        if (init) {
+            markerWarpSet.findMarker(n).deleteMarker();
+        }
     }
 
-    public static void clearMarkers() {
+    public static void clearMarkersWarp() {
+        if (!enabled) {
+            return;
+        }
+        if (!init) {
+            init();
+        }
+        if (init) {
+            for (Marker n : markerWarpSet.getMarkers()) {
+                n.deleteMarker();
+
+            }
+        }
+    }
+
+    public static void clearMarkersArea() {
         if (!enabled) {
             return;
         }
@@ -151,7 +172,7 @@ public class DynmapUtil {
             init();
         }
         if (init) {
-            ProjectGotData pr = PluginData.projectsAll.get(project);
+            ProjectData pr = PluginData.projectsAll.get(project);
 
             String newMarkerId = region.toLowerCase() + ".marker";
             for (AreaMarker marker : markerSet.getAreaMarkers()) {
@@ -182,7 +203,7 @@ public class DynmapUtil {
         }
         if (init) {
 
-            ProjectGotData pr = PluginData.projectsAll.get(project);
+            ProjectData pr = PluginData.projectsAll.get(project);
             Integer[] xx = r.getXPoints();
             Integer[] zz = r.getZPoints();
 
@@ -228,7 +249,7 @@ public class DynmapUtil {
             init();
         }
         if (init) {
-            ProjectGotData pr = PluginData.projectsAll.get(project);
+            ProjectData pr = PluginData.projectsAll.get(project);
 
             String newMarkerId = region.toLowerCase() + ".marker";
             for (AreaMarker marker : markerSet.getAreaMarkers()) {

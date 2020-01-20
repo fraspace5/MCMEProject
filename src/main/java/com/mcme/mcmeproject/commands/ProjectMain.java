@@ -8,7 +8,7 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectGotData;
+import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,13 +49,13 @@ public class ProjectMain extends ProjectCommand {
             if (PluginData.projectsAll.containsKey(args[0])) {
                 if (playerPermission(args[0], cs)) {
 
-                    ProjectGotData pr = PluginData.projectsAll.get(args[0]);
+                    ProjectData pr = PluginData.projectsAll.get(args[0]);
                     createList();
                     if (pr.main == true) {
                         sendAlreadyMain(cs);
                     } else {
                         for (String s : mainproject) {
-                            final ProjectGotData p = PluginData.projectsAll.get(s);
+                            final ProjectData p = PluginData.projectsAll.get(s);
 
                             new BukkitRunnable() {
 
@@ -66,7 +66,6 @@ public class ProjectMain extends ProjectCommand {
                                         String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET main = false WHERE idproject = '" + p.idproject.toString() + "' ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
-                                        
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -133,19 +132,13 @@ public class ProjectMain extends ProjectCommand {
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
-                    String st = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " ;";
-
-                    final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-
                     if (r.first()) {
                         manager = true;
 
                     }
-                    if (r2.first()) {
-                        if (UUID.fromString(r2.getString("staff_uuid")).equals(pl.getUniqueId())) {
-                            head = true;
 
-                        }
+                    if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
+                        head = true;
 
                     }
                 } catch (SQLException ex) {

@@ -9,28 +9,21 @@ import com.mcme.mcmeproject.commands.ProjectCommandExecutor;
 import com.mcme.mcmeproject.runnables.PlayersRunnable;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectGotData;
 import com.mcme.mcmeproject.listener.JobListener;
 import com.mcme.mcmeproject.listener.PlayerListener;
 import com.mcme.mcmeproject.runnables.SystemRunnable;
 import com.mcme.mcmeproject.util.UpdaterCheck;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -172,16 +165,15 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `time` MEDIUMTEXT ,\n"
                                 + "  `informed` LONGTEXT ,\n"
                                 + "  `jobs` LONGTEXT ,\n"
+                                + "  `minutes` INT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
                         final String st4 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`staff_data` (\n"
                                 + "  `staff_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  PRIMARY KEY (`staff_uuid`));";
-
                         final String st5 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`people_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
-                                + "  `minutes` INT NOT NULL,\n"
                                 + "  `blocks` MEDIUMTEXT,\n"
                                 + "  `lastplayed` MEDIUMTEXT,\n"
                                 + "  PRIMARY KEY (`player_uuid`));";
@@ -204,6 +196,7 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `ymin` INT NOT NULL,\n"
                                 + "  `ymax` INT NOT NULL,\n"
                                 + "  `location` LONGTEXT NOT NULL,\n"
+                                + "  `server` VARCHAR(100) NOT NULL,\n"
                                 + "  PRIMARY KEY (`idproject`));";
 
                         con.createStatement().execute(st1);
@@ -271,13 +264,17 @@ public class Mcproject extends JavaPlugin implements Listener {
     }
 
     public void onStart() {
+        if (PluginData.getMain()) {
+            PlayersRunnable.AddMinuteRunnable();
+            PlayersRunnable.SetTodayUpdatedRunnable();
+            SystemRunnable.variableDataBlocksRunnable();
+            SystemRunnable.variableDataMinutesRunnable();
+        }
 
-        PlayersRunnable.AddMinuteRunnable();
-        PlayersRunnable.SetTodayUpdatedRunnable();
         SystemRunnable.startDatabaseRecoveryRunnable();
     }
 
-    public Map<String, ProjectGotData> getProjects() {
+    public Map<String, ProjectData> getProjects() {
         return PluginData.projectsAll;
     }
 

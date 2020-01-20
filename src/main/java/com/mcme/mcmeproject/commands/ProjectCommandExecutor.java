@@ -8,7 +8,7 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectGotData;
+import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.data.RegionData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import java.util.ArrayList;
@@ -49,22 +49,22 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
         addCommandHandler("description", new ProjectDescription(permissionStaff, permissionOwner));
         addCommandHandler("head", new ProjectHead(permissionStaff, permissionOwner));
         addCommandHandler("link", new ProjectLink(permissionStaff, permissionOwner));
-        addCommandHandler("list", new ProjectList(permission, permissionOwner));
+        addCommandHandler("list", new ProjectList(permission, permissionStaff, permissionOwner));
         addCommandHandler("name", new ProjectName(permissionStaff, permissionOwner));
         addCommandHandler("percentage", new ProjectPercentage(permissionStaff, permissionOwner));
         addCommandHandler("progress", new ProjectProgress(permissionStaff, permissionOwner));
         addCommandHandler("remove", new ProjectRemove(permissionStaff, permissionOwner));
         addCommandHandler("time", new ProjectTime(permissionStaff, permissionOwner));
         addCommandHandler("warp", new ProjectWarp(permissionStaff, permissionOwner));
-        addCommandHandler("details", new ProjectDetails(permission, permissionOwner));
-        addCommandHandler("tp", new ProjectTp(permission, permissionOwner));
+        addCommandHandler("details", new ProjectDetails(permission, permissionStaff, permissionOwner));
+        addCommandHandler("tp", new ProjectTp(permission, permissionStaff, permissionOwner));
         addCommandHandler("show", new ProjectShow(permissionStaff, permissionOwner));
         addCommandHandler("hide", new ProjectHide(permissionStaff, permissionOwner));
         addCommandHandler("finish", new ProjectFinish(permissionStaff, permissionOwner));
-        addCommandHandler("help", new ProjectHelp(permission, permissionOwner));
+        addCommandHandler("help", new ProjectHelp(permission, permissionStaff, permissionOwner));
         addCommandHandler("reopen", new ProjectReopen(permissionStaff, permissionOwner));
         addCommandHandler("main", new ProjectMain(permissionStaff, permissionOwner));
-        addCommandHandler("news", new ProjectNews(permission, permissionOwner));
+        addCommandHandler("news", new ProjectNews(permission, permissionStaff, permissionOwner));
     }
 
     @Override
@@ -132,7 +132,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 List<String> ProjectListHidden = new ArrayList<>();
                 List<String> ProjectListFinished = new ArrayList<>();
 
-                for (Entry<String, ProjectGotData> entry : PluginData.projectsAll.entrySet()) {
+                for (Entry<String, ProjectData> entry : PluginData.projectsAll.entrySet()) {
                     ProjectStatus lowerCaseKey = entry.getValue().status;
 
                     if (lowerCaseKey.equals(ProjectStatus.HIDDEN)) {
