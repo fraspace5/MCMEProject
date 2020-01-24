@@ -68,6 +68,7 @@ public class ProjectProgress extends ProjectCommand {
                                             Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
                                             sendDone(cs, args[0]);
                                             PluginData.loadProjects();
+                                            PluginData.setTodayEnd();
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                         }
@@ -95,6 +96,7 @@ public class ProjectProgress extends ProjectCommand {
                                         Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
                                         sendDone(cs, args[0]);
                                         PluginData.loadProjects();
+                                        PluginData.setTodayEnd();
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -123,6 +125,7 @@ public class ProjectProgress extends ProjectCommand {
                                             Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
                                             sendDone(cs, args[0]);
                                             PluginData.loadProjects();
+                                            PluginData.setTodayEnd();
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                         }
@@ -149,6 +152,7 @@ public class ProjectProgress extends ProjectCommand {
                                         Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
                                         sendDone(cs, args[0]);
                                         PluginData.loadProjects();
+                                        PluginData.setTodayEnd();
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -212,7 +216,7 @@ public class ProjectProgress extends ProjectCommand {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " AND staff_uuid =" + pl.getUniqueId().toString() + " ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + PluginData.getProjectsAll().get(prr).idproject.toString() + "' AND staff_uuid ='" + pl.getUniqueId().toString() + "' ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 

@@ -35,12 +35,10 @@ public class ProjectData {
     public Integer percentage;
 
     public String link;
-    
-    public Long updated;
-    
-    
 
-    public ProjectData(String namem, UUID idpr, ProjectStatus rn, Boolean bol, List jj, UUID head, Long t, Integer per, String desc, String l,Long updated) {
+    public Long updated;
+
+    public ProjectData(String namem, UUID idpr, ProjectStatus rn, Boolean bol, List jj, UUID he, Long t, Integer per, String desc, String l, Long up) {
 
         name = namem;
 
@@ -52,6 +50,8 @@ public class ProjectData {
 
         description = desc;
 
+        head = he;
+
         jobs = jj;
 
         time = t;
@@ -59,6 +59,8 @@ public class ProjectData {
         percentage = per;
 
         link = l;
+
+        updated = up;
 
     }
 

@@ -49,7 +49,7 @@ public class ProjectWarp extends ProjectCommand {
                 if (playerPermission(args[0], cs)) {
                     if (PluginData.regions.containsKey(args[1]) && PluginData.regions.get(args[1]).idproject.equals(PluginData.projectsAll.get(args[0]).idproject)) {
                         if (PluginData.regions.get(args[1]).isInside(loc)) {
-
+                            String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
                             new BukkitRunnable() {
 
                                 @Override
@@ -60,11 +60,11 @@ public class ProjectWarp extends ProjectCommand {
                                             String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".warps_data WHERE idregion = '" + PluginData.regions.get(args[1]).idr.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
-                                        } else {
 
+                                            DynmapUtil.deleteWarp(n);
                                         }
 
-                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + loc.getWorld().getName() + "','" + Bukkit.getServer().getName() + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
+                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Bukkit.getServer().getName() + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                         PluginData.loadWarps();
                                         //TODO SERVER LOADING
@@ -75,9 +75,6 @@ public class ProjectWarp extends ProjectCommand {
                                 }
 
                             }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                            String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
-                            DynmapUtil.deleteWarp(n);
 
                             DynmapUtil.createMarkerWarp(n, loc);
 
@@ -110,7 +107,7 @@ public class ProjectWarp extends ProjectCommand {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " AND staff_uuid =" + pl.getUniqueId().toString() + " ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + PluginData.getProjectsAll().get(prr).idproject.toString() + "' AND staff_uuid ='" + pl.getUniqueId().toString() + "' ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 

@@ -1,4 +1,5 @@
 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -62,7 +63,7 @@ public class ProjectDetails extends ProjectCommand {
                             @Override
                             public void run() {
                                 try {
-                                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = " + pl.getUniqueId().toString() + " AND idproject = " + PluginData.projectsAll.get(args[0]).idproject.toString() + " ;";
+                                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = '" + pl.getUniqueId().toString() + "' AND idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
@@ -80,7 +81,7 @@ public class ProjectDetails extends ProjectCommand {
 
                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-                if (!pl.hasPermission("project.manager")) {
+                if (!pl.hasPermission("project.manager") || !pl.hasPermission("project.owner")) {
                     if (PluginData.projectsAll.get(args[0]).status.equals(ProjectStatus.SHOWED)) {
 
                         new BukkitRunnable() {
@@ -90,8 +91,8 @@ public class ProjectDetails extends ProjectCommand {
                                 try {
                                     ProjectData pr = PluginData.projectsAll.get(args[0]);
 
-                                    String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = " + pr.idproject.toString() + " ;";
-                                    String stat3 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = " + pr.idproject.toString() + " ;";
+                                    String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
+                                    String stat3 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
 
                                     final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
                                     final ResultSet r3 = Mcproject.getPluginInstance().con.prepareStatement(stat3).executeQuery();
@@ -104,9 +105,9 @@ public class ProjectDetails extends ProjectCommand {
                                     List<FancyMessage> messages = new ArrayList<>();
 
                                     FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                    String ps = Bukkit.getPlayer(pr.head).getName();
+                                    String ps = Bukkit.getOfflinePlayer(pr.head).getName();
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + "\n"
-                                            + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
+                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
                                             + ChatColor.GOLD + "~--------------------~" + "\n"
@@ -135,7 +136,7 @@ public class ProjectDetails extends ProjectCommand {
                                             message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
 
                                         } else {
-                                            message.addSimple(ChatColor.RED + "No warp avaible for this region");
+                                            message.addSimple(ChatColor.RED + "No warp available for this region");
 
                                         }
 
@@ -171,8 +172,8 @@ public class ProjectDetails extends ProjectCommand {
                             try {
                                 ProjectData pr = PluginData.projectsAll.get(args[0]);
 
-                                String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = " + pr.idproject.toString() + " ;";
-                                String stat3 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = " + pr.idproject.toString() + " ;";
+                                String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
+                                String stat3 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
 
                                 final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
                                 final ResultSet r3 = Mcproject.getPluginInstance().con.prepareStatement(stat3).executeQuery();
@@ -185,11 +186,11 @@ public class ProjectDetails extends ProjectCommand {
                                 List<FancyMessage> messages = new ArrayList<>();
 
                                 FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                String ps = Bukkit.getPlayer(pr.head).getName();
+                                String ps = Bukkit.getOfflinePlayer(pr.head).getName();
                                 if (pr.status.equals(ProjectStatus.FINISHED)) {
 
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + " (Finished)" + "\n"
-                                            + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
+                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
                                             + ChatColor.GOLD + "~--------------------~" + "\n"
@@ -202,7 +203,7 @@ public class ProjectDetails extends ProjectCommand {
                                 } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
 
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + " (Hidden)" + "\n"
-                                            + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
+                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
                                             + ChatColor.GOLD + "~--------------------~" + "\n"
@@ -215,7 +216,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                 } else {
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + "\n"
-                                            + ChatColor.RED.BOLD + "Head Project: " + ps + "\n"
+                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
                                             + ChatColor.GOLD + "~--------------------~" + "\n"
@@ -231,7 +232,7 @@ public class ProjectDetails extends ProjectCommand {
                                 if (!pr.status.equals(ProjectStatus.FINISHED)) {
 
                                     jj(pr);
-                                    if (jobs.size() != 0) {
+                                    if (!jobs.isEmpty()) {
                                         message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
 
                                         message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
@@ -239,21 +240,23 @@ public class ProjectDetails extends ProjectCommand {
                                         message.addSimple(ChatColor.AQUA + "\n" + "No jobs linked to this project");
                                         message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
                                     }
-                                }
-                                if (!pr.status.equals(ProjectStatus.FINISHED)) {
-                                    for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
 
-                                        message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
-                                        if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
-                                            message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
+                                    if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[0]).idproject)) {
 
-                                        } else {
-                                            message.addSimple(ChatColor.RED + "No warp avaible for this region");
+                                        for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
+
+                                            message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
+                                            if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
+                                                message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
+
+                                            } else {
+                                                message.addSimple(ChatColor.RED + "No warp available for this region");
+
+                                            }
+
+                                            messages.add(message);
 
                                         }
-
-                                        messages.add(message);
-
                                     }
                                 }
 

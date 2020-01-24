@@ -45,7 +45,7 @@ public class SystemRunnable {
 
                                     @Override
                                     public void run() {
-PluginData.loadAllDynmap();
+                                        PluginData.loadAllDynmap();
                                     }
 
                                 }.runTaskLater(Mcproject.getPluginInstance(), 100L);
@@ -72,30 +72,34 @@ PluginData.loadAllDynmap();
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".projects_data;";
 
-                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-                    StringBuilder ss = new StringBuilder();
-                    ss.append("UPDATE projects_data SET minutes= CASE idproject ");
+                    if (!PluginData.getTemporaryMinute().isEmpty()) {
+                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data;";
 
-                    for (UUID id : PluginData.getTemporaryMinute().keySet()) {
-                        do {
+                        final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                        StringBuilder ss = new StringBuilder();
+                        ss.append("UPDATE project_data SET minutes= CASE idproject ");
 
-                            if (r.getString("idproject").equals(id)) {
-                                Integer i = r.getInt("minutes") + PluginData.getTemporaryMinute().get(id);
+                        for (UUID id : PluginData.getTemporaryMinute().keySet()) {
+                            if (r.first()) {
+                                do {
 
-                                ss.append("WHEN '" + id.toString() + "' THEN '" + i.toString() + "' ");
+                                    if (UUID.fromString(r.getString("idproject")).equals(id)) {
+                                        Integer i = r.getInt("minutes") + PluginData.getTemporaryMinute().get(id);
+
+                                        ss.append("WHEN '" + id.toString() + "' THEN '" + i.toString() + "' ");
+                                    }
+
+                                } while (r.next());
                             }
+                        }
+                        ss.append("ELSE minutes END");
 
-                        } while (r.next());
+                        Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();
+
+                        PluginData.getTemporaryMinute().clear();
 
                     }
-                    ss.append("ELSE val1 END");
-
-                    Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();
-
-                    PluginData.getTemporaryMinute().clear();
-
                 } catch (SQLException ex) {
                     Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -127,12 +131,12 @@ PluginData.loadAllDynmap();
                             if (r.first()) {
                                 do {
 
-                                    if (r.getString("idproject").equals(idproject) && r.getString("player_uuid").equals(idplayer.toString())) {
+                                    if (UUID.fromString(r.getString("idproject")).equals(idproject) && r.getString("player_uuid").equals(idplayer.toString())) {
                                         updatelist.put(idproject, idplayer);
                                         if (!totalList.contains(idproject)) {
                                             totalList.add(idproject);
                                         }
-                                    } else if (r.getString("idproject").equals(idproject) && !r.getString("player_uuid").equals(idplayer.toString())) {
+                                    } else if (UUID.fromString(r.getString("idproject")).equals(idproject) && !r.getString("player_uuid").equals(idplayer.toString())) {
                                         insertlist.put(idproject, idplayer);
                                         if (!totalList.contains(idproject)) {
                                             totalList.add(idproject);

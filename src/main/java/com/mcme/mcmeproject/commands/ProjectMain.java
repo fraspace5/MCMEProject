@@ -65,7 +65,7 @@ public class ProjectMain extends ProjectCommand {
                                     try {
                                         String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET main = false WHERE idproject = '" + p.idproject.toString() + "' ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-
+PluginData.loadProjects();
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -128,7 +128,7 @@ public class ProjectMain extends ProjectCommand {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " AND staff_uuid =" + pl.getUniqueId().toString() + " ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + PluginData.getProjectsAll().get(prr).idproject.toString() + "' AND staff_uuid ='" + pl.getUniqueId().toString() + "' ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 

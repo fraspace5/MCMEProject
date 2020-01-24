@@ -65,7 +65,7 @@ public class Mcproject extends JavaPlugin implements Listener {
         try {
             openConnection();
         } catch (SQLException ex) {
-            clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "MyBirthday" + ChatColor.DARK_GRAY + "] - " + ChatColor.RED + "Database error! (MyBirthday)");
+            clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.RED + "Database error! (McMeProject)");
             Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
             Bukkit.getPluginManager().disablePlugin(this);
         }
@@ -77,9 +77,12 @@ public class Mcproject extends JavaPlugin implements Listener {
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
         clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.6 enabled!");
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
+        if (this.isEnabled()) {
 
-        onStart();
-        checkUpdate();
+            onStart();
+            checkUpdate();
+            ConnectionRunnable();
+        }
 
     }
 
@@ -125,17 +128,17 @@ public class Mcproject extends JavaPlugin implements Listener {
         if (con != null && !con.isClosed()) {
             return;
         }
-        if (this.getPluginInstance().password.equalsIgnoreCase("default")) {
-            clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "MyBirthday" + ChatColor.DARK_GRAY + "] - " + ChatColor.YELLOW + "Plugin INITIALIZED, change database information!");
+        if (Mcproject.getPluginInstance().password.equalsIgnoreCase("default")) {
+            clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.YELLOW + "Plugin INITIALIZED, change database information!");
             Bukkit.getPluginManager().disablePlugin(this);
         } else {
 
-            con = DriverManager.getConnection("jdbc:mysql://" + this.getPluginInstance().host + ":"
-                    + this.getPluginInstance().port + "/"
-                    + this.getPluginInstance().database + "?useSSL=false&allowPublicKeyRetrieval=true",
-                    this.getPluginInstance().username,
-                    this.getPluginInstance().password);
-            clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "MyBirthday" + ChatColor.DARK_GRAY + "] - " + ChatColor.GREEN + "Database Found! ");
+            con = DriverManager.getConnection("jdbc:mysql://" + Mcproject.getPluginInstance().host + ":"
+                    + Mcproject.getPluginInstance().port + "/"
+                    + Mcproject.getPluginInstance().database + "?useSSL=false&allowPublicKeyRetrieval=true",
+                    Mcproject.getPluginInstance().username,
+                    Mcproject.getPluginInstance().password);
+            clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.GREEN + "Database Found! ");
 
             new BukkitRunnable() {
 
@@ -154,8 +157,8 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `idproject` VARCHAR(50) NOT NULL,\n"
                                 + "  `name` VARCHAR(80) NOT NULL,\n"
                                 + "  `staff_uuid` VARCHAR(45) NOT NULL,\n"
-                                + "  `startDate` DATE NOT NULL,\n"
-                                + "  `endDate` DATE,\n"
+                                + "  `startDate` MEDIUMTEXT,\n"
+                                + "  `endDate` MEDIUMTEXT,\n"
                                 + "  `status` VARCHAR(45) ,\n"
                                 + "  `description` VARCHAR(200) ,\n"
                                 + "  `main` VARCHAR(45) ,\n"
@@ -163,7 +166,6 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `percentage` VARCHAR(45) ,\n"
                                 + "  `link` VARCHAR(100) ,\n"
                                 + "  `time` MEDIUMTEXT ,\n"
-                                + "  `informed` LONGTEXT ,\n"
                                 + "  `jobs` LONGTEXT ,\n"
                                 + "  `minutes` INT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
@@ -197,7 +199,7 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `ymax` INT NOT NULL,\n"
                                 + "  `location` LONGTEXT NOT NULL,\n"
                                 + "  `server` VARCHAR(100) NOT NULL,\n"
-                                + "  PRIMARY KEY (`idproject`));";
+                                + "  PRIMARY KEY (`idregion`));";
 
                         con.createStatement().execute(st1);
                         con.createStatement().execute(st2);
@@ -258,20 +260,40 @@ public class Mcproject extends JavaPlugin implements Listener {
                         Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }.runTaskAsynchronously(this.getPluginInstance());
+            }.runTaskAsynchronously(Mcproject.getPluginInstance());
         }
 
     }
 
-    public void onStart() {
-        if (PluginData.getMain()) {
-            PlayersRunnable.AddMinuteRunnable();
-            PlayersRunnable.SetTodayUpdatedRunnable();
-            SystemRunnable.variableDataBlocksRunnable();
-            SystemRunnable.variableDataMinutesRunnable();
-        }
+    public void ConnectionRunnable() {
 
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (!con.isValid(2)) {
+
+                        openConnection();
+
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }.runTaskTimer(Mcproject.getPluginInstance(), 60L, 100L);
+
+    }
+
+    public void onStart() {
         SystemRunnable.startDatabaseRecoveryRunnable();
+        PlayersRunnable.AddMinuteRunnable();
+        PlayersRunnable.SetTodayUpdatedRunnable();
+        SystemRunnable.variableDataBlocksRunnable();
+        SystemRunnable.variableDataMinutesRunnable();
+
     }
 
     public Map<String, ProjectData> getProjects() {

@@ -51,7 +51,7 @@ public class ProjectAdd extends ProjectCommand {
                             public void run() {
 
                                 try {
-                                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject =" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + " AND staff_uuid =" + pl.getUniqueId().toString() + " ;";
+                                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "' AND staff_uuid = '" + pl.getUniqueId().toString() + "' ;";
 
                                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
@@ -99,7 +99,7 @@ public class ProjectAdd extends ProjectCommand {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject =" + PluginData.getProjectsAll().get(prr).idproject.toString() + " AND staff_uuid =" + pl.getUniqueId().toString() + " ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + PluginData.getProjectsAll().get(prr).idproject.toString() + "' AND staff_uuid ='" + pl.getUniqueId().toString() + "' ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 

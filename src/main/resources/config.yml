@@ -2,8 +2,6 @@
 time: 3
 # Set as true|false player notification for update
 playernotification: true
-# if the plugin is in a world where you can make projects
-mainworld: true
 #Check if there is a new version of this plugin
 findupdates: true
 

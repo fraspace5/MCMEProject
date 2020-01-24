@@ -119,6 +119,48 @@ public class ProjectNews extends ProjectCommand {
 
                                 }
 
+                            } else {
+
+                                switch (args[0]) {
+                                    case "true":
+                                          new BukkitRunnable() {
+
+                                                @Override
+                                                public void run() {
+
+                                                    try {
+                                                         String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(true,'"+pl.getUniqueId().toString()+"');";
+                                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                        sendDone(cs);
+                                                    } catch (SQLException ex) {
+                                                        Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
+
+                                                }
+
+                                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                        break;
+                                    case "false":
+                                          new BukkitRunnable() {
+
+                                                @Override
+                                                public void run() {
+
+                                                    try {
+                                                          String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(false,'"+pl.getUniqueId().toString()+"');";
+                                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                        sendDone(cs);
+                                                    } catch (SQLException ex) {
+                                                        Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
+
+                                                }
+
+                                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                        break;
+
+                                }
+
                             }
 
                         } catch (SQLException ex) {

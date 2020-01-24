@@ -11,22 +11,20 @@ import com.mcme.mcmeproject.runnables.PlayersRunnable;
 import com.mcme.mcmeproject.data.PluginData;
 import static com.mcme.mcmeproject.data.PluginData.projectsAll;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import com.mcmiddleearth.pluginutil.region.Region;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -159,7 +157,7 @@ public class PlayerListener implements Listener {
                     String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_bool WHERE player_uuid = '" + p.getUniqueId().toString() + "' ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-                    if (PluginData.getPlayernotification() == true) {
+                    if (PluginData.getPlayernotification()) {
                         if (r.first()) {
 
                             if (r.getBoolean("bool")) {
@@ -170,7 +168,7 @@ public class PlayerListener implements Listener {
 
                         } else {
 
-                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".news_bool SET bool = true WHERE player_uuid = '" + p.getUniqueId().toString() + "' ;";
+                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(true,'" + p.getUniqueId().toString() + "');";
                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                             PlayersRunnable.playerOnJoin(p);
                         }
@@ -223,26 +221,33 @@ public class PlayerListener implements Listener {
         Player pl = e.getPlayer();
         Location loc = pl.getLocation();
         for (String project : PluginData.projectsAll.keySet()) {
+            if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(project).idproject)) {
 
-            for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(project))) {
-                Region r = PluginData.regions.get(region).region;
-                ProjectData p = PluginData.projectsAll.get(project);
-                if (r.isInside(loc) && !p.status.equals(ProjectStatus.FINISHED) && !p.status.equals(ProjectStatus.HIDDEN)) {
+                for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(project).idproject)) {
+                    Region r = PluginData.regions.get(region).region;
+                    ProjectData p = PluginData.projectsAll.get(project);
+                    if (PluginData.informedRegion.containsKey(PluginData.regions.get(region).idr)) {
+                        if (r.isInside(loc) && !p.status.equals(ProjectStatus.FINISHED) && !p.status.equals(ProjectStatus.HIDDEN)) {
 
-                    if (!PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
-                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                        message.addSimple("Welcome " + pl.getName() + " in the area of : " + ChatColor.RED + p.name.toUpperCase() + " project");
-                        if (PluginData.regionsReadable.get(PluginData.projectsAll.get(project)).size() != 1) {
-                            message.addSimple("\n" + ChatColor.GREEN + "The area name is: " + ChatColor.RED + region);
+                            if (!PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
+                                FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                message.addSimple("Welcome " + pl.getName() + " in the area of : " + ChatColor.RED + p.name.toUpperCase() + " project");
+                                if (PluginData.regionsReadable.get(PluginData.projectsAll.get(project).idproject).size() != 1) {
+                                    message.addSimple("\n" + ChatColor.GREEN + "The area name is: " + ChatColor.RED + region);
+                                }
+                                message.send(pl);
+                                PluginData.informedRegion.get(PluginData.regions.get(region).idr).add(pl.getUniqueId());
+
+                            }
+
+                        } else if (r.isNear(loc, 10) && PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
+                            PluginData.informedRegion.get(PluginData.regions.get(region).idr).remove(pl.getUniqueId());
+
                         }
-                        message.send(pl);
-                        PluginData.informedRegion.get(PluginData.regions.get(region).idr).add(pl.getUniqueId());
-
+                    } else {
+                        List<UUID> l = new ArrayList();
+                        PluginData.informedRegion.put(PluginData.regions.get(region).idr, l);
                     }
-
-                } else if (r.isNear(loc, 10) && PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
-                    PluginData.informedRegion.get(PluginData.regions.get(region).idr).remove(pl.getUniqueId());
-
                 }
             }
 

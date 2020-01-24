@@ -78,8 +78,7 @@ public class PluginData {
     private static Long time = Mcproject.getPluginInstance().getConfig().getLong("time");
     @Getter
     private static Boolean playernotification = Mcproject.getPluginInstance().getConfig().getBoolean("playernotification");
-    @Getter
-    private static Boolean main = Mcproject.getPluginInstance().getConfig().getBoolean("mainworld");
+    
     @Getter
     private static Map<UUID, Boolean> min = new HashMap<>();
     @Setter

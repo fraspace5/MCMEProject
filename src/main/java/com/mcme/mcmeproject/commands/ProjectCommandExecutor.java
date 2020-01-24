@@ -99,6 +99,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 arguments.add("show");
                 arguments.add("hide");
                 arguments.add("add");
+                arguments.add("create");
                 arguments.add("area");
                 arguments.add("description");
                 arguments.add("head");
@@ -135,16 +136,20 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 for (Entry<String, ProjectData> entry : PluginData.projectsAll.entrySet()) {
                     ProjectStatus lowerCaseKey = entry.getValue().status;
 
-                    if (lowerCaseKey.equals(ProjectStatus.HIDDEN)) {
-                        ProjectListHidden.add(entry.getValue().name);
-                        ProjectList.add(entry.getValue().name);
-
-                    } else if (lowerCaseKey.equals(ProjectStatus.SHOWED)) {
-                        ProjectListShowed.add(entry.getValue().name);
-                        ProjectList.add(entry.getValue().name);
-                    } else if (lowerCaseKey.equals(ProjectStatus.FINISHED)) {
-
-                        ProjectListFinished.add(entry.getValue().name);
+                    switch (lowerCaseKey) {
+                        case HIDDEN:
+                            ProjectListHidden.add(entry.getValue().name);
+                            ProjectList.add(entry.getValue().name);
+                            break;
+                        case SHOWED:
+                            ProjectListShowed.add(entry.getValue().name);
+                            ProjectList.add(entry.getValue().name);
+                            break;
+                        case FINISHED:
+                            ProjectListFinished.add(entry.getValue().name);
+                            break;
+                        default:
+                            break;
                     }
 
                 }
@@ -319,8 +324,10 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 List<String> fotherlist = new ArrayList<>();
                 List<String> fo2 = new ArrayList<>();
                 if (PluginData.projectsAll.containsKey(args[1])) {
-                    RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
+                    if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[1]).idproject) && !PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject).isEmpty()) {
+                        RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
 
+                    }
                 }
 
                 if (args[0].equalsIgnoreCase("add")) {
@@ -391,9 +398,12 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 List<String> RegionList = new ArrayList<>();
                 List<String> fregion = new ArrayList<>();
                 List<String> fo2 = new ArrayList<>();
-                if (PluginData.projectsAll.containsKey(args[1])) {
-                    RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
 
+                 if (PluginData.projectsAll.containsKey(args[1])) {
+                    if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[1]).idproject) && !PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject).isEmpty()) {
+                        RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
+
+                    }
                 }
 
                 if (args[0].equalsIgnoreCase("progress")) {

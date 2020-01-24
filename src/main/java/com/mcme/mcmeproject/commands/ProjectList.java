@@ -100,22 +100,26 @@ public class ProjectList extends ProjectCommand {
                 }
 
             } else {
-                if (pr.main == true) {
+                if (pr.status.equals(ProjectStatus.SHOWED)) {
 
-                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                    message.addSimple(ChatColor.GOLD + "- ");
-                    message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                    if (pr.main == true) {
 
-                    message.addSimple("\n" + ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
-                    messages.add(message);
+                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                        message.addSimple(ChatColor.GOLD + "- ");
+                        message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
 
-                } else {
-                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                    message.addSimple(ChatColor.GOLD + "- ");
-                    message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                        message.addSimple("\n" + ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
+                        messages.add(message);
 
-                    message.addSimple("\n" + ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
-                    messages.add(message);
+                    } else {
+                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                        message.addSimple(ChatColor.GOLD + "- ");
+                        message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+
+                        message.addSimple("\n" + ChatColor.GOLD + "~~~~~~~~~~~~~~~~~");
+                        messages.add(message);
+                    }
+
                 }
 
             }

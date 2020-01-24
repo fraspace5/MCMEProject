@@ -41,7 +41,7 @@ public final class UpdaterCheck {
                 try {
                     //update link
                     
-                    connection = (HttpURLConnection) new URL("https://raw.githubusercontent.com/fraspace5/MyBirthday/1.13.2/src/main/resources/plugin.yml").openConnection();
+                    connection = (HttpURLConnection) new URL("https://raw.githubusercontent.com/fraspace5/MCMEProject/master/src/main/resources/plugin.yml").openConnection();
 
                     connection.connect();
 
@@ -49,10 +49,10 @@ public final class UpdaterCheck {
 
                     if (parseDouble(newVersion) > parseDouble(oldVersion)) {
 
-                        Mcproject.getPluginInstance().clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "MyBirthday" + ChatColor.DARK_GRAY + "] - " + "New version " + newVersion + " available for this Plugin");
+                        Mcproject.getPluginInstance().clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + "New version " + newVersion + " available for this Plugin");
 
                     } else {
-                        Mcproject.getPluginInstance().clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.YELLOW + "MyBirthday" + ChatColor.DARK_GRAY + "] - " + "No new version found!");
+                        Mcproject.getPluginInstance().clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + "No new version found!");
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(UpdaterCheck.class.getName()).log(Level.SEVERE, null, ex);
