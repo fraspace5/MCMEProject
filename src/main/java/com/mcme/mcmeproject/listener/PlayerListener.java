@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.listener;
 
@@ -80,11 +91,11 @@ public class PlayerListener implements Listener {
                 if (PluginData.getMin().containsKey(uuid)) {
 
                     PluginData.getMin().remove(uuid);
-                    PluginData.getMin().put(uuid, Boolean.TRUE);
+                    PluginData.getMin().put(uuid, true);
 
                 } else {
 
-                    PluginData.getMin().put(uuid, Boolean.TRUE);
+                    PluginData.getMin().put(uuid, true);
                 }
 
             }
@@ -161,16 +172,30 @@ public class PlayerListener implements Listener {
                         if (r.first()) {
 
                             if (r.getBoolean("bool")) {
+                                new BukkitRunnable() {
 
-                                PlayersRunnable.playerOnJoin(p);
+                                    @Override
+                                    public void run() {
+                                        PluginData.sendNews(e);
+                                    }
+
+                                }.runTaskLater(Mcproject.getPluginInstance(), 50L);
 
                             }
 
                         } else {
 
-                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(true,'" + p.getUniqueId().toString() + "');";
+                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES (true,'" + p.getUniqueId().toString() + "') ; ";
                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-                            PlayersRunnable.playerOnJoin(p);
+                            new BukkitRunnable() {
+
+                                @Override
+                                public void run() {
+                                    PluginData.sendNews(e);
+
+                                }
+
+                            }.runTaskLater(Mcproject.getPluginInstance(), 50L);
                         }
 
                     }
@@ -196,7 +221,7 @@ public class PlayerListener implements Listener {
 
                             PlayersRunnable.updatedReminderRunnable(project, p, d.updated);
                         }
-                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject =" + projectsAll.get(project).idproject.toString() + " AND staff_uuid = '" + p.getUniqueId().toString() + "' ;";
+                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + projectsAll.get(project).idproject.toString() + "' AND staff_uuid = '" + p.getUniqueId().toString() + "' ;";
 
                         final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 

@@ -1,8 +1,19 @@
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.data;
 
@@ -13,24 +24,18 @@ import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import lombok.Getter;
 import com.mcmiddleearth.pluginutil.message.MessageUtil;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -39,6 +44,7 @@ import static java.lang.Double.parseDouble;
 import com.mcmiddleearth.pluginutil.region.CuboidRegion;
 import org.bukkit.Location;
 import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
  *
@@ -78,7 +84,7 @@ public class PluginData {
     private static Long time = Mcproject.getPluginInstance().getConfig().getLong("time");
     @Getter
     private static Boolean playernotification = Mcproject.getPluginInstance().getConfig().getBoolean("playernotification");
-    
+
     @Getter
     private static Map<UUID, Boolean> min = new HashMap<>();
     @Setter
@@ -110,45 +116,36 @@ public class PluginData {
 
     public static void setTodayEnd() {
         today.clear();
-        final Calendar cal = Calendar.getInstance();
-        final Calendar now = Calendar.getInstance();
-        for (final String name : projectsAll.keySet()) {
-            new BukkitRunnable() {
 
-                @Override
-                public void run() {
-                    try {
-                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data WHERE idproject =" + projectsAll.get(name).idproject.toString() + " ;";
+        new BukkitRunnable() {
 
-                        final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-                        if (r.first()) {
+            @Override
+            public void run() {
+                try {
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data ;";
 
+                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                    if (r.first()) {
+                        do {
                             Integer milliweeks = 1000 * 60 * 60 * 24 * 7;
 
                             Long l = r.getLong("updated") + (milliweeks * time);
 
-                            cal.setTimeInMillis(l);
-                            int d = cal.get(Calendar.DAY_OF_MONTH);
-                            int m = cal.get(Calendar.MONTH);
-                            int dd = now.get(Calendar.DAY_OF_MONTH);
-                            int mm = now.get(Calendar.MONTH);
-
-                            if (d == dd && m == mm) {
+                            if (l < System.currentTimeMillis()) {
 
                                 today.add(r.getString("name"));
 
                             }
+                        } while (r.next());
 
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
+                } catch (SQLException ex) {
+                    Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+            }
 
-        }
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
     }
 
@@ -289,7 +286,7 @@ public class PluginData {
                     if (r.first()) {
                         do {
 
-                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated")));
+                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"),r.getInt("minutes"),convertListString(unserialize(r.getString("assistants")))));
                             projectsUUID.put(UUID.fromString(r.getString("idproject")), r.getString("name"));
                         } while (r.next());
 
@@ -317,72 +314,88 @@ public class PluginData {
     
     
      */
-    public static void sendNews(Player pl) {
+    public static void sendNews(PlayerJoinEvent e) {
 
         final List<String> projects = new ArrayList<>();
+        Player pl = e.getPlayer();
+        new BukkitRunnable() {
 
-        for (final String name : projectsAll.keySet()) {
+            @Override
+            public void run() {
 
-            new BukkitRunnable() {
+                try {
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = '" + e.getPlayer().getUniqueId().toString() + "' ;";
 
-                @Override
-                public void run() {
+                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
-                    try {
-                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE idproject =" + projectsAll.get(name).idproject.toString() + " ;";
+                    for (final String name : projectsAll.keySet()) {
+                        int i = 0;
 
-                        final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                        if (r.first()) {
+                            do {
 
-                        if (!r.first()) {
+                                if (UUID.fromString(r.getString("idproject")).equals(projectsAll.get(name).idproject)) {
+                                    i = 1;
 
+                                }
+
+                            } while (r.next());
+
+                            if (i != 1) {
+                                projects.add(name);
+
+                            }
+                        } else {
                             projects.add(name);
 
                         }
-
-                    } catch (SQLException ex) {
-                        Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                }
+                    if (projects.size() == 1) {
 
-            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
 
-        }
+                        message.addSimple(ChatColor.GOLD + "Hi " + pl.getName() + ", project " + ChatColor.BLUE + projects.get(0) + ChatColor.GOLD + " has been updated ");
 
-        if (projects.size() == 1) {
+                        message.addClickable(ChatColor.GREEN + "\n" + "Click here for more information", "/project details " + projects.get(0)).setRunDirect();
 
-            FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                        message.send(pl);
 
-            message.addSimple(ChatColor.GOLD + "Hi " + pl.getName() + ", project" + ChatColor.BLUE + projects.get(0) + ChatColor.GOLD + " has been updated ");
+                    } else if (projects.size() > 1) {
 
-            message.addClickable(ChatColor.GREEN + "\n" + "Click here for more information", "/project details " + projects.get(0)).setRunDirect();
+                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
 
-            message.send(pl);
+                        message.addSimple(ChatColor.GOLD + "Hi " + pl.getName() + ",some projects " + ChatColor.GOLD + " have been updated: ");
 
-        } else if (projects.size() > 1) {
+                        for (String n : projects) {
+                            int lastindex = projects.size() - 1;
 
-            FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                            if (projects.indexOf(n) == 0) {
 
-            message.addSimple(ChatColor.GOLD + "Hi " + pl.getName() + ",some projects" + ChatColor.GOLD + " have been updated: ");
+                                message.addFancy(ChatColor.GREEN + "\n" + n + ",", "/project details " + n, "Click for more information about this project").setRunDirect();
 
-            for (String n : projects) {
-                int lastindex = projects.size() - 1;
+                            } else if (projects.indexOf(n) == lastindex) {
 
-                if (projects.indexOf(n) == 0) {
+                                message.addFancy(ChatColor.GREEN + n + ".", "/project details " + n, "Click for more information about this project").setRunDirect();
 
-                    message.addFancy(ChatColor.GREEN + "\n" + n + ",", "/project details " + n, "Click for more information about this project").setRunDirect();
+                            } else {
+                                message.addFancy(ChatColor.GREEN + n + ",", "/project details " + n, "Click for more information about this project").setRunDirect();
+                            }
 
-                } else if (projects.indexOf(n) == lastindex) {
+                        }
 
-                    message.addFancy(ChatColor.GREEN + n + ".", "/project details " + n, "Click for more information about this project").setRunDirect();
+                        message.send(pl);
 
-                } else {
-                    message.addFancy(ChatColor.GREEN + n + ",", "/project details " + n, "Click for more information about this project").setRunDirect();
+                    }
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
             }
 
-        }
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
     }
 
     public static List<Integer> StringtoListInt(String[] s) {
@@ -394,6 +407,8 @@ public class PluginData {
         }
         return list;
     }
+    
+    
 
     public static List<String> convertListString(String[] s) {
 
@@ -435,26 +450,33 @@ public class PluginData {
             RegionData s = regions.get(name);
 
             if (s.server.equals(Bukkit.getServer().getName())) {
+                if (projectsAll.get(projectsUUID.get(s.idproject)).status != ProjectStatus.FINISHED || projectsAll.get(projectsUUID.get(s.idproject)).status != ProjectStatus.HIDDEN) {
+                    if (s.type.equals("cuboid")) {
+                        DynmapUtil.createMarkeronLoadCuboid(s.name, projectsUUID.get(s.idproject), (CuboidRegion) s.region);
+                    } else {
+                        DynmapUtil.createMarkeronLoad(s.name, projectsUUID.get(s.idproject), (PrismoidRegion) s.region);
+                    }
 
-                if (s.type.equals("cuboid")) {
-                    DynmapUtil.createMarkeronLoadCuboid(s.name, projectsUUID.get(s.idproject), (CuboidRegion) s.region);
-                } else {
-                    DynmapUtil.createMarkeronLoad(s.name, projectsUUID.get(s.idproject), (PrismoidRegion) s.region);
                 }
-
             }
 
         }
 
         for (UUID name : warps.keySet()) {
             WarpData s = warps.get(name);
-            if (s.server.equals(Bukkit.getServer().getName())) {
-                String n = regionsUUID.get(s.idregion).toUpperCase() + " (" + projectsUUID.get(s.idproject).toLowerCase() + ")";
-                DynmapUtil.createMarkerWarp(n, s.location);
+            if (projectsAll.get(projectsUUID.get(s.idproject)).status != ProjectStatus.FINISHED || projectsAll.get(projectsUUID.get(s.idproject)).status != ProjectStatus.HIDDEN) {
+                if (s.server.equals(Bukkit.getServer().getName())) {
+                    String n = regionsUUID.get(s.idregion).toUpperCase() + " (" + projectsUUID.get(s.idproject).toLowerCase() + ")";
+                    DynmapUtil.createMarkerWarp(n, s.location);
 
+                }
             }
         }
+        
+        
 
     }
+    
+  
 
 }

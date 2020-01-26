@@ -9,3 +9,6 @@ commands:
  project:
     aliases: [p,pj,prj]
     description: Command for the Project Plugin
+
+#Copyright (C) 2020 MCME (Fraspace5)
+ 

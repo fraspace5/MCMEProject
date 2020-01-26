@@ -1,19 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.runnables;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectData;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import com.mcmiddleearth.pluginutil.region.Region;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -58,7 +66,7 @@ public class PlayersRunnable {
                                     PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, 1);
                                 }
                                 PluginData.getMin().remove(player);
-                                PluginData.getMin().put(player, Boolean.FALSE);
+                                PluginData.getMin().put(player, false);
                             }
 
                         }
@@ -83,21 +91,7 @@ public class PlayersRunnable {
                 PluginData.setTodayEnd();
             }
 
-        }.runTaskTimer(Mcproject.getPluginInstance(), 60L, 288000L);
-
-    }
-
-    public static void playerOnJoin(final Player pl) {
-
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-
-                PluginData.sendNews(pl);
-            }
-
-        }.runTaskLater(Mcproject.getPluginInstance(), 100L);
+        }.runTaskTimer(Mcproject.getPluginInstance(), 400L, 288000L);
 
     }
 
@@ -117,7 +111,7 @@ public class PlayersRunnable {
 
                     message.addSimple(ChatColor.RED + "You have to update this project: " + ChatColor.BLUE + project);
 
-                    message.addClickable(ChatColor.GREEN + "\n" + "Click here to update", "/project progress percentage time");
+                    message.addClickable(ChatColor.GREEN + "\n" + "Click here to update", "/project progress " + project);
 
                     message.send(p);
 

@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.runnables;
 
@@ -74,11 +85,11 @@ public class SystemRunnable {
                 try {
 
                     if (!PluginData.getTemporaryMinute().isEmpty()) {
-                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data;";
+                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data ;";
 
                         final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
                         StringBuilder ss = new StringBuilder();
-                        ss.append("UPDATE project_data SET minutes= CASE idproject ");
+                        ss.append("UPDATE project_data SET minutes = CASE idproject ");
 
                         for (UUID id : PluginData.getTemporaryMinute().keySet()) {
                             if (r.first()) {
@@ -87,13 +98,13 @@ public class SystemRunnable {
                                     if (UUID.fromString(r.getString("idproject")).equals(id)) {
                                         Integer i = r.getInt("minutes") + PluginData.getTemporaryMinute().get(id);
 
-                                        ss.append("WHEN '" + id.toString() + "' THEN '" + i.toString() + "' ");
+                                        ss.append(" WHEN '" + id.toString() + "' THEN '" + i.toString() + "' ");
                                     }
 
                                 } while (r.next());
                             }
                         }
-                        ss.append("ELSE minutes END");
+                        ss.append(" ELSE minutes END ;");
 
                         Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();
 
@@ -106,7 +117,7 @@ public class SystemRunnable {
 
             }
 
-        }.runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 200L, 2400L);
+        }.runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 200L, 1200L);
 
     }
 
@@ -164,13 +175,17 @@ public class SystemRunnable {
                                 }
                             }
 
-                            ss.append("ELSE blocks END WHERE idproject = " + projectid.toString());
-
+                            ss.append("ELSE blocks END WHERE idproject = " + projectid.toString() + ";");
+                            pp.append("ELSE lastplayed END WHERE idproject = " + projectid.toString() + ";");
                             new BukkitRunnable() {
 
                                 @Override
                                 public void run() {
-                                    pp.append("ELSE blocks END WHERE idproject = " + projectid.toString());
+                                    try {
+                                        Mcproject.getPluginInstance().con.prepareStatement(pp.toString()).executeUpdate();
+                                    } catch (SQLException ex) {
+                                        Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
                                 }
 
                             }.runTaskLaterAsynchronously(Mcproject.getPluginInstance(), 20L);
@@ -202,7 +217,7 @@ public class SystemRunnable {
                                         }
                                     }
 
-                                    ss.append("ELSE blocks END WHERE idproject = " + projectid.toString());
+                                    ss.append("ELSE blocks END WHERE idproject = " + projectid.toString() + " ;");
 
                                     try {
                                         Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();

@@ -1,15 +1,24 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.ProjectData;
-import com.mcme.mcmeproject.data.RegionData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Logger;
 import lombok.Getter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,8 +33,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-import com.mcmiddleearth.pluginutil.region.Region;
-import java.util.UUID;
 
 /**
  *
@@ -40,12 +45,13 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
 
     private final String permission = "project.user";
     private final String permissionStaff = "project.manager";
+    private final String permissionCreate = "project.create";
     private final String permissionOwner = "project.owner";
 
     public ProjectCommandExecutor() {
         addCommandHandler("add", new ProjectAdd(permissionStaff, permissionOwner));
         addCommandHandler("area", new ProjectArea(permissionStaff, permissionOwner));
-        addCommandHandler("create", new ProjectCreate(permissionStaff, permissionOwner));
+        addCommandHandler("create", new ProjectCreate(permissionCreate, permissionOwner));
         addCommandHandler("description", new ProjectDescription(permissionStaff, permissionOwner));
         addCommandHandler("head", new ProjectHead(permissionStaff, permissionOwner));
         addCommandHandler("link", new ProjectLink(permissionStaff, permissionOwner));
@@ -351,7 +357,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 } else if (args[0].equalsIgnoreCase("list")) {
 
                     if (pl.hasPermission("project.manager")) {
-                        List<String> l = Arrays.asList("historic");
+                        List<String> l = Arrays.asList("archive");
                         return l;
 
                     } else {
@@ -399,7 +405,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 List<String> fregion = new ArrayList<>();
                 List<String> fo2 = new ArrayList<>();
 
-                 if (PluginData.projectsAll.containsKey(args[1])) {
+                if (PluginData.projectsAll.containsKey(args[1])) {
                     if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[1]).idproject) && !PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject).isEmpty()) {
                         RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
 

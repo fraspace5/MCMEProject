@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject;
 
@@ -167,12 +178,10 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `link` VARCHAR(100) ,\n"
                                 + "  `time` MEDIUMTEXT ,\n"
                                 + "  `jobs` LONGTEXT ,\n"
+                                + "  `assistants` LONGTEXT ,\n"
                                 + "  `minutes` INT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
-                        final String st4 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`staff_data` (\n"
-                                + "  `staff_uuid` VARCHAR(50) NOT NULL,\n"
-                                + "  `idproject` VARCHAR(45) NOT NULL,\n"
-                                + "  PRIMARY KEY (`staff_uuid`));";
+
                         final String st5 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`people_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
@@ -211,7 +220,7 @@ public class Mcproject extends JavaPlugin implements Listener {
 
                                 try {
                                     con.createStatement().execute(st3);
-                                    con.createStatement().execute(st4);
+                                    con.createStatement().execute(st5);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -226,12 +235,12 @@ public class Mcproject extends JavaPlugin implements Listener {
                             public void run() {
 
                                 try {
-                                    con.createStatement().execute(st5);
+                                    con.createStatement().execute(st6);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 try {
-                                    con.createStatement().execute(st6);
+                                    con.createStatement().execute(st7);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -239,22 +248,6 @@ public class Mcproject extends JavaPlugin implements Listener {
                             }
 
                         }.runTaskLater(Mcproject.getPluginInstance(), 40L);
-
-                        new BukkitRunnable() {
-
-                            @Override
-                            public void run() {
-
-                                try {
-                                    con.createStatement().execute(st7);
-
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-
-                            }
-
-                        }.runTaskLater(Mcproject.getPluginInstance(), 60L);
 
                     } catch (SQLException ex) {
                         Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);

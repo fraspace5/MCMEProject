@@ -1,15 +1,23 @@
-
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
-import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
@@ -58,24 +66,18 @@ public class ProjectDetails extends ProjectCommand {
                     @Override
                     public void run() {
 
-                        new BukkitRunnable() {
+                        try {
+                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = '" + pl.getUniqueId().toString() + "' AND idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                            @Override
-                            public void run() {
-                                try {
-                                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = '" + pl.getUniqueId().toString() + "' AND idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                            final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
-                                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-
-                                    if (!r.first()) {
-                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_data (idproject, player_uuid) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + pl.getUniqueId().toString() + "') ;";
-                                    }
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                            if (!r.first()) {
+                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_data (idproject, player_uuid) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + pl.getUniqueId().toString() + "') ;";
+                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                             }
-
-                        }.runTaskLater(Mcproject.getPluginInstance(), 60L);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
                     }
 
@@ -114,7 +116,7 @@ public class ProjectDetails extends ProjectCommand {
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
-                                            + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
+                                            + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
                                             + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
                                             + ChatColor.GOLD + "~--------------------~"
                                     );
@@ -196,7 +198,7 @@ public class ProjectDetails extends ProjectCommand {
                                             + ChatColor.GOLD + "~--------------------~" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
-                                            + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
+                                            + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
                                             + ChatColor.GOLD + "~--------------------~"
                                     );
 
@@ -210,7 +212,7 @@ public class ProjectDetails extends ProjectCommand {
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
-                                            + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
+                                            + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
                                             + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
                                             + ChatColor.GOLD + "~--------------------~");
 
@@ -223,7 +225,7 @@ public class ProjectDetails extends ProjectCommand {
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
-                                            + ChatColor.GREEN + "Hours of work: " + Math.round(sumMinutes(r2) / 60) + "\n"
+                                            + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
                                             + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
                                             + ChatColor.GOLD + "~--------------------~"
                                     );

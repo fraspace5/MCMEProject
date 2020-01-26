@@ -1,15 +1,26 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,6 +51,7 @@ public class ProjectRemove extends ProjectCommand {
         if (cs instanceof Player) {
             manager = false;
             head = false;
+            Player pl = (Player) cs;
             if (PluginData.projectsAll.containsKey(args[0])) {
                 if (playerPermission(args[0], cs)) {
                     new BukkitRunnable() {
@@ -50,17 +62,18 @@ public class ProjectRemove extends ProjectCommand {
                             try {
                                 OfflinePlayer n = Bukkit.getOfflinePlayer(args[1]);
                                 UUID uuid = n.getUniqueId();
-                                String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject ='" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "' AND staff_uuid ='" + uuid.toString() + "' ;";
+                                ProjectData p = PluginData.getProjectsAll().get(args[0]);
 
-                                final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-
-                                if (!r.first()) {
+                                if (!p.assistants.contains(pl.getUniqueId())) {
 
                                     sendManagerError(cs, args[1], args[0]);
 
                                 } else {
 
-                                    String stat = "DELETE " + Mcproject.getPluginInstance().database + ".staff_data WHERE staff_uuid = '" + uuid.toString() + "' ;";
+                                    final List<UUID> assist = p.assistants;
+
+                                    assist.remove(pl.getUniqueId());
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                     sendManager(cs, args[1]);
 
@@ -86,31 +99,15 @@ public class ProjectRemove extends ProjectCommand {
 
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
-        new BukkitRunnable() {
 
-            @Override
-            public void run() {
-                try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + PluginData.getProjectsAll().get(prr).idproject.toString() + "' AND staff_uuid ='" + pl.getUniqueId().toString() + "' ;";
+        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+            manager = true;
 
-                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+        }
+        if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
+            head = true;
 
-                    if (r.first()) {
-                        manager = true;
-
-                    }
-
-                    if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
-                        head = true;
-
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(ProjectAdd.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-
-        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+        }
 
         if (manager || head || pl.hasPermission("project.owner")) {
             return true;
@@ -118,6 +115,20 @@ public class ProjectRemove extends ProjectCommand {
             sendNoPermission(cs);
             return false;
         }
+
+    }
+
+    public String serialize(List<UUID> intlist) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (UUID s : intlist) {
+
+            builder.append(s.toString() + ";");
+
+        }
+
+        return builder.toString();
 
     }
 

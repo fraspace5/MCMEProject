@@ -1,17 +1,24 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
-import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.ProjectStatus;
-import java.io.IOException;
-import java.sql.Date;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +52,7 @@ public class ProjectCreate extends ProjectCommand {
 
                         try {
 
-                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, updated, status, main, jobs, minutes, endDate) VALUES ('" + PluginData.createId().toString() + "','" + args[0] + "','" + pl.getUniqueId().toString() + "','" + System.currentTimeMillis() + "','0','nothing','" + System.currentTimeMillis() + "',' ','" + System.currentTimeMillis() + "','"+ProjectStatus.HIDDEN.name().toUpperCase()+"','false',' ','0','0') ;";
+                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, updated, status, main, jobs, minutes, endDate) VALUES ('" + PluginData.createId().toString() + "','" + args[0] + "','" + pl.getUniqueId().toString() + "','" + System.currentTimeMillis() + "','0','nothing','" + System.currentTimeMillis() + "',' ','" + System.currentTimeMillis() + "','" + ProjectStatus.HIDDEN.name().toUpperCase() + "','false',' ','0','0') ;";
                             Mcproject.getPluginInstance().con.prepareStatement(stat).execute();
                             //SEND TO OTHER SERVERS
                             sendCreated(cs, args[0]);

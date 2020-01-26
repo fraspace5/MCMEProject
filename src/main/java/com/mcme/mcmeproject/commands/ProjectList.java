@@ -1,12 +1,22 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.data.PluginData;
-import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.NumericUtil;
@@ -27,7 +37,7 @@ public class ProjectList extends ProjectCommand {
     public ProjectList(String... permissionNodes) {
         super(0, true, permissionNodes);
         setShortDescription(": Show the list of project");
-        setUsageDescription(" [#page] <historic>: Show the list of all ongoing projects.Add historic to see everything(Manager)");
+        setUsageDescription(" [#page] <archive>: Show the list of all ongoing projects.Add historic to see everything(Manager)");
     }
 
     @Override

@@ -1,19 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2020 MCME (Fraspace5)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
-import com.mcme.mcmeproject.util.ProjectStatus;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -123,40 +131,40 @@ public class ProjectNews extends ProjectCommand {
 
                                 switch (args[0]) {
                                     case "true":
-                                          new BukkitRunnable() {
+                                        new BukkitRunnable() {
 
-                                                @Override
-                                                public void run() {
+                                            @Override
+                                            public void run() {
 
-                                                    try {
-                                                         String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(true,'"+pl.getUniqueId().toString()+"');";
-                                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-                                                        sendDone(cs);
-                                                    } catch (SQLException ex) {
-                                                        Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
-                                                    }
-
+                                                try {
+                                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(true,'" + pl.getUniqueId().toString() + "');";
+                                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                    sendDone(cs);
+                                                } catch (SQLException ex) {
+                                                    Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
                                                 }
 
-                                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                            }
+
+                                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
                                         break;
                                     case "false":
-                                          new BukkitRunnable() {
+                                        new BukkitRunnable() {
 
-                                                @Override
-                                                public void run() {
+                                            @Override
+                                            public void run() {
 
-                                                    try {
-                                                          String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(false,'"+pl.getUniqueId().toString()+"');";
-                                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-                                                        sendDone(cs);
-                                                    } catch (SQLException ex) {
-                                                        Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
-                                                    }
-
+                                                try {
+                                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(false,'" + pl.getUniqueId().toString() + "');";
+                                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                    sendDone(cs);
+                                                } catch (SQLException ex) {
+                                                    Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
                                                 }
 
-                                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                            }
+
+                                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
                                         break;
 
                                 }
