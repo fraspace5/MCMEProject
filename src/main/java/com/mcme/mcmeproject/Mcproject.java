@@ -86,7 +86,7 @@ public class Mcproject extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new JobListener(), this);
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
-        clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.6 enabled!");
+        clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.7 enabled!");
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
         if (this.isEnabled()) {
 
@@ -101,7 +101,7 @@ public class Mcproject extends JavaPlugin implements Listener {
     public void onDisable() {
 
         clogger.sendMessage(ChatColor.RED + "---------------------------------------");
-        clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.6 disabled!");
+        clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.7 disabled!");
         clogger.sendMessage(ChatColor.RED + "---------------------------------------");
 
     }
