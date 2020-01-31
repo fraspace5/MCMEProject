@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2020 MCME (Fraspace5)
  *
@@ -82,6 +81,7 @@ public class PluginData {
     //regionid, List of playerid
     @Getter
     private static Long time = Mcproject.getPluginInstance().getConfig().getLong("time");
+
     @Getter
     private static Boolean playernotification = Mcproject.getPluginInstance().getConfig().getBoolean("playernotification");
 
@@ -90,12 +90,17 @@ public class PluginData {
     @Setter
     @Getter
     private static Map<UUID, Integer> temporaryMinute = new HashMap<>();
-
     //Player id ,List
     @Setter
     @Getter
     private static Map<UUID, PlayersData> temporaryBlocks = new HashMap<>();
-
+    @Setter
+    @Getter
+    private static Map<UUID, Integer> allblocks = new HashMap<>();
+    @Setter
+    @Getter
+    private static HashMap<String, ProjectStatistics> todayStat = new HashMap<>();
+//projectid, number
     @Setter
     @Getter
     private static Long t;
@@ -286,7 +291,7 @@ public class PluginData {
                     if (r.first()) {
                         do {
 
-                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"),r.getInt("minutes"),convertListString(unserialize(r.getString("assistants")))));
+                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"), r.getInt("minutes"), convertListUUID(unserialize(r.getString("assistants")))));
                             projectsUUID.put(UUID.fromString(r.getString("idproject")), r.getString("name"));
                         } while (r.next());
 
@@ -407,8 +412,6 @@ public class PluginData {
         }
         return list;
     }
-    
-    
 
     public static List<String> convertListString(String[] s) {
 
@@ -416,6 +419,22 @@ public class PluginData {
 
         for (int i = 0; i < s.length; i++) {
             list.add(s[i]);
+        }
+        return list;
+    }
+
+    public static List<UUID> convertListUUID(String[] s) {
+
+        List<UUID> list = new ArrayList();
+
+        for (int i = 0; i < s.length; i++) {
+            try {
+                list.add(UUID.fromString(s[i]));
+
+            } catch (IllegalArgumentException exception) {
+
+            }
+
         }
         return list;
     }
@@ -472,11 +491,7 @@ public class PluginData {
                 }
             }
         }
-        
-        
 
     }
-    
-  
 
 }

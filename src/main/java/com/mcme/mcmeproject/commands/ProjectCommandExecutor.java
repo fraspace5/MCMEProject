@@ -46,6 +46,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
     private final String permission = "project.user";
     private final String permissionStaff = "project.manager";
     private final String permissionCreate = "project.create";
+    private final String permissionReload = "project.reload";
     private final String permissionOwner = "project.owner";
 
     public ProjectCommandExecutor() {
@@ -53,7 +54,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
         addCommandHandler("area", new ProjectArea(permissionStaff, permissionOwner));
         addCommandHandler("create", new ProjectCreate(permissionCreate, permissionOwner));
         addCommandHandler("description", new ProjectDescription(permissionStaff, permissionOwner));
-        addCommandHandler("head", new ProjectHead(permissionStaff, permissionOwner));
+        addCommandHandler("leader", new ProjectLeader(permissionStaff, permissionOwner));
         addCommandHandler("link", new ProjectLink(permissionStaff, permissionOwner));
         addCommandHandler("list", new ProjectList(permission, permissionStaff, permissionOwner));
         addCommandHandler("name", new ProjectName(permissionStaff, permissionOwner));
@@ -61,9 +62,9 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
         addCommandHandler("progress", new ProjectProgress(permissionStaff, permissionOwner));
         addCommandHandler("remove", new ProjectRemove(permissionStaff, permissionOwner));
         addCommandHandler("time", new ProjectTime(permissionStaff, permissionOwner));
-        addCommandHandler("warp", new ProjectWarp(permissionStaff, permissionOwner));
+        addCommandHandler("location", new ProjectLocation(permissionStaff, permissionOwner));
         addCommandHandler("details", new ProjectDetails(permission, permissionStaff, permissionOwner));
-        addCommandHandler("tp", new ProjectTp(permission, permissionStaff, permissionOwner));
+        addCommandHandler("warp", new ProjectWarp(permission, permissionStaff, permissionOwner));
         addCommandHandler("show", new ProjectShow(permissionStaff, permissionOwner));
         addCommandHandler("hide", new ProjectHide(permissionStaff, permissionOwner));
         addCommandHandler("finish", new ProjectFinish(permissionStaff, permissionOwner));
@@ -71,6 +72,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
         addCommandHandler("reopen", new ProjectReopen(permissionStaff, permissionOwner));
         addCommandHandler("main", new ProjectMain(permissionStaff, permissionOwner));
         addCommandHandler("news", new ProjectNews(permission, permissionStaff, permissionOwner));
+        addCommandHandler("reload", new ProjectReload(permissionReload));
     }
 
     @Override
@@ -97,7 +99,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
             Player pl = (Player) sender;
             List<String> arguments = new ArrayList<>();
             arguments.add("list");
-            arguments.add("tp");
+            arguments.add("warp");
             arguments.add("details");
             arguments.add("help");
             arguments.add("news");
@@ -108,14 +110,14 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 arguments.add("create");
                 arguments.add("area");
                 arguments.add("description");
-                arguments.add("head");
+                arguments.add("leader");
                 arguments.add("link");
                 arguments.add("name");
                 arguments.add("percentage");
                 arguments.add("progress");
                 arguments.add("remove");
                 arguments.add("time");
-                arguments.add("warp");
+                arguments.add("location");
                 arguments.add("finish");
                 arguments.add("reopen");
                 arguments.add("main");
@@ -255,7 +257,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                         }
                     }
                     return fproject;
-                } else if (args[0].equalsIgnoreCase("head")) {
+                } else if (args[0].equalsIgnoreCase("leader")) {
                     for (String s : ProjectList) {
                         if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
                             fproject.add(s);
@@ -290,7 +292,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                         }
                     }
                     return fproject;
-                } else if (args[0].equalsIgnoreCase("warp")) {
+                } else if (args[0].equalsIgnoreCase("location")) {
                     for (String s : ProjectList) {
                         if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
                             fproject.add(s);
@@ -304,7 +306,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                         }
                     }
                     return fproject;
-                } else if (args[0].equalsIgnoreCase("tp")) {
+                } else if (args[0].equalsIgnoreCase("warp")) {
                     for (String s : ProjectList) {
                         if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
                             fproject.add(s);
@@ -342,7 +344,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 } else if (args[0].equalsIgnoreCase("remove")) {
 
                     return null;
-                } else if (args[0].equalsIgnoreCase("head")) {
+                } else if (args[0].equalsIgnoreCase("leader")) {
 
                     return null;
                 } else if (args[0].equalsIgnoreCase("link")) {
@@ -366,6 +368,14 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 } else if (args[0].equalsIgnoreCase("time")) {
 
                     return null;
+                } else if (args[0].equalsIgnoreCase("location")) {
+
+                    for (String s : RegionList) {
+                        if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
+                            fregion.add(s);
+                        }
+                    }
+                    return fregion;
                 } else if (args[0].equalsIgnoreCase("warp")) {
 
                     for (String s : RegionList) {

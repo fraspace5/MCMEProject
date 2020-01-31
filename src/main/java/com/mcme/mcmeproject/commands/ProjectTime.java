@@ -50,7 +50,7 @@ public class ProjectTime extends ProjectCommand {
             manager = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
                 if (playerPermission(args[0], cs)) {
-                    setTime(args[1], cs, args[0]);
+                    
 
                     new BukkitRunnable() {
 
@@ -58,10 +58,10 @@ public class ProjectTime extends ProjectCommand {
                         public void run() {
 
                             try {
-                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET time = '" + setTime(args[1], cs, args[0]) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET time = '" + setTime(args[1], cs) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-
+                                PluginData.loadProjects();
                                 sendDone(cs);
                             } catch (SQLException ex) {
                                 Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,10 +82,13 @@ public class ProjectTime extends ProjectCommand {
 
     }
 
-    public Long setTime(String t, CommandSender cs, String nameProject) {
+    public Long setTime(String t, CommandSender cs) {
         String tt = t.substring(0, t.length() - 1);
+        
         if (t.endsWith("y")) {
             Double s = 86400000 * 365 * parseDouble(tt);
+            
+            
             Long r = s.longValue() + System.currentTimeMillis();
             return r;
 
@@ -98,7 +101,7 @@ public class ProjectTime extends ProjectCommand {
 
 //month 31 days
         } else if (t.endsWith("w")) {
-            Double s = 86400000 * (7 * parseDouble(tt));
+            Double s = 86400000 * 7 * parseDouble(tt);
             Long r = s.longValue() + System.currentTimeMillis();
             return r;
 //week 7 days

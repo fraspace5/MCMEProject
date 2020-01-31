@@ -77,7 +77,8 @@ public class ProjectAdd extends ProjectCommand {
                                             final List<UUID> assist = p.assistants;
 
                                             assist.add(pl.getUniqueId());
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String s = serialize(assist);
+                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET assistants = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                             sendManager(cs, args[1]);
@@ -131,13 +132,13 @@ public class ProjectAdd extends ProjectCommand {
     public String serialize(List<UUID> intlist) {
 
         StringBuilder builder = new StringBuilder();
+        if (!intlist.isEmpty()) {
+            for (UUID s : intlist) {
 
-        for (UUID s : intlist) {
+                builder.append(s.toString()).append(";");
 
-            builder.append(s.toString() + ";");
-
+            }
         }
-
         return builder.toString();
 
     }

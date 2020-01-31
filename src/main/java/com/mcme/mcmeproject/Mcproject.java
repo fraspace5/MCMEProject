@@ -158,12 +158,11 @@ public class Mcproject extends JavaPlugin implements Listener {
                     try {
                         String st1 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`news_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
-                                + "  `idproject` VARCHAR(50) NOT NULL,\n"
-                                + "  PRIMARY KEY (`player_uuid`)); ";
+                                + "  `idproject` VARCHAR(50) NOT NULL);";
                         String st2 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`news_bool` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
-                                + "  `bool` TINYINT NOT NULL,\n"
-                                + "  PRIMARY KEY (`player_uuid`)); ";
+                                + "  `bool` TINYINT NOT NULL);";
+
                         final String st3 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`project_data` (\n"
                                 + "  `idproject` VARCHAR(50) NOT NULL,\n"
                                 + "  `name` VARCHAR(80) NOT NULL,\n"
@@ -172,7 +171,7 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `endDate` MEDIUMTEXT,\n"
                                 + "  `status` VARCHAR(45) ,\n"
                                 + "  `description` VARCHAR(200) ,\n"
-                                + "  `main` VARCHAR(45) ,\n"
+                                + "  `main` TINYINT ,\n"
                                 + "  `updated` MEDIUMTEXT NOT NULL,\n"
                                 + "  `percentage` VARCHAR(45) ,\n"
                                 + "  `link` VARCHAR(100) ,\n"
@@ -180,14 +179,13 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `jobs` LONGTEXT ,\n"
                                 + "  `assistants` LONGTEXT ,\n"
                                 + "  `minutes` INT ,\n"
+                                + "  `blocks` INT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
-
                         final String st5 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`people_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  `blocks` MEDIUMTEXT,\n"
-                                + "  `lastplayed` MEDIUMTEXT,\n"
-                                + "  PRIMARY KEY (`player_uuid`));";
+                                + "  `lastplayed` MEDIUMTEXT);";
                         final String st6 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`warps_data` (\n"
                                 + "  `idregion` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NULL,\n"
@@ -209,6 +207,13 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 + "  `location` LONGTEXT NOT NULL,\n"
                                 + "  `server` VARCHAR(100) NOT NULL,\n"
                                 + "  PRIMARY KEY (`idregion`));";
+                        String st8 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`statistics_data` (\n"
+                                + "  `day` VARCHAR(25) ,\n"
+                                + "  `month` VARCHAR(25) ,\n"
+                                + "  `year` VARCHAR(25) ,\n"
+                                + "  `blocks` INT ,\n"
+                                + "  `minutes` INT ,\n"
+                                + "  `players` LONGTEXT );";
 
                         con.createStatement().execute(st1);
                         con.createStatement().execute(st2);
@@ -241,6 +246,11 @@ public class Mcproject extends JavaPlugin implements Listener {
                                 }
                                 try {
                                     con.createStatement().execute(st7);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                try {
+                                    con.createStatement().execute(st8);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -284,8 +294,10 @@ public class Mcproject extends JavaPlugin implements Listener {
         SystemRunnable.startDatabaseRecoveryRunnable();
         PlayersRunnable.AddMinuteRunnable();
         PlayersRunnable.SetTodayUpdatedRunnable();
-        SystemRunnable.variableDataBlocksRunnable();
+        SystemRunnable.PlayersDataBlocksRunnable();
         SystemRunnable.variableDataMinutesRunnable();
+        SystemRunnable.variableDataBlocksRunnable();
+        SystemRunnable.statisticAllRunnable();
 
     }
 

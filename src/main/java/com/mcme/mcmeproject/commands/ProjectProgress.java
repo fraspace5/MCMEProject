@@ -181,25 +181,25 @@ public class ProjectProgress extends ProjectCommand {
         String tt = t.substring(0, t.length() - 1);
         if (t.endsWith("y")) {
             Double s = 86400000 * 365 * parseDouble(tt);
-            Long r = s.longValue() + System.currentTimeMillis();
+            Long r = Math.round(s) + System.currentTimeMillis();
             return r;
 
             //years 365 days
         } else if (t.endsWith("m")) {
             Double s = 86400000 * (31 * parseDouble(tt));
-            Long r = s.longValue() + System.currentTimeMillis();
+            Long r = Math.round(s) + System.currentTimeMillis();
 
             return r;
 
 //month 31 days
         } else if (t.endsWith("w")) {
             Double s = 86400000 * (7 * parseDouble(tt));
-            Long r = s.longValue() + System.currentTimeMillis();
+            Long r = Math.round(s) + System.currentTimeMillis();
             return r;
 //week 7 days
         } else if (t.endsWith("d")) {
             Double s = 86400000 * parseDouble(tt);
-            Long r = s.longValue() + System.currentTimeMillis();
+            Long r = Math.round(s) + System.currentTimeMillis();
             return r;
 
 //days

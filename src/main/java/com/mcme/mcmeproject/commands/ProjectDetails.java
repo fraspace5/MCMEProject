@@ -94,10 +94,8 @@ public class ProjectDetails extends ProjectCommand {
                                     ProjectData pr = PluginData.projectsAll.get(args[0]);
 
                                     String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
-                                    String stat3 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
 
                                     final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
-                                    final ResultSet r3 = Mcproject.getPluginInstance().con.prepareStatement(stat3).executeQuery();
 
                                     Long r = (pr.time - System.currentTimeMillis()) / 1000;
 
@@ -108,27 +106,44 @@ public class ProjectDetails extends ProjectCommand {
 
                                     FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                                     String ps = Bukkit.getOfflinePlayer(pr.head).getName();
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
-                                            + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
-                                            + ChatColor.GOLD + "~--------------------~" + "\n"
-                                            + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
-                                            + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
-                                            + ChatColor.GOLD + "Other statistics:" + "\n"
-                                            + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
-                                            + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
-                                            + ChatColor.GOLD + "~--------------------~"
-                                    );
+                                    if (pr.main) {
+                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server");
+                                        message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n"
+                                                + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                                + ChatColor.GOLD + pr.description + "\n"
+                                                + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
+                                                + ChatColor.GOLD + "+--------------------+" + "\n"
+                                                + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
+                                                + ChatColor.GREEN + "-Extimated Time: " + time(r) + "\n"
+                                                + ChatColor.GOLD + "-Other statistics:" + "\n"
+                                                + ChatColor.GREEN + "-Hours of work: " + Math.round(pr.minutes / 60) + "\n"
+                                                + ChatColor.GREEN + "-People that works on: " + people(r2) + "\n"
+                                                + ChatColor.GOLD + "+--------------------+"
+                                        );
+                                    } else {
+
+                                        message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n"
+                                                + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                                + ChatColor.GOLD + pr.description + "\n"
+                                                + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
+                                                + ChatColor.GOLD + "+--------------------+" + "\n"
+                                                + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
+                                                + ChatColor.GREEN + "-Extimated Time: " + time(r) + "\n"
+                                                + ChatColor.GOLD + "-Other statistics:" + "\n"
+                                                + ChatColor.GREEN + "-Hours of work: " + Math.round(pr.minutes / 60) + "\n"
+                                                + ChatColor.GREEN + "-People that works on: " + people(r2) + "\n"
+                                                + ChatColor.GOLD + "+--------------------+"
+                                        );
+                                    }
                                     jj(pr);
 
                                     if (!jobs.isEmpty()) {
                                         message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
 
-                                        message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                        message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
                                     } else {
                                         message.addSimple(ChatColor.RED + "\n" + "No jobs linked to this project");
-                                        message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                        message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
                                     }
 
                                     for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
@@ -146,7 +161,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                     }
                                     if (!pr.link.equalsIgnoreCase("Nothing")) {
-                                        message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "Forum Thread", pr.link, "Click to go on the forum");
+                                        message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "-Forum Thread", pr.link, "Click to go on the forum");
                                     }
 
                                     messages.add(message);
@@ -175,10 +190,8 @@ public class ProjectDetails extends ProjectCommand {
                                 ProjectData pr = PluginData.projectsAll.get(args[0]);
 
                                 String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
-                                String stat3 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
 
                                 final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
-                                final ResultSet r3 = Mcproject.getPluginInstance().con.prepareStatement(stat3).executeQuery();
 
                                 Long r = (pr.time - System.currentTimeMillis()) / 1000;
 
@@ -190,44 +203,51 @@ public class ProjectDetails extends ProjectCommand {
                                 FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                                 String ps = Bukkit.getOfflinePlayer(pr.head).getName();
                                 if (pr.status.equals(ProjectStatus.FINISHED)) {
-
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + " (Finished)" + "\n"
+                                    if (pr.main) {
+                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server");
+                                    }
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished)" + "\n"
                                             + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
-                                            + ChatColor.GOLD + "~--------------------~" + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
                                             + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
-                                            + ChatColor.GOLD + "~--------------------~"
+                                            + ChatColor.GOLD + "+--------------------+"
                                     );
 
                                 } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
-
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + " (Hidden)" + "\n"
+                                    if (pr.main) {
+                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server");
+                                    }
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden)" + "\n"
                                             + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
-                                            + ChatColor.GOLD + "~--------------------~" + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
                                             + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
                                             + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
-                                            + ChatColor.GOLD + "~--------------------~");
+                                            + ChatColor.GOLD + "+--------------------+");
 
                                 } else {
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name.toUpperCase() + "\n"
+                                    if (pr.main) {
+                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server");
+                                    }
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + "\n"
                                             + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(r3) + "\n"
-                                            + ChatColor.GOLD + "~--------------------~" + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
                                             + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
                                             + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
-                                            + ChatColor.GOLD + "~--------------------~"
+                                            + ChatColor.GOLD + "+--------------------+"
                                     );
                                 }
 
@@ -237,10 +257,10 @@ public class ProjectDetails extends ProjectCommand {
                                     if (!jobs.isEmpty()) {
                                         message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
 
-                                        message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                        message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
                                     } else {
                                         message.addSimple(ChatColor.AQUA + "\n" + "No jobs linked to this project");
-                                        message.addSimple("\n" + ChatColor.GOLD + "~--------------------~");
+                                        message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
                                     }
 
                                     if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[0]).idproject)) {
@@ -315,52 +335,25 @@ public class ProjectDetails extends ProjectCommand {
 
     }
 
-    public static String tt(ResultSet r) throws NullPointerException, SQLException {
-
-        List<String> list = new ArrayList();
-        if (r.first()) {
-            do {
-                OfflinePlayer off = Bukkit.getOfflinePlayer(UUID.fromString(r.getString("staff_uuid")));
-                list.add(off.getName());
-
-            } while (r.next());
-
-        }
+    public static String tt(List<UUID> r) throws NullPointerException, SQLException {
 
         StringBuilder builder = new StringBuilder();
 
-        for (String value : list) {
-            int index = list.size() - 1;
-
-            String val = list.get(index);
+        for (UUID value : r) {
+            int index = r.size() - 1;
+            OfflinePlayer off = Bukkit.getOfflinePlayer(value);
+            UUID val = r.get(index);
             if (!value.equals(val)) {
 
-                builder.append(value + ",");
+                builder.append(off.getName() + ",");
             } else {
-                builder.append(value + " ");
+                builder.append(off.getName() + " ");
             }
 
         }
         String text = builder.toString();
 
         return text;
-
-    }
-
-    public static Integer sumMinutes(ResultSet r) throws SQLException {
-        Integer t = 0;
-
-        if (r.first()) {
-
-            do {
-
-                t += r.getInt("minutes");
-
-            } while (r.next());
-
-        }
-
-        return t;
 
     }
 

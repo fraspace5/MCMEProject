@@ -16,24 +16,27 @@
  */
 package com.mcme.mcmeproject.data;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 /**
  *
  * @author Fraspace5
  */
-public class PlayersData {
+public class ProjectStatistics {
 
-    public static HashMap<UUID, Integer> r;
+    public Integer blocks;
 
-    public static HashMap<UUID, Long> lastplayed;
+    public List<UUID> players;
 
-    public PlayersData(HashMap ss, HashMap<UUID, Long> l) {
+    public Integer min;
 
-        r = ss;
+    public ProjectStatistics(Integer bl, List<UUID> pl, Integer mi) {
 
-        lastplayed = l;
+        blocks = bl;
+        players = pl;
+        min = mi;
+
     }
 
 }

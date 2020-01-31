@@ -32,7 +32,7 @@ public class ProjectData {
 
     public ProjectStatus status;
 
-    public Boolean main;
+    public boolean main;
 
     public String description;
 

@@ -20,8 +20,8 @@ import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PlayersData;
 import com.mcme.mcmeproject.runnables.PlayersRunnable;
 import com.mcme.mcmeproject.data.PluginData;
-import static com.mcme.mcmeproject.data.PluginData.projectsAll;
 import com.mcme.mcmeproject.data.ProjectData;
+import com.mcme.mcmeproject.data.ProjectStatistics;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
@@ -74,18 +74,23 @@ public class PlayerListener implements Listener {
 
                         PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.remove(PluginData.regions.get(region).idproject);
                         PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.put(PluginData.regions.get(region).idproject, l);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed = System.currentTimeMillis();
+                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.remove(PluginData.regions.get(region).idproject);
+                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.put(PluginData.regions.get(region).idproject, System.currentTimeMillis());
+
                     } else {
                         PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.put(PluginData.regions.get(region).idproject, 1);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed = System.currentTimeMillis();
+
+                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.put(PluginData.regions.get(region).idproject, System.currentTimeMillis());
                     }
 
                 } else {
 
                     HashMap<UUID, Integer> r = new HashMap();
+                    HashMap<UUID, Long> s = new HashMap();
+                    s.put(PluginData.regions.get(region).idproject, System.currentTimeMillis());
                     r.put(PluginData.regions.get(region).idproject, 1);
 
-                    PluginData.getTemporaryBlocks().put(pl.getUniqueId(), new PlayersData(r, System.currentTimeMillis()));
+                    PluginData.getTemporaryBlocks().put(pl.getUniqueId(), new PlayersData(r, s));
 
                 }
                 if (PluginData.getMin().containsKey(uuid)) {
@@ -96,6 +101,25 @@ public class PlayerListener implements Listener {
                 } else {
 
                     PluginData.getMin().put(uuid, true);
+                }
+                if (PluginData.getAllblocks().containsKey(uuid)) {
+                    int i = PluginData.getAllblocks().get(uuid) + 1;
+                    PluginData.getAllblocks().remove(uuid);
+                    PluginData.getAllblocks().put(uuid, i);
+
+                } else {
+
+                    PluginData.getAllblocks().put(uuid, 1);
+                }
+
+                if (PluginData.getTodayStat().containsKey("today")) {
+                    PluginData.getTodayStat().get("today").blocks = PluginData.getTodayStat().get("today").blocks + 1;
+
+                } else {
+                    List<UUID> l = new ArrayList();
+
+                    PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0));
+
                 }
 
             }
@@ -124,18 +148,22 @@ public class PlayerListener implements Listener {
 
                         PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.remove(PluginData.regions.get(region).idproject);
                         PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.put(PluginData.regions.get(region).idproject, l);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed = System.currentTimeMillis();
+                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.remove(PluginData.regions.get(region).idproject);
+                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.put(PluginData.regions.get(region).idproject, System.currentTimeMillis());
                     } else {
                         PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.put(PluginData.regions.get(region).idproject, 1);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed = System.currentTimeMillis();
+
+                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.put(PluginData.regions.get(region).idproject, System.currentTimeMillis());
                     }
 
                 } else {
 
                     HashMap<UUID, Integer> r = new HashMap();
                     r.put(PluginData.regions.get(region).idproject, 1);
+                    HashMap<UUID, Long> s = new HashMap();
+                    s.put(PluginData.regions.get(region).idproject, System.currentTimeMillis());
 
-                    PluginData.getTemporaryBlocks().put(pl.getUniqueId(), new PlayersData(r, System.currentTimeMillis()));
+                    PluginData.getTemporaryBlocks().put(pl.getUniqueId(), new PlayersData(r, s));
 
                 }
                 if (PluginData.getMin().containsKey(uuid)) {
@@ -146,6 +174,24 @@ public class PlayerListener implements Listener {
                 } else {
 
                     PluginData.getMin().put(uuid, Boolean.TRUE);
+                }
+                if (PluginData.getAllblocks().containsKey(uuid)) {
+                    int i = PluginData.getAllblocks().get(uuid) + 1;
+                    PluginData.getAllblocks().remove(uuid);
+                    PluginData.getAllblocks().put(uuid, i);
+
+                } else {
+
+                    PluginData.getAllblocks().put(uuid, 1);
+                }
+                if (PluginData.getTodayStat().containsKey("today")) {
+                    PluginData.getTodayStat().get("today").blocks = PluginData.getTodayStat().get("today").blocks + 1;
+
+                } else {
+                    List<UUID> l = new ArrayList();
+
+                    PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0));
+
                 }
 
             }
@@ -214,23 +260,13 @@ public class PlayerListener implements Listener {
 
                 for (String project : PluginData.getToday()) {
 
-                    try {
-                        ProjectData d = PluginData.projectsAll.get(project);
+                    ProjectData d = PluginData.projectsAll.get(project);
 
-                        if (d.head.equals(p.getUniqueId())) {
+                    if (d.head.equals(p.getUniqueId())) {
 
-                            PlayersRunnable.updatedReminderRunnable(project, p, d.updated);
-                        }
-                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".staff_data WHERE idproject = '" + projectsAll.get(project).idproject.toString() + "' AND staff_uuid = '" + p.getUniqueId().toString() + "' ;";
-
-                        final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-
-                        if (r.first()) {
-
-                            PlayersRunnable.updatedReminderRunnable(project, p, d.updated);
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(PlayerListener.class.getName()).log(Level.SEVERE, null, ex);
+                        PlayersRunnable.updatedReminderRunnable(project, p, d.updated);
+                    } else if (d.assistants.contains(p.getUniqueId())) {
+                        PlayersRunnable.updatedReminderRunnable(project, p, d.updated);
                     }
 
                 }

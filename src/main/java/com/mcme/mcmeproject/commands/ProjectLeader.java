@@ -32,9 +32,9 @@ import org.bukkit.scheduler.BukkitRunnable;
  *
  * @author Fraspace5
  */
-public class ProjectHead extends ProjectCommand {
+public class ProjectLeader extends ProjectCommand {
 
-    public ProjectHead(String... permissionNodes) {
+    public ProjectLeader(String... permissionNodes) {
         super(2, true, permissionNodes);
         setShortDescription(": Sets the Head Project");
         setUsageDescription(" <ProjectName> <PlayerName>: Set <PlayerName> as Head project  ");
@@ -68,7 +68,7 @@ public class ProjectHead extends ProjectCommand {
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                         PluginData.loadProjects();
                                     } catch (SQLException ex) {
-                                        Logger.getLogger(ProjectHead.class.getName()).log(Level.SEVERE, null, ex);
+                                        Logger.getLogger(ProjectLeader.class.getName()).log(Level.SEVERE, null, ex);
                                     }
                                 }
 

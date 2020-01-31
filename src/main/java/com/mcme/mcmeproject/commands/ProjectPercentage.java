@@ -61,9 +61,9 @@ public class ProjectPercentage extends ProjectCommand {
                             public void run() {
 
                                 try {
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET percentage = '" + args[1] + "', WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET percentage = '" + args[1] + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-
+                                    PluginData.loadProjects();
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                 }

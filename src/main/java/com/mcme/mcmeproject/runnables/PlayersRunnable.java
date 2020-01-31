@@ -19,9 +19,12 @@ package com.mcme.mcmeproject.runnables;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
+import com.mcme.mcmeproject.data.ProjectStatistics;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import com.mcmiddleearth.pluginutil.region.Region;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -67,6 +70,17 @@ public class PlayersRunnable {
                                 }
                                 PluginData.getMin().remove(player);
                                 PluginData.getMin().put(player, false);
+                                if (PluginData.getTodayStat().containsKey("today")) {
+                                    PluginData.getTodayStat().get("today").min = PluginData.getTodayStat().get("today").min + 1;
+                                    if (!PluginData.getTodayStat().get("today").players.contains(player)) {
+                                        PluginData.getTodayStat().get("today").players.add(player);
+                                    }
+                                } else {
+                                    List<UUID> l = new ArrayList();
+                                    l.add(player);
+                                    PluginData.getTodayStat().put("today", new ProjectStatistics(0, l, 1));
+
+                                }
                             }
 
                         }

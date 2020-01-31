@@ -121,13 +121,13 @@ public class ProjectRemove extends ProjectCommand {
     public String serialize(List<UUID> intlist) {
 
         StringBuilder builder = new StringBuilder();
+        if (!intlist.isEmpty()) {
+            for (UUID s : intlist) {
 
-        for (UUID s : intlist) {
+                builder.append(s.toString() + ";");
 
-            builder.append(s.toString() + ";");
-
+            }
         }
-
         return builder.toString();
 
     }

@@ -52,7 +52,7 @@ public class ProjectCreate extends ProjectCommand {
 
                         try {
 
-                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, updated, status, main, jobs, minutes, endDate) VALUES ('" + PluginData.createId().toString() + "','" + args[0] + "','" + pl.getUniqueId().toString() + "','" + System.currentTimeMillis() + "','0','nothing','" + System.currentTimeMillis() + "',' ','" + System.currentTimeMillis() + "','" + ProjectStatus.HIDDEN.name().toUpperCase() + "','false',' ','0','0') ;";
+                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, updated, status, main, jobs, minutes, endDate, assistants) VALUES ('" + PluginData.createId().toString() + "','" + args[0] + "','" + pl.getUniqueId().toString() + "','" + System.currentTimeMillis() + "','0','nothing','" + System.currentTimeMillis() + "',' ','" + System.currentTimeMillis() + "','" + ProjectStatus.HIDDEN.name().toUpperCase() + "','false',' ','0','0',' ') ;";
                             Mcproject.getPluginInstance().con.prepareStatement(stat).execute();
                             //SEND TO OTHER SERVERS
                             sendCreated(cs, args[0]);
