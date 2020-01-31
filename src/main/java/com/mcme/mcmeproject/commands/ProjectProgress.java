@@ -19,6 +19,7 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import static java.lang.Double.parseDouble;
+import static java.lang.Long.parseLong;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +52,7 @@ public class ProjectProgress extends ProjectCommand {
             head = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
                 if (playerPermission(args[0], cs)) {
+                    Player pl = (Player) cs;
                     try {
                         if (!args[1].equalsIgnoreCase("=") && !args[2].equalsIgnoreCase("=")) {
 
@@ -64,7 +66,7 @@ public class ProjectProgress extends ProjectCommand {
                                     public void run() {
 
                                         try {
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs, args[0]) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
@@ -74,6 +76,7 @@ public class ProjectProgress extends ProjectCommand {
                                             sendDone(cs, args[0]);
                                             PluginData.loadProjects();
                                             PluginData.setTodayEnd();
+                                            Mcproject.getPluginInstance().sendReload(pl, "projects");
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                         }
@@ -92,7 +95,7 @@ public class ProjectProgress extends ProjectCommand {
                                 public void run() {
 
                                     try {
-                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET time = '" + setTime(args[2], cs, args[0]) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET time = '" + setTime(args[2], cs) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
@@ -102,6 +105,7 @@ public class ProjectProgress extends ProjectCommand {
                                         sendDone(cs, args[0]);
                                         PluginData.loadProjects();
                                         PluginData.setTodayEnd();
+                                        Mcproject.getPluginInstance().sendReload(pl, "projects");
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -131,6 +135,7 @@ public class ProjectProgress extends ProjectCommand {
                                             sendDone(cs, args[0]);
                                             PluginData.loadProjects();
                                             PluginData.setTodayEnd();
+                                            Mcproject.getPluginInstance().sendReload(pl, "projects");
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                         }
@@ -177,29 +182,30 @@ public class ProjectProgress extends ProjectCommand {
 
     }
 
-    public Long setTime(String t, CommandSender cs, String nameProject) {
+    public Long setTime(String t, CommandSender cs) {
         String tt = t.substring(0, t.length() - 1);
+
         if (t.endsWith("y")) {
-            Double s = 86400000 * 365 * parseDouble(tt);
-            Long r = Math.round(s) + System.currentTimeMillis();
+
+            Long r = 86400000 * 365 * parseLong(tt) + System.currentTimeMillis();
             return r;
 
             //years 365 days
         } else if (t.endsWith("m")) {
-            Double s = 86400000 * (31 * parseDouble(tt));
-            Long r = Math.round(s) + System.currentTimeMillis();
+
+            Long r = (86400000 * 31 * parseLong(tt)) + System.currentTimeMillis();
 
             return r;
 
 //month 31 days
         } else if (t.endsWith("w")) {
-            Double s = 86400000 * (7 * parseDouble(tt));
-            Long r = Math.round(s) + System.currentTimeMillis();
+
+            Long r = 86400000 * 7 * parseLong(tt) + System.currentTimeMillis();
             return r;
 //week 7 days
         } else if (t.endsWith("d")) {
-            Double s = 86400000 * parseDouble(tt);
-            Long r = Math.round(s) + System.currentTimeMillis();
+
+            Long r = 86400000 * parseLong(tt) + System.currentTimeMillis();
             return r;
 
 //days

@@ -49,6 +49,7 @@ public class ProjectReopen extends ProjectCommand {
             head = false;
             manager = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
+                Player pl = (Player) cs;
                 if (playerPermission(args[0], cs)) {
                     if (PluginData.projectsAll.get(args[0]).status.equals(ProjectStatus.FINISHED)) {
 
@@ -61,7 +62,7 @@ public class ProjectReopen extends ProjectCommand {
                                     String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET status = '" + ProjectStatus.SHOWED.toString() + "', endDate '0' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     PluginData.loadProjects();
-                                    //TODO SERVER LOADING
+                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
                                     sendDone(cs, args[0]);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);

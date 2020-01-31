@@ -36,7 +36,7 @@ public class ProjectWarp extends ProjectCommand {
 
     @Override
     protected void execute(CommandSender cs, String... args) {
-//attenzione, usa quello di eriol che supporta il bungeecord così non ci sono problemi
+
         if (cs instanceof Player) {
             Player pl = (Player) cs;
             if (PluginData.projectsAll.containsKey(args[0])) {

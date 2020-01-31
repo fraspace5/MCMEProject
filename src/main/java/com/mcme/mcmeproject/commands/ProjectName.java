@@ -48,6 +48,7 @@ public class ProjectName extends ProjectCommand {
             manager = false;
             head = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
+                Player pl = (Player) cs;
                 if (playerPermission(args[0], cs)) {
                     if (!args[0].equals(args[1])) {
 
@@ -62,7 +63,7 @@ public class ProjectName extends ProjectCommand {
                                     String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET name = '" + args[1] + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     PluginData.loadProjects();
-                                    //TODO SERVER LOADING
+                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
 
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
@@ -88,7 +89,7 @@ public class ProjectName extends ProjectCommand {
 
     }
 
-   public boolean playerPermission(final String prr, CommandSender cs) {
+    public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
         if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {

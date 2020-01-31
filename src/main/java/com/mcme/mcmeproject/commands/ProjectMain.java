@@ -53,6 +53,7 @@ public class ProjectMain extends ProjectCommand {
             manager = false;
             head = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
+                Player pl = (Player) cs;
                 if (playerPermission(args[0], cs)) {
 
                     ProjectData pr = PluginData.projectsAll.get(args[0]);
@@ -92,7 +93,7 @@ public class ProjectMain extends ProjectCommand {
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     sendDone(cs, args[0]);
                                     PluginData.loadProjects();
-                                    //TODO SERVER LOADING
+                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                 }

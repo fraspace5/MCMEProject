@@ -19,6 +19,7 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import static java.lang.Double.parseDouble;
+import static java.lang.Long.parseLong;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,8 +50,8 @@ public class ProjectTime extends ProjectCommand {
             head = false;
             manager = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
+                Player pl = (Player) cs;
                 if (playerPermission(args[0], cs)) {
-                    
 
                     new BukkitRunnable() {
 
@@ -62,6 +63,7 @@ public class ProjectTime extends ProjectCommand {
 
                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                 PluginData.loadProjects();
+                                Mcproject.getPluginInstance().sendReload(pl, "projects");
                                 sendDone(cs);
                             } catch (SQLException ex) {
                                 Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
@@ -84,30 +86,28 @@ public class ProjectTime extends ProjectCommand {
 
     public Long setTime(String t, CommandSender cs) {
         String tt = t.substring(0, t.length() - 1);
-        
+
         if (t.endsWith("y")) {
-            Double s = 86400000 * 365 * parseDouble(tt);
-            
-            
-            Long r = s.longValue() + System.currentTimeMillis();
+
+            Long r = 86400000 * 365 * parseLong(tt) + System.currentTimeMillis();
             return r;
 
             //years 365 days
         } else if (t.endsWith("m")) {
-            Double s = 86400000 * (31 * parseDouble(tt));
-            Long r = s.longValue() + System.currentTimeMillis();
+
+            Long r = (86400000 * 31 * parseLong(tt)) + System.currentTimeMillis();
 
             return r;
 
 //month 31 days
         } else if (t.endsWith("w")) {
-            Double s = 86400000 * 7 * parseDouble(tt);
-            Long r = s.longValue() + System.currentTimeMillis();
+
+            Long r = 86400000 * 7 * parseLong(tt) + System.currentTimeMillis();
             return r;
 //week 7 days
         } else if (t.endsWith("d")) {
-            Double s = 86400000 * parseDouble(tt);
-            Long r = s.longValue() + System.currentTimeMillis();
+
+            Long r = 86400000 * parseLong(tt) + System.currentTimeMillis();
             return r;
 
 //days

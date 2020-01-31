@@ -16,6 +16,9 @@
  */
 package com.mcme.mcmeproject;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.mcme.mcmeproject.commands.ProjectCommandExecutor;
 import com.mcme.mcmeproject.runnables.PlayersRunnable;
 import com.mcme.mcmeproject.data.PluginData;
@@ -24,6 +27,11 @@ import com.mcme.mcmeproject.listener.JobListener;
 import com.mcme.mcmeproject.listener.PlayerListener;
 import com.mcme.mcmeproject.runnables.SystemRunnable;
 import com.mcme.mcmeproject.util.UpdaterCheck;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,15 +42,17 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
  * @author Fraspace5
  */
-public class Mcproject extends JavaPlugin implements Listener {
+public class Mcproject extends JavaPlugin implements Listener, PluginMessageListener {
 
     static final Logger Logger = Bukkit.getLogger();
     @Getter
@@ -60,6 +70,8 @@ public class Mcproject extends JavaPlugin implements Listener {
     String username = this.getConfig().getString("username");
     @Getter
     String password = this.getConfig().getString("password");
+    @Getter
+    public String nameserver = this.getConfig().getString("nameserver");
 
     private void checkUpdate() {
         final UpdaterCheck updater = new UpdaterCheck(this);
@@ -80,19 +92,25 @@ public class Mcproject extends JavaPlugin implements Listener {
             Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
             Bukkit.getPluginManager().disablePlugin(this);
         }
+        if (nameserver == "default") {
 
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
         getCommand("project").setExecutor(new ProjectCommandExecutor());
         getCommand("project").setTabCompleter(new ProjectCommandExecutor());
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "mcme_project");
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "mcme_project", this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new JobListener(), this);
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
-        clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.7 enabled!");
+        clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v" + this.getDescription().getVersion() + " enabled!");
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
         if (this.isEnabled()) {
 
             onStart();
             checkUpdate();
             ConnectionRunnable();
+
         }
 
     }
@@ -101,10 +119,176 @@ public class Mcproject extends JavaPlugin implements Listener {
     public void onDisable() {
 
         clogger.sendMessage(ChatColor.RED + "---------------------------------------");
-        clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v2.7 disabled!");
+        clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v" + this.getDescription().getVersion() + " disabled!");
         clogger.sendMessage(ChatColor.RED + "---------------------------------------");
 
     }
+
+    @Override
+    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+        if (!channel.equals("BungeeCord")) {
+            return;
+        }
+        ByteArrayDataInput in = ByteStreams.newDataInput(message);
+        String subchannel = in.readUTF();
+
+        if (subchannel.equals("reload")) {
+            try {
+                short len = in.readShort();
+                byte[] msgbytes = new byte[len];
+                in.readFully(msgbytes);
+                DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+                String somedata = msgin.readUTF(); // Read the data in the same way you wrote it
+
+                switch (somedata) {
+
+                    case "all":
+                        PluginData.loadProjects();
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+                                PluginData.loadRegions();
+                                new BukkitRunnable() {
+
+                                    @Override
+                                    public void run() {
+                                        PluginData.loadWarps();
+                                        new BukkitRunnable() {
+
+                                            @Override
+                                            public void run() {
+                                                PluginData.loadAllDynmap();
+
+                                            }
+
+                                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                                    }
+
+                                }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                            }
+
+                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+
+                        break;
+                    case "map":
+                        PluginData.loadAllDynmap();
+                        break;
+                    case "regions":
+                        PluginData.loadRegions();
+                        break;
+                    case "warps":
+                        PluginData.loadWarps();
+                        break;
+                    case "projects":
+                        PluginData.loadProjects();
+                        break;
+                    default:
+                        PluginData.loadProjects();
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+                                PluginData.loadRegions();
+                                new BukkitRunnable() {
+
+                                    @Override
+                                    public void run() {
+                                        PluginData.loadWarps();
+                                        new BukkitRunnable() {
+
+                                            @Override
+                                            public void run() {
+                                                PluginData.loadAllDynmap();
+
+                                            }
+
+                                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                                    }
+
+                                }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                            }
+
+                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                        break;
+
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+
+    }
+
+    public void sendReload(Player player, String s) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+
+        out.writeUTF("Forward"); // So BungeeCord knows to forward it
+        out.writeUTF("ALL");
+        out.writeUTF("reload"); // The channel name to check if this your data
+
+        ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
+        DataOutputStream msgout = new DataOutputStream(msgbytes);
+        switch (s) {
+
+            case "all":
+                try {
+                msgout.writeUTF("all"); // You can do anything you want with msgout
+
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            break;
+            case "map":
+                try {
+                msgout.writeUTF("map");
+
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            break;
+            case "regions":
+                try {
+                msgout.writeUTF("regions");
+
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            break;
+            case "warps":
+                try {
+                msgout.writeUTF("warps");
+
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            break;
+            case "projects":
+                try {
+                msgout.writeUTF("projects"); // You can do anything you want with msgout
+
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            break;
+            default:
+                 try {
+                msgout.writeUTF("all"); // You can do anything you want with msgout
+
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            break;
+
+        }
+
+        out.writeShort(msgbytes.toByteArray().length);
+        out.write(msgbytes.toByteArray());
+
+        player.sendPluginMessage(this, "mcme_project", out.toByteArray());
+    }
+
 
     /*
      public void onInitiateFile() throws IOException {

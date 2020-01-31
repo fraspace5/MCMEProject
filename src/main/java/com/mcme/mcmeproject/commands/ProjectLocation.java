@@ -52,6 +52,7 @@ public class ProjectLocation extends ProjectCommand {
             head = false;
             manager = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
+
                 if (playerPermission(args[0], cs)) {
                     if (PluginData.regions.containsKey(args[1]) && PluginData.regions.get(args[1]).idproject.equals(PluginData.projectsAll.get(args[0]).idproject)) {
                         if (PluginData.regions.get(args[1]).isInside(loc)) {
@@ -70,10 +71,10 @@ public class ProjectLocation extends ProjectCommand {
                                             DynmapUtil.deleteWarp(n);
                                         }
 
-                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Bukkit.getServer().getName() + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
+                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                         PluginData.loadWarps();
-                                        //TODO SERVER LOADING
+                                        Mcproject.getPluginInstance().sendReload(pl, "warps");
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -83,7 +84,8 @@ public class ProjectLocation extends ProjectCommand {
                             }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
                             DynmapUtil.createMarkerWarp(n, loc);
-
+                            PluginData.loadAllDynmap();
+                            Mcproject.getPluginInstance().sendReload(pl, "map");
                             sendDone(cs);
 
                         } else {

@@ -48,6 +48,7 @@ public class ProjectPercentage extends ProjectCommand {
             manager = false;
             head = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
+                Player pl = (Player) cs;
                 if (playerPermission(args[0], cs)) {
                     if (parseDouble(args[1]) > 100.0) {
 
@@ -64,6 +65,7 @@ public class ProjectPercentage extends ProjectCommand {
                                     String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET percentage = '" + args[1] + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     PluginData.loadProjects();
+                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                 }

@@ -59,6 +59,8 @@ public class ProjectDescription extends ProjectCommand {
 
     private boolean head;
 
+    private Player pl;
+
     @Override
     protected void execute(CommandSender cs, String... args) {
 
@@ -67,8 +69,10 @@ public class ProjectDescription extends ProjectCommand {
             head = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
                 if (playerPermission(args[0], cs)) {
+                    Player pp = (Player) cs;
                     name = args[0];
                     conversationFactory.buildConversation((Conversable) cs).begin();
+                    pl = pp;
                 }
 
             } else {
@@ -116,6 +120,7 @@ public class ProjectDescription extends ProjectCommand {
                         String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET description = '" + description + "' WHERE idproject = '" + PluginData.projectsAll.get(name).idproject.toString() + "' ;";
                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                         PluginData.loadProjects();
+                        Mcproject.getPluginInstance().sendReload(pl, "projects");
                     } catch (SQLException ex) {
                         Logger.getLogger(ProjectDescription.class.getName()).log(Level.SEVERE, null, ex);
                     }

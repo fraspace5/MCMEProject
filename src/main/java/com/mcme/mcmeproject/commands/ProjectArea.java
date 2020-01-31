@@ -81,12 +81,13 @@ public class ProjectArea extends ProjectCommand {
                                             try {
                                                 PrismoidRegion r = new PrismoidRegion(loc, (com.sk89q.worldedit.regions.Polygonal2DRegion) weRegion);
 
-                                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Bukkit.getServer().getName() + "' ) ;";
+                                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
                                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                 PluginData.loadRegions();
                                                 PluginData.loadWarps();
+                                                Mcproject.getPluginInstance().sendReload(pl, "regions");
+                                                Mcproject.getPluginInstance().sendReload(pl, "warps");
 
-                                                //TODO SERVER LOADING
                                             } catch (SQLException ex) {
                                                 Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                             }
@@ -114,12 +115,13 @@ public class ProjectArea extends ProjectCommand {
                                                 Vector minCorner = r.getMinCorner();
                                                 Vector maxCorner = r.getMaxCorner();
 
-                                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Bukkit.getServer().getName() + "' ) ;";
+                                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
                                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                 PluginData.loadRegions();
                                                 PluginData.loadWarps();
+                                                Mcproject.getPluginInstance().sendReload(pl, "regions");
+                                                Mcproject.getPluginInstance().sendReload(pl, "warps");
 
-                                                //TODO SERVER LOADING
                                             } catch (SQLException ex) {
                                                 Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                             }
@@ -158,12 +160,13 @@ public class ProjectArea extends ProjectCommand {
                                         try {
                                             PrismoidRegion r = new PrismoidRegion(loc, (com.sk89q.worldedit.regions.Polygonal2DRegion) weRegion);
 
-                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Bukkit.getServer().getName() + "' ) ;";
+                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();
 
-                                            //TODO SERVER LOADING
+                                            Mcproject.getPluginInstance().sendReload(pl, "regions");
+                                            Mcproject.getPluginInstance().sendReload(pl, "warps");
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                         }
@@ -191,12 +194,15 @@ public class ProjectArea extends ProjectCommand {
                                             Vector minCorner = r.getMinCorner();
                                             Vector maxCorner = r.getMaxCorner();
 
-                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Bukkit.getServer().getName() + "' ) ;";
+                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES"
+                                                    + " ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','"
+                                                    + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();
 
-                                            //TODO SERVER LOADING
+                                            Mcproject.getPluginInstance().sendReload(pl, "regions");
+                                            Mcproject.getPluginInstance().sendReload(pl, "warps");
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                         }
@@ -233,7 +239,8 @@ public class ProjectArea extends ProjectCommand {
                                             Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate();
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();
-
+                                            Mcproject.getPluginInstance().sendReload(pl, "regions");
+                                            Mcproject.getPluginInstance().sendReload(pl, "warps");
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectArea.class.getName()).log(Level.SEVERE, null, ex);
                                         }
@@ -245,6 +252,9 @@ public class ProjectArea extends ProjectCommand {
                                     DynmapUtil.removeMarker(args[2]);
                                     String n = args[2].toUpperCase() + " (" + args[0].toLowerCase() + ")" + ".marker";
                                     DynmapUtil.deleteWarp(n);
+                                    PluginData.loadAllDynmap();
+                                    Mcproject.getPluginInstance().sendReload(pl, "map");
+
                                     sendDel(cs);
                                 } catch (NullPointerException e) {
                                 }

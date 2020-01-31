@@ -76,6 +76,8 @@ public class ProjectRemove extends ProjectCommand {
                                     String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                     sendManager(cs, args[1]);
+                                    PluginData.loadProjects();
+                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
 
                                 }
                             } catch (SQLException ex) {

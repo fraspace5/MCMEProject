@@ -81,6 +81,9 @@ public class ProjectAdd extends ProjectCommand {
                                             String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET assistants = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
+                                            
+                                            PluginData.loadProjects();
+                                            Mcproject.getPluginInstance().sendReload(pl, "projects");
                                             sendManager(cs, args[1]);
                                         }
 

@@ -51,6 +51,7 @@ public class ProjectLeader extends ProjectCommand {
             head = false;
             manager = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
+                Player pl = (Player) cs;
                 if (playerPermission(args[0], cs)) {
                     try {
                         if (Bukkit.getOfflinePlayer(args[1]).hasPlayedBefore()) {
@@ -67,6 +68,7 @@ public class ProjectLeader extends ProjectCommand {
                                         String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET staff_uuid = '" + uuid.toString() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                         PluginData.loadProjects();
+                                        Mcproject.getPluginInstance().sendReload(pl, "projects");
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectLeader.class.getName()).log(Level.SEVERE, null, ex);
                                     }

@@ -48,6 +48,7 @@ public class ProjectFinish extends ProjectCommand {
             head = false;
             manager = false;
             if (PluginData.projectsAll.containsKey(args[0])) {
+                Player pl = (Player) cs;
                 if (playerPermission(args[0], cs)) {
                     if (PluginData.getProjectsAll().get(args[0]).status.equals(ProjectStatus.FINISHED)) {
 
@@ -64,7 +65,7 @@ public class ProjectFinish extends ProjectCommand {
                                     String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET status = '" + ProjectStatus.FINISHED.toString() + "', main = false, endDate = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     PluginData.loadProjects();
-                                    //TODO SERVER LOADING
+                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                 }
