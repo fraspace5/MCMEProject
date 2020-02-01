@@ -16,12 +16,13 @@
  */
 package com.mcme.mcmeproject.commands;
 
-import com.boydti.fawe.object.FawePlayer;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.util.DynmapUtil;
 import com.mcmiddleearth.pluginutil.region.CuboidRegion;
 import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
+import com.sk89q.worldedit.IncompleteRegionException;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
 import java.sql.SQLException;
@@ -66,7 +67,13 @@ public class ProjectArea extends ProjectCommand {
 
                         if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[0]).idproject)) {
                             if (!PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject).contains(args[2])) {
-                                weRegion = FawePlayer.wrap(pl).getSelection();
+                                WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+
+                                try {
+                                    weRegion = worldEdit.getSession(pl).getSelection(worldEdit.getSession(pl).getSelectionWorld());
+                                } catch (IncompleteRegionException ex) {
+                                    Logger.getLogger(ProjectArea.class.getName()).log(Level.SEVERE, null, ex);
+                                }
 
                                 if (!(weRegion instanceof com.sk89q.worldedit.regions.CuboidRegion || weRegion instanceof Polygonal2DRegion)) {
                                     sendInvalidSelection(pl);
@@ -145,7 +152,13 @@ public class ProjectArea extends ProjectCommand {
                             }
                         } else {
 
-                            weRegion = FawePlayer.wrap(pl).getSelection();
+                            WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
+
+                            try {
+                                weRegion = worldEdit.getSession(pl).getSelection(worldEdit.getSession(pl).getSelectionWorld());
+                            } catch (IncompleteRegionException ex) {
+                                Logger.getLogger(ProjectArea.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 
                             if (!(weRegion instanceof com.sk89q.worldedit.regions.CuboidRegion || weRegion instanceof Polygonal2DRegion)) {
                                 sendInvalidSelection(pl);

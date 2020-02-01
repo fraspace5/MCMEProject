@@ -19,7 +19,7 @@ package com.mcme.mcmeproject.util;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
-import com.sk89q.worldedit.BlockVector2D;
+import com.sk89q.worldedit.math.BlockVector2;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
 import java.util.logging.Level;
@@ -285,7 +285,7 @@ public class DynmapUtil {
         if (region instanceof Polygonal2DRegion) {
             double[] result = new double[((Polygonal2DRegion) region).getPoints().size()];
             for (int i = 0; i < result.length; i++) {
-                BlockVector2D vector = ((Polygonal2DRegion) region).getPoints().get(i).toBlockVector2D();
+                BlockVector2 vector = ((Polygonal2DRegion) region).getPoints().get(i);
                 result[i] = vector.getX();
             }
             return result;
@@ -320,7 +320,7 @@ public class DynmapUtil {
         if (region instanceof Polygonal2DRegion) {
             double[] result = new double[((Polygonal2DRegion) region).getPoints().size()];
             for (int i = 0; i < result.length; i++) {
-                BlockVector2D vector = ((Polygonal2DRegion) region).getPoints().get(i);
+                BlockVector2 vector = ((Polygonal2DRegion) region).getPoints().get(i);
                 result[i] = vector.getZ();
             }
             return result;
