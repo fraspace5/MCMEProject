@@ -27,6 +27,7 @@ import com.mcme.mcmeproject.listener.JobListener;
 import com.mcme.mcmeproject.listener.PlayerListener;
 import com.mcme.mcmeproject.runnables.SystemRunnable;
 import com.mcme.mcmeproject.util.UpdaterCheck;
+import com.mcmiddleearth.thegaffer.ext.ExternalProjectHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -35,7 +36,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
@@ -52,7 +55,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  *
  * @author Fraspace5
  */
-public class Mcproject extends JavaPlugin implements Listener, PluginMessageListener {
+public class Mcproject extends JavaPlugin implements Listener, PluginMessageListener, ExternalProjectHandler {
 
     static final Logger Logger = Bukkit.getLogger();
     @Getter
@@ -450,6 +453,10 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
             }.runTaskAsynchronously(Mcproject.getPluginInstance());
         }
 
+    }
+
+    public Set<String> getProjectNames() {
+        return PluginData.getProjectsAll().keySet();
     }
 
     public void ConnectionRunnable() {
