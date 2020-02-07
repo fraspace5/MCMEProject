@@ -101,8 +101,8 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         }
         getCommand("project").setExecutor(new ProjectCommandExecutor());
         getCommand("project").setTabCompleter(new ProjectCommandExecutor());
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "mcme_project");
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "mcme_project", this);
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "mcme:project");
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "mcme:project", this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new JobListener(), this);
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
@@ -129,7 +129,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (!channel.equals("BungeeCord")) {
+        if (!channel.equals("mcme:project")) {
             return;
         }
         ByteArrayDataInput in = ByteStreams.newDataInput(message);
@@ -289,7 +289,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
 
-        player.sendPluginMessage(this, "mcme_project", out.toByteArray());
+        player.sendPluginMessage(this, "mcme:project", out.toByteArray());
     }
 
 
