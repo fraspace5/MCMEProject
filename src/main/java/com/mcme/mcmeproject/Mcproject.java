@@ -343,14 +343,14 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                 @Override
                 public void run() {
                     try {
-                        String st1 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`news_data` (\n"
+                        String st1 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`news_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(50) NOT NULL);";
-                        String st2 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`news_bool` (\n"
+                        String st2 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`news_bool` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `bool` TINYINT NOT NULL);";
 
-                        final String st3 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`project_data` (\n"
+                        final String st3 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`project_data` (\n"
                                 + "  `idproject` VARCHAR(50) NOT NULL,\n"
                                 + "  `name` VARCHAR(80) NOT NULL,\n"
                                 + "  `staff_uuid` VARCHAR(45) NOT NULL,\n"
@@ -368,12 +368,12 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `minutes` INT ,\n"
                                 + "  `blocks` INT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
-                        final String st5 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`people_data` (\n"
+                        final String st5 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`people_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  `blocks` MEDIUMTEXT,\n"
                                 + "  `lastplayed` MEDIUMTEXT);";
-                        final String st6 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`warps_data` (\n"
+                        final String st6 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`warps_data` (\n"
                                 + "  `idregion` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(45) NULL,\n"
                                 + "  `world` VARCHAR(100) NOT NULL,\n"
@@ -382,7 +382,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `y` FLOAT NOT NULL,\n"
                                 + "  `z` FLOAT NOT NULL,\n"
                                 + "  PRIMARY KEY (`idregion`));";
-                        final String st7 = "CREATE TABLE IF NOT EXISTS`mcmeproject_data`.`regions_data` (\n"
+                        final String st7 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`regions_data` (\n"
                                 + "  `idproject` VARCHAR(45) NOT NULL,\n"
                                 + "  `idregion` VARCHAR(45) NOT NULL,\n"
                                 + "  `name` VARCHAR(45) NOT NULL,\n"
@@ -394,7 +394,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `location` LONGTEXT NOT NULL,\n"
                                 + "  `server` VARCHAR(100) NOT NULL,\n"
                                 + "  PRIMARY KEY (`idregion`));";
-                        String st8 = "CREATE TABLE IF NOT EXISTS `mcmeproject_data`.`statistics_data` (\n"
+                        String st8 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`statistics_data` (\n"
                                 + "  `day` VARCHAR(25) ,\n"
                                 + "  `month` VARCHAR(25) ,\n"
                                 + "  `year` VARCHAR(25) ,\n"
