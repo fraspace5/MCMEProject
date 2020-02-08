@@ -70,7 +70,7 @@ public class ProjectMain extends ProjectCommand {
                                 public void run() {
 
                                     try {
-                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET main = false WHERE idproject = '" + p.idproject.toString() + "' ;";
+                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET main = false WHERE idproject = '" + p.idproject.toString() + "' ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
                                     } catch (SQLException ex) {
@@ -89,7 +89,7 @@ public class ProjectMain extends ProjectCommand {
                             public void run() {
 
                                 try {
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET main = true WHERE idproject = '" + pr.idproject.toString() + "' ;";
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET main = true WHERE idproject = '" + pr.idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     sendDone(cs, args[0]);
                                     PluginData.loadProjects();

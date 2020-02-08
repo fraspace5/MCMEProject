@@ -78,7 +78,7 @@ public class ProjectAdd extends ProjectCommand {
 
                                             assist.add(pl.getUniqueId());
                                             String s = serialize(assist);
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET assistants = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET assistants = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                             

@@ -117,7 +117,7 @@ public class ProjectDescription extends ProjectCommand {
                 public void run() {
 
                     try {
-                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET description = '" + description + "' WHERE idproject = '" + PluginData.projectsAll.get(name).idproject.toString() + "' ;";
+                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET description = '" + description + "' WHERE idproject = '" + PluginData.projectsAll.get(name).idproject.toString() + "' ;";
                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                         PluginData.loadProjects();
                         Mcproject.getPluginInstance().sendReload(pl, "projects");

@@ -51,7 +51,7 @@ public class ProjectNews extends ProjectCommand {
                     public void run() {
 
                         try {
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_bool WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
                             final ResultSet r = Mcproject.getPluginInstance().con.createStatement().executeQuery(statement);
 
                             if (r.first()) {
@@ -65,7 +65,7 @@ public class ProjectNews extends ProjectCommand {
                                                 public void run() {
 
                                                     try {
-                                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".news_bool SET bool = true WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool SET bool = true WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
                                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                     } catch (SQLException ex) {
                                                         Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,7 +91,7 @@ public class ProjectNews extends ProjectCommand {
                                                 public void run() {
 
                                                     try {
-                                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".news_bool SET bool = false WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool SET bool = false WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
                                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                     } catch (SQLException ex) {
                                                         Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
@@ -113,7 +113,7 @@ public class ProjectNews extends ProjectCommand {
                                             public void run() {
 
                                                 try {
-                                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".news_bool SET bool = false WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool SET bool = false WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
                                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                 } catch (SQLException ex) {
                                                     Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
@@ -137,7 +137,7 @@ public class ProjectNews extends ProjectCommand {
                                             public void run() {
 
                                                 try {
-                                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(true,'" + pl.getUniqueId().toString() + "');";
+                                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool (bool, player_uuid) VALUES(true,'" + pl.getUniqueId().toString() + "');";
                                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                     sendDone(cs);
                                                 } catch (SQLException ex) {
@@ -155,7 +155,7 @@ public class ProjectNews extends ProjectCommand {
                                             public void run() {
 
                                                 try {
-                                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES(false,'" + pl.getUniqueId().toString() + "');";
+                                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool (bool, player_uuid) VALUES(false,'" + pl.getUniqueId().toString() + "');";
                                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                     sendDone(cs);
                                                 } catch (SQLException ex) {

@@ -211,7 +211,7 @@ public class PlayerListener implements Listener {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_bool WHERE player_uuid = '" + p.getUniqueId().toString() + "' ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool WHERE player_uuid = '" + p.getUniqueId().toString() + "' ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
                     if (PluginData.getPlayernotification()) {
@@ -231,7 +231,7 @@ public class PlayerListener implements Listener {
 
                         } else {
 
-                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_bool (bool, player_uuid) VALUES (true,'" + p.getUniqueId().toString() + "') ; ";
+                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool (bool, player_uuid) VALUES (true,'" + p.getUniqueId().toString() + "') ; ";
                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                             new BukkitRunnable() {
 

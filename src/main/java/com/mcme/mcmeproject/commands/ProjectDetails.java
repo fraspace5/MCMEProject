@@ -67,12 +67,12 @@ public class ProjectDetails extends ProjectCommand {
                     public void run() {
 
                         try {
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = '" + pl.getUniqueId().toString() + "' AND idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE player_uuid = '" + pl.getUniqueId().toString() + "' AND idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                             final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
                             if (!r.first()) {
-                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".news_data (idproject, player_uuid) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + pl.getUniqueId().toString() + "') ;";
+                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data (idproject, player_uuid) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + pl.getUniqueId().toString() + "') ;";
                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                             }
                         } catch (SQLException ex) {
@@ -93,7 +93,7 @@ public class ProjectDetails extends ProjectCommand {
                                 try {
                                     ProjectData pr = PluginData.projectsAll.get(args[0]);
 
-                                    String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
+                                    String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
 
                                     final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
 
@@ -189,7 +189,7 @@ public class ProjectDetails extends ProjectCommand {
                             try {
                                 ProjectData pr = PluginData.projectsAll.get(args[0]);
 
-                                String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
+                                String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
 
                                 final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
 

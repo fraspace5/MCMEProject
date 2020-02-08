@@ -88,7 +88,7 @@ public class ProjectArea extends ProjectCommand {
                                             try {
                                                 PrismoidRegion r = new PrismoidRegion(loc, (com.sk89q.worldedit.regions.Polygonal2DRegion) weRegion);
 
-                                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
+                                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
                                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                 PluginData.loadRegions();
                                                 PluginData.loadWarps();
@@ -122,7 +122,7 @@ public class ProjectArea extends ProjectCommand {
                                                 Vector minCorner = r.getMinCorner();
                                                 Vector maxCorner = r.getMaxCorner();
 
-                                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
+                                                String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
                                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                                 PluginData.loadRegions();
                                                 PluginData.loadWarps();
@@ -173,7 +173,7 @@ public class ProjectArea extends ProjectCommand {
                                         try {
                                             PrismoidRegion r = new PrismoidRegion(loc, (com.sk89q.worldedit.regions.Polygonal2DRegion) weRegion);
 
-                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
+                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();
@@ -207,7 +207,7 @@ public class ProjectArea extends ProjectCommand {
                                             Vector minCorner = r.getMinCorner();
                                             Vector maxCorner = r.getMaxCorner();
 
-                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES"
+                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server ) VALUES"
                                                     + " ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','"
                                                     + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getUID().toString() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "' ) ;";
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
@@ -245,10 +245,10 @@ public class ProjectArea extends ProjectCommand {
                                     public void run() {
 
                                         try {
-                                            String stat = "DELETE " + Mcproject.getPluginInstance().database + ".regions_data WHERE idregion = '" + PluginData.regions.get(args[2]).idr.toString() + "' ;";
+                                            String stat = "DELETE " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data WHERE idregion = '" + PluginData.regions.get(args[2]).idr.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
-                                            String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".warps_data WHERE idregion = '" + PluginData.regions.get(args[2]).idr.toString() + "' ;";
+                                            String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data WHERE idregion = '" + PluginData.regions.get(args[2]).idr.toString() + "' ;";
                                             Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate();
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();

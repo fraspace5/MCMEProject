@@ -73,7 +73,7 @@ public class ProjectRemove extends ProjectCommand {
                                     final List<UUID> assist = p.assistants;
 
                                     assist.remove(pl.getUniqueId());
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                     sendManager(cs, args[1]);
                                     PluginData.loadProjects();

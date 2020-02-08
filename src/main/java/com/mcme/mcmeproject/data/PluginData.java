@@ -127,7 +127,7 @@ public class PluginData {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
                     if (r.first()) {
@@ -171,7 +171,7 @@ public class PluginData {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".regions_data ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
@@ -252,7 +252,7 @@ public class PluginData {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".warps_data ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
@@ -284,7 +284,7 @@ public class PluginData {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".project_data ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
@@ -329,7 +329,7 @@ public class PluginData {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".news_data WHERE player_uuid = '" + e.getPlayer().getUniqueId().toString() + "' ;";
+                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE player_uuid = '" + e.getPlayer().getUniqueId().toString() + "' ;";
 
                     final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 

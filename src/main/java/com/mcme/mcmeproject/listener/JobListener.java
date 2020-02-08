@@ -52,7 +52,7 @@ public class JobListener implements Listener {
                     @Override
                     public void run() {
                         try {
-                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.projectsAll.get(project).idproject.toString() + "' ;";
+                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.projectsAll.get(project).idproject.toString() + "' ;";
                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                             PluginData.loadProjects();
                         } catch (SQLException ex) {
@@ -85,7 +85,7 @@ public class JobListener implements Listener {
                     @Override
                     public void run() {
                         try {
-                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.projectsAll.get(project).idproject.toString() + "' ;";
+                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.projectsAll.get(project).idproject.toString() + "' ;";
                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                             PluginData.loadProjects();
                         } catch (SQLException ex) {

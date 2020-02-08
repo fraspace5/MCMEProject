@@ -49,7 +49,7 @@ public class ProjectHide extends ProjectCommand {
             manager = false;
             if (PluginData.getProjectsAll().containsKey(args[0])) {
                 if (playerPermission(args[0], cs)) {
-Player pl = (Player) cs;
+                    Player pl = (Player) cs;
                     if (PluginData.projectsAll.get(args[0]).status.equals(ProjectStatus.SHOWED)) {
 
                         new BukkitRunnable() {
@@ -58,7 +58,7 @@ Player pl = (Player) cs;
                             public void run() {
 
                                 try {
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".project_data SET status = '" + ProjectStatus.HIDDEN.toString() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET status = '" + ProjectStatus.HIDDEN.toString() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     PluginData.loadProjects();
                                     Mcproject.getPluginInstance().sendReload(pl, "projects");

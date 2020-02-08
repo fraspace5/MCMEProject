@@ -63,14 +63,14 @@ public class ProjectLocation extends ProjectCommand {
 
                                     try {
                                         if (PluginData.warps.containsKey(PluginData.regions.get(args[1]).idr)) {
-                                            String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".warps_data WHERE idregion = '" + PluginData.regions.get(args[1]).idr.toString() + "' ;";
+                                            String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data WHERE idregion = '" + PluginData.regions.get(args[1]).idr.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
 
                                             DynmapUtil.deleteWarp(n);
                                         }
 
-                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
+                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                         PluginData.loadWarps();
                                         Mcproject.getPluginInstance().sendReload(pl, "warps");
