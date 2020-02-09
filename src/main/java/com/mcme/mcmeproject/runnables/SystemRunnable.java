@@ -242,8 +242,8 @@ public class SystemRunnable {
 
                             }
 
-                            ss.append("ELSE blocks END WHERE idproject = " + projectid.toString() + ";");
-                            pp.append("ELSE lastplayed END WHERE idproject = " + projectid.toString() + ";");
+                            ss.append("ELSE blocks END WHERE idproject = '" + projectid.toString() + "' ;");
+                            pp.append("ELSE lastplayed END WHERE idproject = '" + projectid.toString() + "' ;");
                             new BukkitRunnable() {
 
                                 @Override
@@ -288,7 +288,7 @@ public class SystemRunnable {
 
                                     }
                                     ;
-                                    String text = ss.toString().substring(0, ss.toString().length() - 1) + (" ELSE blocks END WHERE idproject = " + projectid.toString() + " ;");
+                                    String text = ss.toString().substring(0, ss.toString().length() - 1) + (" ELSE blocks END WHERE idproject = '" + projectid.toString() + "' ;");
 
                                     try {
                                         Mcproject.getPluginInstance().con.prepareStatement(text).executeUpdate();
