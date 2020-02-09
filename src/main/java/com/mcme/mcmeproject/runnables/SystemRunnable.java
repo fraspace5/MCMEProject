@@ -110,7 +110,7 @@ public class SystemRunnable {
 
                         Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();
 
-                        PluginData.getAllblocks().clear();
+                        PluginData.getTemporaryMinute().clear();
 
                     }
                 } catch (SQLException ex) {
@@ -155,7 +155,7 @@ public class SystemRunnable {
 
                         Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();
 
-                        PluginData.getTemporaryMinute().clear();
+                        PluginData.getAllblocks().clear();
 
                     }
                 } catch (SQLException ex) {
