@@ -92,7 +92,7 @@ public class SystemRunnable {
 
                         final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
                         StringBuilder ss = new StringBuilder();
-                        ss.append("UPDATE project_data SET minutes = CASE idproject ");
+                        ss.append("UPDATE mcmeproject_project_data SET minutes = CASE idproject ");
 
                         if (r.first()) {
                             do {

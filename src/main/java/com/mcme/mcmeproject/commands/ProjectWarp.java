@@ -16,6 +16,7 @@
  */
 package com.mcme.mcmeproject.commands;
 
+import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcmiddleearth.connect.util.ConnectUtil;
 import org.bukkit.Bukkit;
@@ -48,7 +49,7 @@ public class ProjectWarp extends ProjectCommand {
                     if (PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject).contains(args[1])) {
 
                         if (PluginData.warps.containsKey(PluginData.regions.get(args[1]).idr)) {
-                            if (Bukkit.getServer().getName().equals(PluginData.warps.get(PluginData.regions.get(args[1]).idr).server)) {
+                            if (Mcproject.getPluginInstance().nameserver.equals(PluginData.warps.get(PluginData.regions.get(args[1]).idr).server)) {
                                 pl.teleport(PluginData.warps.get(PluginData.regions.get(args[1]).idr).location);
                             } else {
                                 ConnectUtil.teleportPlayer(pl, PluginData.warps.get(PluginData.regions.get(args[1]).idr).server, PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName(), PluginData.warps.get(PluginData.regions.get(args[1]).idr).location);
