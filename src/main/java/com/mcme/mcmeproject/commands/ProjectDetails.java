@@ -150,7 +150,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                         message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
                                         if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
-                                            message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project location " + pr.name + " " + region).setRunDirect();
+                                            message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project warp " + pr.name + " " + region).setRunDirect();
 
                                         } else {
                                             message.addSimple(ChatColor.RED + "No warp available for this region");
@@ -269,7 +269,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                             message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
                                             if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
-                                                message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project location " + pr.name + " " + region).setRunDirect();
+                                                message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project warp " + pr.name + " " + region).setRunDirect();
 
                                             } else {
                                                 message.addSimple(ChatColor.RED + "No warp available for this region");
