@@ -150,7 +150,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                         message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
                                         if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
-                                            message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
+                                            message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project location " + pr.name + " " + region).setRunDirect();
 
                                         } else {
                                             message.addSimple(ChatColor.RED + "No warp available for this region");
@@ -269,7 +269,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                             message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
                                             if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
-                                                message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project tp " + pr.name + " " + region).setRunDirect();
+                                                message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project location " + pr.name + " " + region).setRunDirect();
 
                                             } else {
                                                 message.addSimple(ChatColor.RED + "No warp available for this region");
@@ -399,45 +399,45 @@ public class ProjectDetails extends ProjectCommand {
 
     public static String time(Long seconds) {
 
-        Long days = ((seconds / 60) / 60) / 24;
+        Long days = seconds / 86400;
 
         if (days < 7 && days > 0) {
 
-            return String.valueOf(Math.round(days)) + " days";
+            return String.valueOf(days) + " days";
 
         } else if (days >= 7 && days <= 28) {
 
             Long weeks = days / 7;
 
-            return String.valueOf(Math.round(weeks)) + " weeks";
+            return String.valueOf(weeks) + " weeks";
 
         } else if (days > 28 && days < 31) {
 
             Long y = days - 28;
-            return "4 weeks and " + String.valueOf(Math.round(y)) + " days";
+            return "4 weeks and " + String.valueOf(y) + " days";
 
         } else if (days >= 31 && days <= 341) {
 
             Long months = days / 31;
 
-            Long rd = days - (Math.round(months) * 31);
+            Long rd = days - (months * 31);
             if (rd != 0) {
 
-                return months + " months and " + Math.round(rd) + " days";
+                return String.valueOf(months) + " months and " + String.valueOf(rd) + " days";
             } else {
 
-                return months + " months";
+                return String.valueOf(months) + " months";
             }
 
         } else if (days > 341 && days < 365) {
             Long y = days - 341;
 
-            return "11 months and " + String.valueOf(Math.round(y)) + " days";
+            return "11 months and " + String.valueOf(y) + " days";
         } else if (days >= 365) {
             Long years = days / 365;
-            Long ys = days - (Math.round(years) * 365);
+            Long ys = days - (years * 365);
 
-            return Math.round(years) + " years and " + Math.round(ys) + " days";
+            return years + " years and " + String.valueOf(ys) + " days";
 
         } else {
 

@@ -66,7 +66,7 @@ public class ProjectProgress extends ProjectCommand {
                                     public void run() {
 
                                         try {
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
@@ -95,7 +95,7 @@ public class ProjectProgress extends ProjectCommand {
                                 public void run() {
 
                                     try {
-                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[2], cs) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
@@ -187,7 +187,7 @@ public class ProjectProgress extends ProjectCommand {
 
         if (t.endsWith("y")) {
 
-            Long r = 86400000 * 365 * parseLong(tt) + System.currentTimeMillis();
+            Long r = (86400000 * 365 * parseLong(tt)) + System.currentTimeMillis();
             return r;
 
             //years 365 days
@@ -200,12 +200,12 @@ public class ProjectProgress extends ProjectCommand {
 //month 31 days
         } else if (t.endsWith("w")) {
 
-            Long r = 86400000 * 7 * parseLong(tt) + System.currentTimeMillis();
+            Long r = (86400000 * 7 * parseLong(tt)) + System.currentTimeMillis();
             return r;
 //week 7 days
         } else if (t.endsWith("d")) {
 
-            Long r = 86400000 * parseLong(tt) + System.currentTimeMillis();
+            Long r = (86400000 * parseLong(tt)) + System.currentTimeMillis();
             return r;
 
 //days
