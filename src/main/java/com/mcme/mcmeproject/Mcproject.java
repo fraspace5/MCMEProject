@@ -348,8 +348,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `idproject` VARCHAR(50) NOT NULL);";
                         String st2 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`mcmeproject_news_bool` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
-                                + "  `bool` TINYINT NOT NULL);";
-
+                                + "  `bool` BOOLEAN NOT NULL);";
                         final String st3 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`mcmeproject_project_data` (\n"
                                 + "  `idproject` VARCHAR(50) NOT NULL,\n"
                                 + "  `name` VARCHAR(80) NOT NULL,\n"
@@ -358,7 +357,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `endDate` MEDIUMTEXT,\n"
                                 + "  `status` VARCHAR(45) ,\n"
                                 + "  `description` VARCHAR(200) ,\n"
-                                + "  `main` TINYINT ,\n"
+                                + "  `main` BOOLEAN ,\n"
                                 + "  `updated` MEDIUMTEXT NOT NULL,\n"
                                 + "  `percentage` VARCHAR(45) ,\n"
                                 + "  `link` VARCHAR(100) ,\n"
