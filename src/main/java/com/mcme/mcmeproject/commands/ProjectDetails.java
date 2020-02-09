@@ -97,7 +97,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                     final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
 
-                                    Long r = (pr.time - System.currentTimeMillis()) / 1000;
+                                    Long r = (pr.time - System.currentTimeMillis());
 
                                     //seconds
                                     FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
@@ -193,7 +193,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                 final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
 
-                                Long r = (pr.time - System.currentTimeMillis()) / 1000;
+                                Long r = (pr.time - System.currentTimeMillis());
 
                                 //seconds
                                 FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
@@ -399,22 +399,23 @@ public class ProjectDetails extends ProjectCommand {
 
     public static String time(Long seconds) {
 
-        Long days = seconds / 86400;
+        Long days = seconds / 86400000;
 
+        System.out.println("giorni" + days + " " + seconds);
         if (days < 7 && days > 0) {
 
-            return String.valueOf(days) + " days";
+            return days + " days";
 
         } else if (days >= 7 && days <= 28) {
 
             Long weeks = days / 7;
 
-            return String.valueOf(weeks) + " weeks";
+            return weeks + " weeks";
 
         } else if (days > 28 && days < 31) {
 
             Long y = days - 28;
-            return "4 weeks and " + String.valueOf(y) + " days";
+            return "4 weeks and " + y + " days";
 
         } else if (days >= 31 && days <= 341) {
 
@@ -423,21 +424,21 @@ public class ProjectDetails extends ProjectCommand {
             Long rd = days - (months * 31);
             if (rd != 0) {
 
-                return String.valueOf(months) + " months and " + String.valueOf(rd) + " days";
+                return months + " months and " + rd + " days";
             } else {
 
-                return String.valueOf(months) + " months";
+                return months + " months";
             }
 
         } else if (days > 341 && days < 365) {
             Long y = days - 341;
 
-            return "11 months and " + String.valueOf(y) + " days";
+            return "11 months and " + y + " days";
         } else if (days >= 365) {
             Long years = days / 365;
             Long ys = days - (years * 365);
 
-            return years + " years and " + String.valueOf(ys) + " days";
+            return years + " years and " + ys + " days";
 
         } else {
 

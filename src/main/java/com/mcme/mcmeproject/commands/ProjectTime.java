@@ -88,25 +88,25 @@ public class ProjectTime extends ProjectCommand {
         String tt = t.substring(0, t.length() - 1);
 
         if (t.endsWith("y")) {
-
-            Long r = (86400000 * 365 * parseLong(tt)) + System.currentTimeMillis();
+            System.out.println("anni");
+            Long r = 86400000 * (365 * parseLong(tt)) + System.currentTimeMillis();
             return r;
 
             //years 365 days
         } else if (t.endsWith("m")) {
-
-            Long r = (86400000 * 31 * parseLong(tt)) + System.currentTimeMillis();
+            System.out.println("mesi");
+            Long r = 86400000 * (31 * parseLong(tt)) + System.currentTimeMillis();
 
             return r;
 
 //month 31 days
         } else if (t.endsWith("w")) {
-
-            Long r = (86400000 * 7 * parseLong(tt)) + System.currentTimeMillis();
+            System.out.println("settimane");
+            Long r = 86400000 * (7 * parseLong(tt)) + System.currentTimeMillis();
             return r;
 //week 7 days
         } else if (t.endsWith("d")) {
-
+            System.out.println("giorni");
             Long r = (86400000 * parseLong(tt)) + System.currentTimeMillis();
             return r;
 
