@@ -219,74 +219,81 @@ public class SystemRunnable {
 
                         } while (r.next());
                     }
+                    new BukkitRunnable() {
 
-                    if (!totalList.isEmpty()) {
-                        for (final UUID projectid : totalList) {
-                            StringBuilder ss = new StringBuilder();
-                            final StringBuilder pp = new StringBuilder();
-                            ss.append("UPDATE mcmeproject_people_data SET blocks = CASE player_uuid  ");
-                            pp.append("UPDATE mcmeproject_people_data SET lastplayed = CASE player_uuid  ");
-                            Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(inizio stringa update) [DEBUG]");
-                            StringBuilder testCheck1 = new StringBuilder();
-                            StringBuilder testCheck2 = new StringBuilder();
+                        @Override
+                        public void run() {
+                            if (!totalList.isEmpty()) {
+                                for (final UUID projectid : totalList) {
+                                    StringBuilder ss = new StringBuilder();
+                                    final StringBuilder pp = new StringBuilder();
+                                    ss.append("UPDATE mcmeproject_people_data SET blocks = CASE player_uuid  ");
+                                    pp.append("UPDATE mcmeproject_people_data SET lastplayed = CASE player_uuid  ");
+                                    Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(inizio stringa update) [DEBUG]");
+                                    Integer testCheck1 = 0;
+                                    Integer testCheck2 = 0;
 
-                            for (UUID s : PluginData.getTemporaryBlocks().keySet()) {
+                                    for (UUID s : PluginData.getTemporaryBlocks().keySet()) {
 
-                                if (PluginData.getTemporaryBlocks().get(s).r.containsKey(projectid)) {
-                                    if (newlist.containsKey(s)) {
-                                        if (newlist.get(s).r.containsKey(projectid)) {
+                                        if (PluginData.getTemporaryBlocks().get(s).r.containsKey(projectid)) {
+                                            if (newlist.containsKey(s)) {
+                                                if (newlist.get(s).r.containsKey(projectid)) {
 
-                                            Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid) + newlist.get(s).r.get(projectid);
-                                            ss.append("WHEN '" + s.toString() + "' THEN '" + nn.toString() + "'");
-                                            testCheck1.append("WHEN '" + s.toString() + "' THEN '" + nn.toString() + "'");
-                                            testCheck2.append("WHEN '" + s.toString() + "' THEN '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'");
-                                            pp.append("WHEN '" + s.toString() + "' THEN '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'");
+                                                    Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid) + newlist.get(s).r.get(projectid);
+                                                    ss.append("WHEN '" + s.toString() + "' THEN '" + nn.toString() + "'");
+                                                    testCheck1 += 1;
+                                                    testCheck2 += 1;
+                                                    pp.append("WHEN '" + s.toString() + "' THEN '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'");
 
+                                                }
+                                            }
+                                        }
+
+                                    }
+
+                                    ss.append("ELSE blocks END WHERE idproject = '" + projectid.toString() + "' ;");
+                                    pp.append("ELSE lastplayed END WHERE idproject = '" + projectid.toString() + "' ;");
+                                    Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(test) [DEBUG]" + ss.toString());
+                                    Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(test) [DEBUG]" + pp.toString());
+
+                                    Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(test[Debug]) [DEBUG]" + "!" + testCheck1 + "|" + testCheck2);
+                                    if (testCheck1 != 0) {
+                                        try {
+                                            Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();
+                                            System.out.println("non dovrebbe1");
+                                        } catch (SQLException ex) {
+                                            Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
                                         }
                                     }
-                                }
+                                    if (testCheck2 != 0) {
+                                        try {
+                                            Mcproject.getPluginInstance().con.prepareStatement(pp.toString()).executeUpdate();
+                                            System.out.println("non dovrebbe2");
+                                        } catch (SQLException ex) {
+                                            Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                    }
 
+                                }
                             }
 
-                            ss.append("ELSE blocks END WHERE idproject = '" + projectid.toString() + "' ;");
-                            pp.append("ELSE lastplayed END WHERE idproject = '" + projectid.toString() + "' ;");
-                            Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(test) [DEBUG]" + ss.toString());
-                            Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(test) [DEBUG]" + pp.toString());
-                            new BukkitRunnable() {
-
-                                @Override
-                                public void run() {
-                                    try {
-                                        Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(test[Debug]) [DEBUG]" + "!" + testCheck1.toString() + "|" + testCheck2.toString());
-                                        if (testCheck1.toString() != "") {
-                                            Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();
-                                        }
-                                        if (testCheck2.toString() != "") {
-                                            Mcproject.getPluginInstance().con.prepareStatement(pp.toString()).executeUpdate();
-                                        }
-
-                                    } catch (SQLException ex) {
-                                        Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }
-
-                            }.runTaskLaterAsynchronously(Mcproject.getPluginInstance(), 20L);
-
                         }
-                    }
+
+                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
                     if (!totalList.isEmpty()) {
                         for (UUID projectid : totalList) {
                             StringBuilder ss = new StringBuilder();
                             Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(start insert) [DEBUG]");
                             ss.append("INSERT INTO mcmeproject_people_data (player_uuid, idproject, blocks, lastplayed) VALUES  ");
+                            Integer testCheck1 = 0;
                             for (UUID s : PluginData.getTemporaryBlocks().keySet()) {
 
                                 if (PluginData.getTemporaryBlocks().get(s).r.containsKey(projectid)) {
                                     if (newlist.containsKey(s)) {
                                         if (!newlist.get(s).r.containsKey(projectid)) {
                                             Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid);
-
+                                            testCheck1 += 1;
                                             ss.append(" ('" + s.toString() + "', '" + projectid.toString() + "','" + nn.toString() + "', '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'),");
 
                                         }
@@ -294,14 +301,17 @@ public class SystemRunnable {
                                         Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid);
 
                                         ss.append(" ('" + s.toString() + "', '" + projectid.toString() + "','" + nn.toString() + "', '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'),");
-
+                                        testCheck1 += 1;
                                     }
                                 }
 
                             }
 
                             String text = ss.toString().substring(0, ss.toString().length() - 1) + (" ;");
-                            Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(test insert) [DEBUG]" + text);
+
+                            if (testCheck1 != 0) {
+                                Mcproject.getPluginInstance().clogger.sendMessage("PlayersRun(test insert) [DEBUG]" + text);
+                            }
                             try {
                                 Mcproject.getPluginInstance().con.prepareStatement(text).executeUpdate();
                             } catch (SQLException ex) {
@@ -319,7 +329,8 @@ public class SystemRunnable {
 
             }
 
-        }.runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 400L, 1700L);
+        }
+                .runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 400L, 1700L);
 
     }
 
@@ -365,7 +376,8 @@ public class SystemRunnable {
                                 }
                             }
                         } catch (SQLException ex) {
-                            Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(SystemRunnable.class
+                                    .getName()).log(Level.SEVERE, null, ex);
                         }
 
                     }
