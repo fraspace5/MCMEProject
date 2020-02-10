@@ -434,12 +434,18 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
 
                 } else if (args[0].equalsIgnoreCase("area")) {
 
-                    for (String s : RegionList) {
-                        if (s.toLowerCase().startsWith(args[3].toLowerCase())) {
-                            fregion.add(s);
+                    if (args[2].equalsIgnoreCase("remove")) {
+                        for (String s : RegionList) {
+                            if (s.toLowerCase().startsWith(args[3].toLowerCase())) {
+                                fregion.add(s);
+                            }
                         }
+                        return fregion;
+
+                    } else {
+                        return null;
                     }
-                    return fregion;
+
                 } else {
                     return null;
                 }
