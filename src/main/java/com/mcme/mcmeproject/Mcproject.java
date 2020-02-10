@@ -95,7 +95,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
             Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
             Bukkit.getPluginManager().disablePlugin(this);
         }
-        if (nameserver == "default") {
+        if (nameserver.equalsIgnoreCase("default")) {
 
             Bukkit.getPluginManager().disablePlugin(this);
         }

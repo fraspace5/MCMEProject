@@ -107,7 +107,7 @@ public class ProjectDetails extends ProjectCommand {
                                     FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                                     String ps = Bukkit.getOfflinePlayer(pr.head).getName();
                                     if (pr.main) {
-                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server");
+                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                         message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n"
                                                 + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                                 + ChatColor.GOLD + pr.description + "\n"
@@ -204,7 +204,7 @@ public class ProjectDetails extends ProjectCommand {
                                 String ps = Bukkit.getOfflinePlayer(pr.head).getName();
                                 if (pr.status.equals(ProjectStatus.FINISHED)) {
                                     if (pr.main) {
-                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server");
+                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished)" + "\n"
                                             + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
@@ -219,7 +219,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                 } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
                                     if (pr.main) {
-                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server");
+                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden)" + "\n"
                                             + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
@@ -235,7 +235,7 @@ public class ProjectDetails extends ProjectCommand {
 
                                 } else {
                                     if (pr.main) {
-                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server");
+                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + "\n"
                                             + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
@@ -283,13 +283,12 @@ public class ProjectDetails extends ProjectCommand {
                                 }
 
                                 if (!pr.link.equalsIgnoreCase("Nothing")) {
-                                    message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "Forum Thread", pr.link, "Click to go on the forum");
+                                    message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "-Forum Thread", pr.link, "Click to go on the forum");
                                 }
 
                                 messages.add(message);
 
                                 PluginData.getMessageUtil().sendFancyListMessage((Player) cs, header, messages, "/project details " + pr.name, 1);
-
                             } catch (SQLException ex) {
                                 Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -401,7 +400,6 @@ public class ProjectDetails extends ProjectCommand {
 
         Long days = seconds / 86400000;
 
-        System.out.println("giorni" + days + " " + seconds);
         if (days < 7 && days > 0) {
 
             return days + " days";

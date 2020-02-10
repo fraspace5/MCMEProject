@@ -367,6 +367,6 @@ public class ProjectArea extends ProjectCommand {
     }
 
     private void sendInvalidSelection(Player player) {
-        PluginData.getMessageUtil().sendErrorMessage(player, "For a cuboid area make a valid WorldEdit selection first.");
+        PluginData.getMessageUtil().sendErrorMessage(player, "For a cuboid or polygonal area make a valid WorldEdit selection first.");
     }
 }
