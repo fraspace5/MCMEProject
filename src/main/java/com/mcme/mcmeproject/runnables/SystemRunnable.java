@@ -345,7 +345,7 @@ public class SystemRunnable {
 
                                 if (r.first()) {
                                     List<UUID> play = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-
+                                    List<UUID> projects = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
                                     for (UUID uuid : PluginData.getTodayStat().get("today").players) {
 
                                         if (!play.contains(uuid)) {
@@ -355,13 +355,23 @@ public class SystemRunnable {
                                         }
 
                                     }
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data SET players = '" + serialize(play) + "', minutes = " + (r.getInt("minutes") + PluginData.getTodayStat().get("today").min) + ", blocks = " + (r.getInt("blocks") + PluginData.getTodayStat().get("today").blocks) + " WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "' ;";
+                                    for (UUID uuid : PluginData.getTodayStat().get("today").projects) {
+
+                                        if (!projects.contains(uuid)) {
+
+                                            projects.add(uuid);
+
+                                        }
+
+                                    }
+
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data SET players = '" + serialize(play) + "', projects = '" + serialize(projects) + "', minutes = " + (r.getInt("minutes") + PluginData.getTodayStat().get("today").min) + ", blocks = " + (r.getInt("blocks") + PluginData.getTodayStat().get("today").blocks) + " WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "' ;";
 
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                     PluginData.getTodayStat().clear();
                                 } else {
 
-                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data (day, month, year, blocks, minutes, players) VALUES ('" + cal.get(Calendar.DAY_OF_MONTH) + "' ,'" + cal.get(Calendar.MONTH) + "' ,'" + cal.get(Calendar.YEAR) + "' ,'" + PluginData.getTodayStat().get("today").blocks + "' ,'" + PluginData.getTodayStat().get("today").min + "' ,'" + serialize(PluginData.getTodayStat().get("today").players) + "') ;";
+                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data (day, month, year, blocks, minutes, players, projects) VALUES ('" + cal.get(Calendar.DAY_OF_MONTH) + "' ,'" + cal.get(Calendar.MONTH) + "' ,'" + cal.get(Calendar.YEAR) + "' ,'" + PluginData.getTodayStat().get("today").blocks + "' ,'" + PluginData.getTodayStat().get("today").min + "' ,'" + serialize(PluginData.getTodayStat().get("today").players) + "','" + serialize(PluginData.getTodayStat().get("today").projects) + "') ;";
 
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                     PluginData.getTodayStat().clear();

@@ -31,11 +31,14 @@ public class ProjectStatistics {
 
     public Integer min;
 
-    public ProjectStatistics(Integer bl, List<UUID> pl, Integer mi) {
+    public List<UUID> projects;
+
+    public ProjectStatistics(Integer bl, List<UUID> pl, Integer mi, List<UUID> pr) {
 
         blocks = bl;
         players = pl;
         min = mi;
+        projects = pr;
 
     }
 

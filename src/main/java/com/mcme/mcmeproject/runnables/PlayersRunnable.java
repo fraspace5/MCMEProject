@@ -74,11 +74,19 @@ public class PlayersRunnable {
                                     PluginData.getTodayStat().get("today").min = PluginData.getTodayStat().get("today").min + 1;
                                     if (!PluginData.getTodayStat().get("today").players.contains(player)) {
                                         PluginData.getTodayStat().get("today").players.add(player);
+
+                                        if (!PluginData.getTodayStat().get("today").projects.contains(PluginData.regions.get(region).idproject)) {
+                                            PluginData.getTodayStat().get("today").projects.add(PluginData.regions.get(region).idproject);
+
+                                        }
+
                                     }
                                 } else {
                                     List<UUID> l = new ArrayList();
+                                    List<UUID> pr = new ArrayList();
+                                    pr.add(PluginData.regions.get(region).idproject);
                                     l.add(player);
-                                    PluginData.getTodayStat().put("today", new ProjectStatistics(0, l, 1));
+                                    PluginData.getTodayStat().put("today", new ProjectStatistics(0, l, 1, pr));
 
                                 }
                             }

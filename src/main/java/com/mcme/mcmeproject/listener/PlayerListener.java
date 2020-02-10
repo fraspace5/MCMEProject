@@ -114,11 +114,15 @@ public class PlayerListener implements Listener {
 
                 if (PluginData.getTodayStat().containsKey("today")) {
                     PluginData.getTodayStat().get("today").blocks = PluginData.getTodayStat().get("today").blocks + 1;
+                    if (!PluginData.getTodayStat().get("today").projects.contains(PluginData.regions.get(region).idproject)) {
+                        PluginData.getTodayStat().get("today").projects.add(PluginData.regions.get(region).idproject);
 
+                    }
                 } else {
                     List<UUID> l = new ArrayList();
-
-                    PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0));
+                    List<UUID> pr = new ArrayList();
+                    pr.add(PluginData.regions.get(region).idproject);
+                    PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0, pr));
 
                 }
 
@@ -186,11 +190,15 @@ public class PlayerListener implements Listener {
                 }
                 if (PluginData.getTodayStat().containsKey("today")) {
                     PluginData.getTodayStat().get("today").blocks = PluginData.getTodayStat().get("today").blocks + 1;
+                    if (!PluginData.getTodayStat().get("today").projects.contains(PluginData.regions.get(region).idproject)) {
+                        PluginData.getTodayStat().get("today").projects.add(PluginData.regions.get(region).idproject);
 
+                    }
                 } else {
                     List<UUID> l = new ArrayList();
-
-                    PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0));
+                    List<UUID> pr = new ArrayList();
+                    pr.add(PluginData.regions.get(region).idproject);
+                    PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0, pr));
 
                 }
 
