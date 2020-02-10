@@ -102,14 +102,14 @@ public class PlayerListener implements Listener {
 
                     PluginData.getMin().put(uuid, true);
                 }
-                if (PluginData.getAllblocks().containsKey(uuid)) {
-                    int i = PluginData.getAllblocks().get(uuid) + 1;
-                    PluginData.getAllblocks().remove(uuid);
-                    PluginData.getAllblocks().put(uuid, i);
+                if (PluginData.getAllblocks().containsKey(PluginData.regions.get(region).idproject)) {
+                    int i = PluginData.getAllblocks().get(PluginData.regions.get(region).idproject) + 1;
+                    PluginData.getAllblocks().remove(PluginData.regions.get(region).idproject);
+                    PluginData.getAllblocks().put(PluginData.regions.get(region).idproject, i);
 
                 } else {
 
-                    PluginData.getAllblocks().put(uuid, 1);
+                    PluginData.getAllblocks().put(PluginData.regions.get(region).idproject, 1);
                 }
 
                 if (PluginData.getTodayStat().containsKey("today")) {
@@ -175,14 +175,14 @@ public class PlayerListener implements Listener {
 
                     PluginData.getMin().put(uuid, Boolean.TRUE);
                 }
-                if (PluginData.getAllblocks().containsKey(uuid)) {
-                    int i = PluginData.getAllblocks().get(uuid) + 1;
-                    PluginData.getAllblocks().remove(uuid);
-                    PluginData.getAllblocks().put(uuid, i);
+                if (PluginData.getAllblocks().containsKey(PluginData.regions.get(region).idproject)) {
+                    int i = PluginData.getAllblocks().get(PluginData.regions.get(region).idproject) + 1;
+                    PluginData.getAllblocks().remove(PluginData.regions.get(region).idproject);
+                    PluginData.getAllblocks().put(PluginData.regions.get(region).idproject, i);
 
                 } else {
 
-                    PluginData.getAllblocks().put(uuid, 1);
+                    PluginData.getAllblocks().put(PluginData.regions.get(region).idproject, 1);
                 }
                 if (PluginData.getTodayStat().containsKey("today")) {
                     PluginData.getTodayStat().get("today").blocks = PluginData.getTodayStat().get("today").blocks + 1;
