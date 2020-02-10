@@ -144,7 +144,7 @@ public class SystemRunnable {
                             Mcproject.getPluginInstance().clogger.sendMessage("BlocksRun started [DEBUG]");
                             do {
                                 if (PluginData.getAllblocks().containsKey(UUID.fromString(r.getString("idproject")))) {
-                                    Integer i = r.getInt("blocks") + PluginData.getTemporaryMinute().get(UUID.fromString(r.getString("idproject")));
+                                    Integer i = r.getInt("blocks") + PluginData.getAllblocks().get(UUID.fromString(r.getString("idproject")));
 
                                     ss.append(" WHEN '" + r.getString("idproject") + "' THEN '" + i.toString() + "' ");
                                 }
