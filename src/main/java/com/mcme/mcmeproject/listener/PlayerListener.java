@@ -214,6 +214,12 @@ public class PlayerListener implements Listener {
 
         final Player p = e.getPlayer();
 
+        if (Mcproject.getPluginInstance().nameserver.equals("default")) {
+
+            Mcproject.getPluginInstance().sendNameServer(p);
+
+        }
+
         new BukkitRunnable() {
 
             @Override

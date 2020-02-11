@@ -19,8 +19,6 @@ time: 3
 playernotification: true
 #Check if there is a new version of this plugin
 findupdates: true
-#Set the name of the bungeecord server
-nameserver: default
 
 #***DATABASE CONNECTION***
 host: localhost

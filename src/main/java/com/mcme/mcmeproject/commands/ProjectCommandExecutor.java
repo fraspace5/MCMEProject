@@ -73,6 +73,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
         addCommandHandler("main", new ProjectMain(permissionStaff, permissionOwner));
         addCommandHandler("news", new ProjectNews(permission, permissionStaff, permissionOwner));
         addCommandHandler("reload", new ProjectReload(permissionReload));
+        addCommandHandler("statistic", new ProjectStatistics(permission));
     }
 
     @Override

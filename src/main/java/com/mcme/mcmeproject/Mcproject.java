@@ -73,8 +73,9 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
     String username = this.getConfig().getString("username");
     @Getter
     String password = this.getConfig().getString("password");
+
     @Getter
-    public String nameserver = this.getConfig().getString("nameserver");
+    public String nameserver;
 
     private void checkUpdate() {
         final UpdaterCheck updater = new UpdaterCheck(this);
@@ -95,10 +96,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
             Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
             Bukkit.getPluginManager().disablePlugin(this);
         }
-        if (nameserver.equalsIgnoreCase("default")) {
 
-            Bukkit.getPluginManager().disablePlugin(this);
-        }
         getCommand("project").setExecutor(new ProjectCommandExecutor());
         getCommand("project").setTabCompleter(new ProjectCommandExecutor());
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "mcme:project");
@@ -109,7 +107,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v" + this.getDescription().getVersion() + " enabled!");
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
         if (this.isEnabled()) {
-
+            nameserver = "default";
             onStart();
             checkUpdate();
             ConnectionRunnable();
@@ -220,8 +218,19 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                 Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+        } else if (subchannel.equals("GetServer")) {
+            String servern = in.readUTF();
+            nameserver = servern;
         }
 
+    }
+
+    public void sendNameServer(Player player) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+
+        out.writeUTF("GetServer");
+
+        player.sendPluginMessage(this, "mcme:project", out.toByteArray());
     }
 
     public void sendReload(Player player, String s) {
