@@ -104,6 +104,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
             arguments.add("details");
             arguments.add("help");
             arguments.add("news");
+            arguments.add("statistic");
             if (pl.hasPermission("project.manager") || pl.hasPermission("project.owner")) {
                 arguments.add("show");
                 arguments.add("hide");
@@ -227,6 +228,16 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 } else if (args[0].equalsIgnoreCase("list")) {
 
                     List<String> a = Arrays.asList("1", "2", "3");
+                    for (String s : a) {
+                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                            fotherlist.add(s);
+                        }
+                    }
+                    return fotherlist;
+
+                } else if (args[0].equalsIgnoreCase("statistic")) {
+
+                    List<String> a = Arrays.asList("week", "today", "month", "custom");
                     for (String s : a) {
                         if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
                             fotherlist.add(s);
@@ -366,6 +377,16 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                     } else {
                         return null;
                     }
+                } else if (args[0].equalsIgnoreCase("statistic")) {
+
+                    if (args[1].equalsIgnoreCase("custom")) {
+                        List<String> l = Arrays.asList("dd/mm/yyyy");
+
+                        return l;
+
+                    } else {
+                        return null;
+                    }
                 } else if (args[0].equalsIgnoreCase("time")) {
 
                     return null;
@@ -433,6 +454,15 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                     }
                     return fo2;
 
+                } else if (args[0].equalsIgnoreCase("statistic")) {
+
+                    if (args[1].equalsIgnoreCase("custom")) {
+                        List<String> l = Arrays.asList("dd/mm/yyyy");
+                        return l;
+
+                    } else {
+                        return null;
+                    }
                 } else if (args[0].equalsIgnoreCase("area")) {
 
                     if (args[2].equalsIgnoreCase("remove")) {
