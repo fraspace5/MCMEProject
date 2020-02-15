@@ -115,33 +115,34 @@ public class ProjectStatistics extends ProjectCommand {
                                     int day = firstDate.get(Calendar.DAY_OF_MONTH);
                                     int month = firstDate.get(Calendar.MONTH);
                                     int year = firstDate.get(Calendar.YEAR);
+                                    if (r.first()) {
+                                        do {
 
-                                    do {
+                                            if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
+                                                    && r.getString("month").equalsIgnoreCase(String.valueOf(month))
+                                                    && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
 
-                                        if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
-                                                && r.getString("month").equalsIgnoreCase(String.valueOf(month))
-                                                && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
+                                                blocks += r.getInt("blocks");
+                                                minutes += r.getInt("minutes");
+                                                List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
+                                                List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
 
-                                            blocks += r.getInt("blocks");
-                                            minutes += r.getInt("minutes");
-                                            List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                            List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
-
-                                            for (UUID player : plsUUID2) {
-                                                if (!plsUUID.contains(player)) {
-                                                    plsUUID.add(player);
+                                                for (UUID player : plsUUID2) {
+                                                    if (!plsUUID.contains(player)) {
+                                                        plsUUID.add(player);
+                                                    }
                                                 }
-                                            }
-                                            for (UUID pr : prsUUID2) {
-                                                if (!prsUUID.contains(pr)) {
-                                                    prsUUID.add(pr);
+                                                for (UUID pr : prsUUID2) {
+                                                    if (!prsUUID.contains(pr)) {
+                                                        prsUUID.add(pr);
+                                                    }
                                                 }
+
                                             }
 
-                                        }
+                                        } while (r.next());
 
-                                    } while (r.next());
-
+                                    }
                                 }
 
                                 sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "week", pl);
@@ -187,33 +188,34 @@ public class ProjectStatistics extends ProjectCommand {
                                     int day = firstDate.get(Calendar.DAY_OF_MONTH);
                                     int month = firstDate.get(Calendar.MONTH);
                                     int year = firstDate.get(Calendar.YEAR);
+                                    if (r.first()) {
+                                        do {
 
-                                    do {
+                                            if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
+                                                    && r.getString("month").equalsIgnoreCase(String.valueOf(month))
+                                                    && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
 
-                                        if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
-                                                && r.getString("month").equalsIgnoreCase(String.valueOf(month))
-                                                && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
+                                                blocks += r.getInt("blocks");
+                                                minutes += r.getInt("minutes");
+                                                List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
+                                                List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
 
-                                            blocks += r.getInt("blocks");
-                                            minutes += r.getInt("minutes");
-                                            List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                            List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
-
-                                            for (UUID player : plsUUID2) {
-                                                if (!plsUUID.contains(player)) {
-                                                    plsUUID.add(player);
+                                                for (UUID player : plsUUID2) {
+                                                    if (!plsUUID.contains(player)) {
+                                                        plsUUID.add(player);
+                                                    }
                                                 }
-                                            }
-                                            for (UUID pr : prsUUID2) {
-                                                if (!prsUUID.contains(pr)) {
-                                                    prsUUID.add(pr);
+                                                for (UUID pr : prsUUID2) {
+                                                    if (!prsUUID.contains(pr)) {
+                                                        prsUUID.add(pr);
+                                                    }
                                                 }
+
                                             }
 
-                                        }
+                                        } while (r.next());
 
-                                    } while (r.next());
-
+                                    }
                                 }
 
                                 sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "month", pl);
@@ -263,33 +265,34 @@ public class ProjectStatistics extends ProjectCommand {
                                             int day = firstDate.get(Calendar.DAY_OF_MONTH);
                                             int month = firstDate.get(Calendar.MONTH);
                                             int year = firstDate.get(Calendar.YEAR);
+                                            if (r.first()) {
+                                                do {
 
-                                            do {
+                                                    if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
+                                                            && r.getString("month").equalsIgnoreCase(String.valueOf(month))
+                                                            && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
 
-                                                if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
-                                                        && r.getString("month").equalsIgnoreCase(String.valueOf(month))
-                                                        && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
+                                                        blocks += r.getInt("blocks");
+                                                        minutes += r.getInt("minutes");
+                                                        List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
+                                                        List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
 
-                                                    blocks += r.getInt("blocks");
-                                                    minutes += r.getInt("minutes");
-                                                    List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                                    List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
-
-                                                    for (UUID player : plsUUID2) {
-                                                        if (!plsUUID.contains(player)) {
-                                                            plsUUID.add(player);
+                                                        for (UUID player : plsUUID2) {
+                                                            if (!plsUUID.contains(player)) {
+                                                                plsUUID.add(player);
+                                                            }
                                                         }
-                                                    }
-                                                    for (UUID pr : prsUUID2) {
-                                                        if (!prsUUID.contains(pr)) {
-                                                            prsUUID.add(pr);
+                                                        for (UUID pr : prsUUID2) {
+                                                            if (!prsUUID.contains(pr)) {
+                                                                prsUUID.add(pr);
+                                                            }
                                                         }
+
                                                     }
 
-                                                }
+                                                } while (r.next());
 
-                                            } while (r.next());
-
+                                            }
                                         }
 
                                         sendMessage(blocks, minutes, plsUUID.size(), prsUUID, args[1] + " to " + args[2], pl);
@@ -324,10 +327,10 @@ public class ProjectStatistics extends ProjectCommand {
     public static void sendMessage(int blocks, int minutes, int players, List<UUID> projects, String type, Player pl) {
 
         FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-        message.addSimple(ChatColor.BOLD + "Period selected: '" + ChatColor.GOLD + type);
-        message.addSimple(ChatColor.GREEN + "Hours of works: " + Math.round(minutes / 60));
-        message.addSimple(ChatColor.GREEN + "Total number of player: " + players);
-        message.addSimple(ChatColor.GREEN + "Blocks : " + blocks);
+        message.addSimple(ChatColor.BOLD + "Period selected: '" + ChatColor.GOLD + type + "\n");
+        message.addSimple(ChatColor.GREEN + "Hours of works: " + Math.round(minutes / 60) + "\n");
+        message.addSimple(ChatColor.GREEN + "Total number of player: " + players + "\n");
+        message.addSimple(ChatColor.GREEN + "Blocks : " + blocks + "\n");
         if (!projects.isEmpty()) {
             message.addSimple(ChatColor.GREEN + "Projects players worked on : ");
             for (UUID value : projects) {
