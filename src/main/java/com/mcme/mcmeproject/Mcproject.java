@@ -408,7 +408,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `year` VARCHAR(25) ,\n"
                                 + "  `blocks` INT ,\n"
                                 + "  `minutes` INT ,\n"
-                                + "  `projects` INT ,\n"
+                                + "  `projects` LONGTEXT ,\n"
                                 + "  `players` LONGTEXT );";
 
                         con.createStatement().execute(st1);
