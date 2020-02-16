@@ -124,8 +124,8 @@ public class ProjectStatistics extends ProjectCommand {
                                                 && r.getString("month").equalsIgnoreCase(String.valueOf(month))
                                                 && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
 
-                                            blocks += r.getInt("blocks");
-                                            minutes += r.getInt("minutes");
+                                            blocks = blocks + r.getInt("blocks");
+                                            minutes = minutes + r.getInt("minutes");
                                             List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
                                             List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
 
@@ -160,7 +160,7 @@ public class ProjectStatistics extends ProjectCommand {
 
             } else if (args[0].equalsIgnoreCase("month")) {
                 Date d = new Date();
-                Long onemago = System.currentTimeMillis() - (86400000 * 31);
+                Long onemago = System.currentTimeMillis() - 2678400000L;
                 d.setTime(onemago);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(d);
@@ -193,8 +193,8 @@ public class ProjectStatistics extends ProjectCommand {
                                                     && r.getString("month").equalsIgnoreCase(String.valueOf(month))
                                                     && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
 
-                                                blocks += r.getInt("blocks");
-                                                minutes += r.getInt("minutes");
+                                                blocks = blocks + r.getInt("blocks");
+                                                minutes = minutes + r.getInt("minutes");
                                                 List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
                                                 List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
 
@@ -270,8 +270,8 @@ public class ProjectStatistics extends ProjectCommand {
                                                             && r.getString("month").equalsIgnoreCase(String.valueOf(month))
                                                             && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
 
-                                                        blocks += r.getInt("blocks");
-                                                        minutes += r.getInt("minutes");
+                                                        blocks = blocks + r.getInt("blocks");
+                                                        minutes = minutes + r.getInt("minutes");
                                                         List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
                                                         List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
 
