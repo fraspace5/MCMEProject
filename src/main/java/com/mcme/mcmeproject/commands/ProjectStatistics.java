@@ -63,8 +63,8 @@ public class ProjectStatistics extends ProjectCommand {
                             int month = cal.get(Calendar.MONTH);
                             int year = cal.get(Calendar.YEAR);
 
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "' ;";
-                            final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "';";
+                            ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
                             if (r.first()) {
                                 System.out.println("Oggi," + day + "/" + month + "/" + year);
@@ -105,7 +105,7 @@ public class ProjectStatistics extends ProjectCommand {
                             Calendar cal = Calendar.getInstance();
 
                             String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data ;";
-                            final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                            ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
                             int blocks = 0;
                             int minutes = 0;
@@ -175,7 +175,7 @@ public class ProjectStatistics extends ProjectCommand {
                             Calendar cal = Calendar.getInstance();
 
                             String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data ;";
-                            final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                            ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
                             if (r.first()) {
 
                                 int blocks = 0;
@@ -337,9 +337,9 @@ public class ProjectStatistics extends ProjectCommand {
                 UUID val = projects.get(index);
                 if (!value.equals(val)) {
 
-                    message.addFancy(PluginData.projectsUUID.get(projects) + ", ", "/project details" + PluginData.projectsUUID.get(projects), PluginData.projectsAll.get(PluginData.projectsUUID.get(projects)).description);
+                    message.addFancy(PluginData.projectsUUID.get(value) + ", ", "/project details" + PluginData.projectsUUID.get(value), PluginData.projectsAll.get(PluginData.projectsUUID.get(value)).description);
                 } else {
-                    message.addFancy(PluginData.projectsUUID.get(projects) + "", "/project details" + PluginData.projectsUUID.get(projects), PluginData.projectsAll.get(PluginData.projectsUUID.get(projects)).description);
+                    message.addFancy(PluginData.projectsUUID.get(value) + "", "/project details" + PluginData.projectsUUID.get(value), PluginData.projectsAll.get(PluginData.projectsUUID.get(value)).description);
                 }
 
             }
