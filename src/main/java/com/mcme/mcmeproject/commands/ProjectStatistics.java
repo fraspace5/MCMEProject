@@ -63,8 +63,9 @@ public class ProjectStatistics extends ProjectCommand {
                             int month = cal.get(Calendar.MONTH);
                             int year = cal.get(Calendar.YEAR);
 
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data WHERE day =" + cal.get(Calendar.DAY_OF_MONTH) + " AND month = " + cal.get(Calendar.MONTH) + " AND year =" + cal.get(Calendar.YEAR) + " ;";
+                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "' ;";
                             final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+
                             if (r.first()) {
                                 System.out.println("Oggi," + day + "/" + month + "/" + year);
                                 int blocks = r.getInt("blocks");
@@ -105,53 +106,48 @@ public class ProjectStatistics extends ProjectCommand {
 
                             String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data ;";
                             final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-                            if (r.first()) {
 
-                                int blocks = 0;
-                                int minutes = 0;
-                                List<UUID> plsUUID = new ArrayList<>();
-                                List<UUID> prsUUID = new ArrayList<>();
-                                for (Calendar firstDate : listCal) {
-                                    int day = firstDate.get(Calendar.DAY_OF_MONTH);
-                                    int month = firstDate.get(Calendar.MONTH);
-                                    int year = firstDate.get(Calendar.YEAR);
+                            int blocks = 0;
+                            int minutes = 0;
+                            List<UUID> plsUUID = new ArrayList<>();
+                            List<UUID> prsUUID = new ArrayList<>();
+                            for (Calendar firstDate : listCal) {
+                                int day = firstDate.get(Calendar.DAY_OF_MONTH);
+                                int month = firstDate.get(Calendar.MONTH);
+                                int year = firstDate.get(Calendar.YEAR);
 
-                                    if (r.first()) {
-                                        do {
-                                            System.out.println("week" + day + "/" + month + "/" + year + ", " + r.getString("day") + "/" + r.getString("month") + "/" + r.getString("year"));
+                                if (r.first()) {
+                                    do {
+                                        System.out.println("week" + day + "/" + month + "/" + year + ", " + r.getString("day") + "/" + r.getString("month") + "/" + r.getString("year"));
 
-                                            if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
-                                                    && r.getString("month").equalsIgnoreCase(String.valueOf(month))
-                                                    && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
+                                        if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
+                                                && r.getString("month").equalsIgnoreCase(String.valueOf(month))
+                                                && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
 
-                                                blocks += r.getInt("blocks");
-                                                minutes += r.getInt("minutes");
-                                                List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                                List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
+                                            blocks += r.getInt("blocks");
+                                            minutes += r.getInt("minutes");
+                                            List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
+                                            List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
 
-                                                for (UUID player : plsUUID2) {
-                                                    if (!plsUUID.contains(player)) {
-                                                        plsUUID.add(player);
-                                                    }
+                                            for (UUID player : plsUUID2) {
+                                                if (!plsUUID.contains(player)) {
+                                                    plsUUID.add(player);
                                                 }
-                                                for (UUID pr : prsUUID2) {
-                                                    if (!prsUUID.contains(pr)) {
-                                                        prsUUID.add(pr);
-                                                    }
+                                            }
+                                            for (UUID pr : prsUUID2) {
+                                                if (!prsUUID.contains(pr)) {
+                                                    prsUUID.add(pr);
                                                 }
-
                                             }
 
-                                        } while (r.next());
+                                        }
 
-                                    }
+                                    } while (r.next());
+
                                 }
-
-                                sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "week", pl);
-
-                            } else {
-                                sendErrorNoData(cs);
                             }
+
+                            sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "week", pl);
 
                         } catch (SQLException ex) {
 

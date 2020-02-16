@@ -48,53 +48,56 @@ public class PlayersRunnable {
             public void run() {
 
                 for (UUID player : PluginData.getMin().keySet()) {
+                    try {
+                        OfflinePlayer n = Bukkit.getOfflinePlayer(player);
+                        Location loc = n.getPlayer().getLocation();
+                        if (PluginData.getMin().get(player)) {
 
-                    OfflinePlayer n = Bukkit.getOfflinePlayer(player);
-                    Location loc = n.getPlayer().getLocation();
-                    if (PluginData.getMin().get(player)) {
+                            for (String region : PluginData.regions.keySet()) {
 
-                        for (String region : PluginData.regions.keySet()) {
+                                Region r = PluginData.regions.get(region).region;
 
-                            Region r = PluginData.regions.get(region).region;
+                                if (r.isInside(loc)) {
 
-                            if (r.isInside(loc)) {
+                                    if (PluginData.getTemporaryMinute().containsKey(PluginData.regions.get(region).idproject)) {
 
-                                if (PluginData.getTemporaryMinute().containsKey(PluginData.regions.get(region).idproject)) {
+                                        Integer l = PluginData.getTemporaryMinute().get(PluginData.regions.get(region).idproject) + 1;
+                                        PluginData.getTemporaryMinute().remove(PluginData.regions.get(region).idproject);
+                                        PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, l);
 
-                                    Integer l = PluginData.getTemporaryMinute().get(PluginData.regions.get(region).idproject) + 1;
-                                    PluginData.getTemporaryMinute().remove(PluginData.regions.get(region).idproject);
-                                    PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, l);
+                                    } else {
+                                        PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, 1);
+                                    }
+                                    PluginData.getMin().remove(player);
+                                    PluginData.getMin().put(player, false);
+                                    if (PluginData.getTodayStat().containsKey("today")) {
+                                        PluginData.getTodayStat().get("today").min = PluginData.getTodayStat().get("today").min + 1;
+                                        if (!PluginData.getTodayStat().get("today").players.contains(player)) {
+                                            PluginData.getTodayStat().get("today").players.add(player);
 
-                                } else {
-                                    PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, 1);
-                                }
-                                PluginData.getMin().remove(player);
-                                PluginData.getMin().put(player, false);
-                                if (PluginData.getTodayStat().containsKey("today")) {
-                                    PluginData.getTodayStat().get("today").min = PluginData.getTodayStat().get("today").min + 1;
-                                    if (!PluginData.getTodayStat().get("today").players.contains(player)) {
-                                        PluginData.getTodayStat().get("today").players.add(player);
+                                            if (!PluginData.getTodayStat().get("today").projects.contains(PluginData.regions.get(region).idproject)) {
+                                                PluginData.getTodayStat().get("today").projects.add(PluginData.regions.get(region).idproject);
 
-                                        if (!PluginData.getTodayStat().get("today").projects.contains(PluginData.regions.get(region).idproject)) {
-                                            PluginData.getTodayStat().get("today").projects.add(PluginData.regions.get(region).idproject);
+                                            }
 
                                         }
+                                    } else {
+                                        List<UUID> l = new ArrayList();
+                                        List<UUID> pr = new ArrayList();
+                                        pr.add(PluginData.regions.get(region).idproject);
+                                        l.add(player);
+                                        PluginData.getTodayStat().put("today", new ProjectStatistics(0, l, 1, pr));
 
                                     }
-                                } else {
-                                    List<UUID> l = new ArrayList();
-                                    List<UUID> pr = new ArrayList();
-                                    pr.add(PluginData.regions.get(region).idproject);
-                                    l.add(player);
-                                    PluginData.getTodayStat().put("today", new ProjectStatistics(0, l, 1, pr));
-
                                 }
+
                             }
 
                         }
 
-                    }
+                    } catch (NullPointerException e) {
 
+                    }
                 }
 
             }
