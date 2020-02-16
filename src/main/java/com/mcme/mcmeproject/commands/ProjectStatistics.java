@@ -67,7 +67,7 @@ public class ProjectStatistics extends ProjectCommand {
                             ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
                             if (r.first()) {
-                                System.out.println("Oggi," + day + "/" + month + "/" + year);
+                                Logger.getGlobal().info("Oggi," + day + "/" + month + "/" + year);
                                 int blocks = r.getInt("blocks");
                                 int minutes = r.getInt("minutes");
                                 List<UUID> plsUUID = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
@@ -89,13 +89,12 @@ public class ProjectStatistics extends ProjectCommand {
 
             } else if (args[0].equalsIgnoreCase("week")) {
 
-                Date d = new Date();
                 Long onewago = System.currentTimeMillis() - 604800000;
-                d.setTime(onewago);
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(d);
 
-                List<Calendar> listCal = createListDate(cal, Calendar.getInstance());
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(onewago);
+                Calendar now = Calendar.getInstance();
+                List<Calendar> listCal = createListDate(cal, now);
 
                 new BukkitRunnable() {
 
@@ -118,7 +117,7 @@ public class ProjectStatistics extends ProjectCommand {
 
                                 if (r.first()) {
                                     do {
-                                        System.out.println("week" + day + "/" + month + "/" + year + ", " + r.getString("day") + "/" + r.getString("month") + "/" + r.getString("year"));
+                                        Logger.getGlobal().info("week" + day + "/" + month + "/" + year + ", " + r.getString("day") + "/" + r.getString("month") + "/" + r.getString("year"));
 
                                         if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
                                                 && r.getString("month").equalsIgnoreCase(String.valueOf(month))
@@ -159,13 +158,13 @@ public class ProjectStatistics extends ProjectCommand {
                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
             } else if (args[0].equalsIgnoreCase("month")) {
-                Date d = new Date();
-                Long onemago = System.currentTimeMillis() - 2678400000L;
-                d.setTime(onemago);
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(d);
 
-                List<Calendar> listCal = createListDate(cal, Calendar.getInstance());
+                Long onemago = System.currentTimeMillis() - 2678400000L;
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(onemago);
+                Calendar now = Calendar.getInstance();
+                List<Calendar> listCal = createListDate(cal, now);
 
                 new BukkitRunnable() {
 
@@ -352,12 +351,12 @@ public class ProjectStatistics extends ProjectCommand {
     public List<Calendar> createListDate(Calendar first, Calendar second) {
         List<Calendar> datesInRange = new ArrayList<>();
         Calendar start = first;
-
-        while (start.before(second)) {
+        datesInRange.add(second);
+        while (start.getTime().before(second.getTime())) {
             datesInRange.add(start);
             start.add(Calendar.DATE, 1);
         }
-        datesInRange.add(second);
+
         return datesInRange;
     }
 
