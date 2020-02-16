@@ -354,7 +354,7 @@ public class ProjectStatistics extends ProjectCommand {
         datesInRange.add(second);
         while (start.getTime().before(second.getTime())) {
             datesInRange.add(start);
-            start.add(Calendar.DATE, 1);
+            start.add(Calendar.DAY_OF_MONTH, 1);
         }
 
         return datesInRange;
