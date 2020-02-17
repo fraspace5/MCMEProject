@@ -350,7 +350,7 @@ public class ProjectStatistics extends ProjectCommand {
 
     public List<Calendar> createListDate(Calendar first, Calendar second) {
         List<Calendar> datesInRange = new ArrayList<>();
-        Calendar start = first;
+        Calendar start = (Calendar) first.clone();
         datesInRange.add(second);
         while (start.getTime().before(second.getTime())) {
             datesInRange.add(start);
