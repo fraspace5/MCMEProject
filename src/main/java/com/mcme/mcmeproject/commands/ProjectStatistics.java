@@ -351,9 +351,9 @@ public class ProjectStatistics extends ProjectCommand {
     public List<Calendar> createListDate(Calendar first, Calendar second) {
         List<Calendar> datesInRange = new ArrayList<>();
         Calendar start = (Calendar) first.clone();
-        datesInRange.add(second);
-        while (start.before(second)) {
-            datesInRange.add(start);
+        datesInRange.add((Calendar) second.clone());
+        while (start.before((Calendar) second.clone())) {
+            datesInRange.add((Calendar) start.clone());
             start.add(Calendar.DAY_OF_MONTH, 1);
         }
 
