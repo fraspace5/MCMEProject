@@ -25,7 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -67,7 +66,6 @@ public class ProjectStatistics extends ProjectCommand {
                             ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 
                             if (r.first()) {
-                                Logger.getGlobal().info("Oggi," + day + "/" + month + "/" + year);
                                 int blocks = r.getInt("blocks");
                                 int minutes = r.getInt("minutes");
                                 List<UUID> plsUUID = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
@@ -117,7 +115,6 @@ public class ProjectStatistics extends ProjectCommand {
 
                                 if (r.first()) {
                                     do {
-                                        Logger.getGlobal().info("week" + day + "/" + month + "/" + year + ", " + r.getString("day") + "/" + r.getString("month") + "/" + r.getString("year"));
 
                                         if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
                                                 && r.getString("month").equalsIgnoreCase(String.valueOf(month))
@@ -187,7 +184,7 @@ public class ProjectStatistics extends ProjectCommand {
                                     int year = firstDate.get(Calendar.YEAR);
                                     if (r.first()) {
                                         do {
-                                            System.out.println("month" + day + "/" + month + "/" + year + ", " + r.getString("day") + "/" + r.getString("month") + "/" + r.getString("year"));
+
                                             if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
                                                     && r.getString("month").equalsIgnoreCase(String.valueOf(month))
                                                     && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
@@ -239,8 +236,8 @@ public class ProjectStatistics extends ProjectCommand {
                         String[] fir = unserialize(args[1]);
                         String[] sec = unserialize(args[2]);
 
-                        first.set(parseInt(fir[2]), parseInt(fir[1]), parseInt(fir[0]));
-                        second.set(parseInt(sec[2]), parseInt(sec[1]), parseInt(sec[0]));
+                        first.set(parseInt(fir[2]), parseInt(fir[1]) - 1, parseInt(fir[0]));
+                        second.set(parseInt(sec[2]), parseInt(sec[1]) - 1, parseInt(sec[0]));
 
                         List<Calendar> listCal = createListDate(first, second);
                         new BukkitRunnable() {
@@ -264,7 +261,7 @@ public class ProjectStatistics extends ProjectCommand {
                                             int year = firstDate.get(Calendar.YEAR);
                                             if (r.first()) {
                                                 do {
-                                                    System.out.println("custom" + day + "/" + month + "/" + year + ", " + r.getString("day") + "/" + r.getString("month") + "/" + r.getString("year"));
+
                                                     if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
                                                             && r.getString("month").equalsIgnoreCase(String.valueOf(month))
                                                             && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
