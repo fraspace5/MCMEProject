@@ -302,7 +302,7 @@ public class PlayerListener implements Listener {
                     Region r = PluginData.regions.get(region).region;
                     ProjectData p = PluginData.projectsAll.get(project);
                     if (PluginData.informedRegion.containsKey(PluginData.regions.get(region).idr)) {
-                        if (r.isInside(loc) && !p.status.equals(ProjectStatus.FINISHED) && !p.status.equals(ProjectStatus.HIDDEN)) {
+                        if (r.isInside(loc) && !p.status.equals(ProjectStatus.FINISHED) && !p.status.equals(ProjectStatus.HIDDEN) && !r.isNear(loc, 100)) {
 
                             if (!PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
                                 FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
@@ -315,7 +315,7 @@ public class PlayerListener implements Listener {
 
                             }
 
-                        } else if (r.isNear(loc, 10) && PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
+                        } else if (r.isNear(loc, 100) && PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
                             PluginData.informedRegion.get(PluginData.regions.get(region).idr).remove(pl.getUniqueId());
 
                         }

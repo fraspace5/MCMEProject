@@ -18,8 +18,14 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
+import com.mcme.mcmeproject.data.ProjectData;
 import com.mcmiddleearth.connect.util.ConnectUtil;
-import org.bukkit.Bukkit;
+import com.mcmiddleearth.pluginutil.message.FancyMessage;
+import com.mcmiddleearth.pluginutil.message.MessageType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -50,7 +56,24 @@ public class ProjectWarp extends ProjectCommand {
 
                         if (PluginData.warps.containsKey(PluginData.regions.get(args[1]).idr)) {
                             if (Mcproject.getPluginInstance().nameserver.equals(PluginData.warps.get(PluginData.regions.get(args[1]).idr).server)) {
+                                ProjectData p = PluginData.projectsAll.get(args[0]);
+
                                 pl.teleport(PluginData.warps.get(PluginData.regions.get(args[1]).idr).location);
+                                FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                message.addSimple("Welcome " + pl.getName() + " in the area of : " + ChatColor.RED + p.name.toUpperCase() + " project");
+                                if (PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject).size() != 1) {
+                                    message.addSimple("\n" + ChatColor.GREEN + "The area name is: " + ChatColor.RED + (PluginData.regions.get(args[1]).name));
+                                }
+                                message.send(pl);
+                                if (PluginData.informedRegion.containsKey(PluginData.regions.get(args[1]).idr)) {
+                                    if (!PluginData.informedRegion.get(PluginData.regions.get(args[1]).idr).contains(pl.getUniqueId())) {
+                                        PluginData.informedRegion.get(PluginData.regions.get(args[1]).idr).add(pl.getUniqueId());
+                                    }
+                                } else {
+                                    List<UUID> l = new ArrayList();
+                                    PluginData.informedRegion.put(PluginData.regions.get(args[1]).idr, l);
+                                }
+
                             } else {
                                 ConnectUtil.teleportPlayer(pl, PluginData.warps.get(PluginData.regions.get(args[1]).idr).server, PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName(), PluginData.warps.get(PluginData.regions.get(args[1]).idr).location);
                             }

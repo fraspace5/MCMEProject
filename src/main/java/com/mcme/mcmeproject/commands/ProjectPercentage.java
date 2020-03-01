@@ -50,33 +50,44 @@ public class ProjectPercentage extends ProjectCommand {
             if (PluginData.projectsAll.containsKey(args[0])) {
                 Player pl = (Player) cs;
                 if (playerPermission(args[0], cs)) {
-                    if (parseDouble(args[1]) > 100.0) {
-
-                        sendNoPercentage(cs);
+                    if (args[1].endsWith("%")) {
 
                     } else {
 
-                        new BukkitRunnable() {
+                        try {
+                            if (parseDouble(args[1]) > 100.0) {
 
-                            @Override
-                            public void run() {
+                                sendNoPercentage(cs);
 
-                                try {
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-                                    PluginData.loadProjects();
-                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                            } else {
+
+                                new BukkitRunnable() {
+
+                                    @Override
+                                    public void run() {
+
+                                        try {
+                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                            PluginData.loadProjects();
+                                            Mcproject.getPluginInstance().sendReload(pl, "projects");
+                                        } catch (SQLException ex) {
+                                            Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+
+                                    }
+
+                                }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                                sendDone(cs);
 
                             }
+                        } catch (NumberFormatException e) {
+                            PluginData.getMessageUtil().sendErrorMessage(cs, "It should be a number or it should end with % ");
 
-                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                        sendDone(cs);
-
+                        }
                     }
+
                 }
             } else {
 
@@ -91,7 +102,7 @@ public class ProjectPercentage extends ProjectCommand {
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
 
         }

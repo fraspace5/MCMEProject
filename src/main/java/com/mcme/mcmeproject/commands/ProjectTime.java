@@ -95,7 +95,7 @@ public class ProjectTime extends ProjectCommand {
             //years 365 days
         } else if (t.endsWith("m")) {
 
-            Long r = 86400000 * (31 * parseLong(tt)) + System.currentTimeMillis();
+            Long r = 86400000 * (31 * parseLong(tt)) + System.currentTimeMillis() ;
 
             return r;
 
@@ -123,7 +123,7 @@ public class ProjectTime extends ProjectCommand {
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+       if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
 
         }
