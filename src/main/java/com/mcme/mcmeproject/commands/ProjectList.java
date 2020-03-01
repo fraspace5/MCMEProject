@@ -62,53 +62,54 @@ public class ProjectList extends ProjectCommand {
             ProjectData pr = PluginData.projectsAll.get(project);
             String s = ChatColor.WHITE + "+" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.WHITE + "+";
 
-            if (pl.hasPermission("project.manager") && args.length > 1 && args[1].equalsIgnoreCase("historic")) {
-                if (pr.status.equals(ProjectStatus.SHOWED)) {
+            if (pl.hasPermission("project.manager") || pl.hasPermission("project.owner")) {
+                if (args[1].equalsIgnoreCase("archive") || args[0].equalsIgnoreCase("archive")) {
+                    if (pr.status.equals(ProjectStatus.SHOWED)) {
 
-                    if (pr.main == true) {
+                        if (pr.main == true) {
 
-                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                        message.addSimple(ChatColor.GOLD + "- ");
-                        message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
-                        message.addSimple("\n" + s);
-                        messages.add(message);
+                            FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                            message.addSimple(ChatColor.GOLD + "- ");
+                            message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                            message.addSimple("\n" + s);
+                            messages.add(message);
+
+                        } else {
+                            FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                            message.addSimple(ChatColor.GOLD + "- ");
+                            message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+
+                            message.addSimple("\n" + s);
+                            messages.add(message);
+                        }
+
+                    } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
+                        if (pr.main == true) {
+
+                            FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                            message.addSimple(ChatColor.GOLD + "- ");
+                            message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+
+                            message.addSimple("\n" + s);
+                            messages.add(message);
+                        } else {
+                            FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                            message.addSimple(ChatColor.GOLD + "- ");
+                            message.addFancy(ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+
+                            message.addSimple("\n" + s);
+                            messages.add(message);
+                        }
 
                     } else {
                         FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                         message.addSimple(ChatColor.GOLD + "- ");
-                        message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                        message.addFancy(ChatColor.DARK_RED + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
 
                         message.addSimple("\n" + s);
                         messages.add(message);
                     }
-
-                } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
-                    if (pr.main == true) {
-
-                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                        message.addSimple(ChatColor.GOLD + "- ");
-                        message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
-
-                        message.addSimple("\n" + s);
-                        messages.add(message);
-                    } else {
-                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                        message.addSimple(ChatColor.GOLD + "- ");
-                        message.addFancy(ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
-
-                        message.addSimple("\n" + s);
-                        messages.add(message);
-                    }
-
-                } else {
-                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                    message.addSimple(ChatColor.GOLD + "- ");
-                    message.addFancy(ChatColor.DARK_RED + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
-
-                    message.addSimple("\n" + s);
-                    messages.add(message);
                 }
-
             } else {
                 if (pr.status.equals(ProjectStatus.SHOWED)) {
 

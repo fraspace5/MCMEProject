@@ -52,6 +52,25 @@ public class ProjectPercentage extends ProjectCommand {
                 if (playerPermission(args[0], cs)) {
                     if (args[1].endsWith("%")) {
 
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
+                                try {
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                    PluginData.loadProjects();
+                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                            }
+
+                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                        sendDone(cs);
                     } else {
 
                         try {
