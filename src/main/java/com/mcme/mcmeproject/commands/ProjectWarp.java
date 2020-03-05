@@ -64,14 +64,16 @@ public class ProjectWarp extends ProjectCommand {
                                 if (PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject).size() != 1) {
                                     message.addSimple("\n" + ChatColor.GREEN + "The area name is: " + ChatColor.RED + (PluginData.regions.get(args[1]).name));
                                 }
-                                message.send(pl);
+
                                 if (PluginData.informedRegion.containsKey(PluginData.regions.get(args[1]).idr)) {
                                     if (!PluginData.informedRegion.get(PluginData.regions.get(args[1]).idr).contains(pl.getUniqueId())) {
+                                        message.send(pl);
                                         PluginData.informedRegion.get(PluginData.regions.get(args[1]).idr).add(pl.getUniqueId());
                                     }
                                 } else {
                                     List<UUID> l = new ArrayList();
                                     PluginData.informedRegion.put(PluginData.regions.get(args[1]).idr, l);
+                                    message.send(pl);
                                 }
 
                             } else {

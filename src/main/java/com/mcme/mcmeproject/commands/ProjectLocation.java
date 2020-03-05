@@ -58,39 +58,10 @@ public class ProjectLocation extends ProjectCommand {
 
                             Location under = new Location(loc.getWorld(), loc.getX(), loc.getY() - 1.0, loc.getZ());
                             Location up = new Location(loc.getWorld(), loc.getX(), loc.getY() + 1.0, loc.getZ());
-                            if (!under.getBlock().getType().isSolid() || !up.getBlock().getType().isSolid()) {
-                                String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
-                                new BukkitRunnable() {
-
-                                    @Override
-                                    public void run() {
-
-                                        try {
-                                            if (PluginData.warps.containsKey(PluginData.regions.get(args[1]).idr)) {
-                                                String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data WHERE idregion = '" + PluginData.regions.get(args[1]).idr.toString() + "' ;";
-
-                                                Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
-
-                                                DynmapUtil.deleteWarp(n);
-                                            }
-
-                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-                                            PluginData.loadWarps();
-                                            Mcproject.getPluginInstance().sendReload(pl, "warps");
-                                        } catch (SQLException ex) {
-                                            Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
-
-                                    }
-
-                                }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                                DynmapUtil.createMarkerWarp(n, loc);
-                                PluginData.loadAllDynmap();
-                                Mcproject.getPluginInstance().sendReload(pl, "map");
-                                sendDone(cs);
-                            } else {
+                            Mcproject.getPluginInstance().clogger.sendMessage(under+" "+up);
+                            
+                            
+                            if (under.getBlock().getType().isSolid() || up.getBlock().getType().isSolid()) {
                                 Location l = SafeLocation(loc);
                                 String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
                                 new BukkitRunnable() {
@@ -120,6 +91,39 @@ public class ProjectLocation extends ProjectCommand {
                                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
                                 DynmapUtil.createMarkerWarp(n, l);
+                                PluginData.loadAllDynmap();
+                                Mcproject.getPluginInstance().sendReload(pl, "map");
+                                sendDone(cs);
+
+                            } else {
+                                String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
+                                new BukkitRunnable() {
+
+                                    @Override
+                                    public void run() {
+
+                                        try {
+                                            if (PluginData.warps.containsKey(PluginData.regions.get(args[1]).idr)) {
+                                                String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data WHERE idregion = '" + PluginData.regions.get(args[1]).idr.toString() + "' ;";
+
+                                                Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+
+                                                DynmapUtil.deleteWarp(n);
+                                            }
+
+                                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
+                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                            PluginData.loadWarps();
+                                            Mcproject.getPluginInstance().sendReload(pl, "warps");
+                                        } catch (SQLException ex) {
+                                            Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+
+                                    }
+
+                                }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                                DynmapUtil.createMarkerWarp(n, loc);
                                 PluginData.loadAllDynmap();
                                 Mcproject.getPluginInstance().sendReload(pl, "map");
                                 sendDone(cs);
