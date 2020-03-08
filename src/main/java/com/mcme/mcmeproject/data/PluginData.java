@@ -291,7 +291,7 @@ public class PluginData {
                     if (r.first()) {
                         do {
 
-                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"), r.getInt("minutes"), convertListUUID(unserialize(r.getString("assistants"))),convertListUUID(unserialize(r.getString("pl_current")))));
+                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"), r.getInt("minutes"), convertListUUID(unserialize(r.getString("assistants"))),convertListUUID(unserialize(r.getString("plcurrent")))));
                             projectsUUID.put(UUID.fromString(r.getString("idproject")), r.getString("name"));
                         } while (r.next());
 
