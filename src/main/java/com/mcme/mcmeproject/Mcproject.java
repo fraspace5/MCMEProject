@@ -375,6 +375,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `assistants` LONGTEXT ,\n"
                                 + "  `minutes` INT ,\n"
                                 + "  `blocks` INT ,\n"
+                                + "  `current.players` LONGTEXT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
                         final String st5 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`mcmeproject_people_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"

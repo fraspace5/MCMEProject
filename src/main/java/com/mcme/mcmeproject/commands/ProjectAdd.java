@@ -67,7 +67,7 @@ public class ProjectAdd extends ProjectCommand {
                                     
                                     ProjectData p = PluginData.getProjectsAll().get(args[0]);
                                     
-                                    if (p.assistants.contains(pl.getUniqueId())) {
+                                    if (p.assistants.contains(n.getUniqueId())) {
                                         
                                         sendManagerError(cs);
                                         
@@ -76,7 +76,7 @@ public class ProjectAdd extends ProjectCommand {
                                         if (Bukkit.getOfflinePlayer(args[1]).hasPlayedBefore()) {
                                             final List<UUID> assist = p.assistants;
                                             
-                                            assist.add(pl.getUniqueId());
+                                            assist.add(n.getUniqueId());
                                             String s = serialize(assist);
                                             String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET assistants = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                             

@@ -74,6 +74,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
         addCommandHandler("news", new ProjectNews(permission, permissionStaff, permissionOwner));
         addCommandHandler("reload", new ProjectReload(permissionReload));
         addCommandHandler("statistic", new ProjectStatistics(permission, permissionStaff, permissionOwner));
+       // addCommandHandler("current", new CurrentProject(permission, permissionStaff, permissionOwner));
     }
 
     @Override
@@ -105,6 +106,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
             arguments.add("help");
             arguments.add("news");
             arguments.add("statistic");
+            arguments.add("current");
             if (pl.hasPermission("project.manager") || pl.hasPermission("project.owner")) {
                 arguments.add("show");
                 arguments.add("hide");
@@ -203,6 +205,14 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                     return fproject;
 
                 } else if (args[0].equalsIgnoreCase("details")) {
+                    for (String s : ProjectList) {
+                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                            fproject.add(s);
+                        }
+                    }
+                    return fproject;
+
+                }else if (args[0].equalsIgnoreCase("current")) {
                     for (String s : ProjectList) {
                         if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
                             fproject.add(s);

@@ -51,8 +51,10 @@ public class ProjectData {
     public int minutes;
 
     public List<UUID> assistants;
+    
+    public List<UUID> currentpl;
 
-    public ProjectData(String namem, UUID idpr, ProjectStatus rn, Boolean bol, List jj, UUID he, Long t, Integer per, String desc, String l, Long up, int min, List as) {
+    public ProjectData(String namem, UUID idpr, ProjectStatus rn, Boolean bol, List jj, UUID he, Long t, Integer per, String desc, String l, Long up, int min, List as,List pll) {
 
         name = namem;
 
@@ -79,6 +81,9 @@ public class ProjectData {
         minutes = min;
 
         assistants = as;
+        
+        currentpl = pll;
+    
     }
 
 }
