@@ -106,7 +106,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
             arguments.add("help");
             arguments.add("news");
             arguments.add("statistic");
-            arguments.add("current");
+           // arguments.add("current");
             if (pl.hasPermission("project.manager") || pl.hasPermission("project.owner")) {
                 arguments.add("show");
                 arguments.add("hide");
