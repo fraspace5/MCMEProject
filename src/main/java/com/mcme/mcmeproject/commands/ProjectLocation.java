@@ -59,7 +59,7 @@ public class ProjectLocation extends ProjectCommand {
                             Location under = new Location(loc.getWorld(), loc.getX(), loc.getY() - 1.0, loc.getZ());
                             Location up = new Location(loc.getWorld(), loc.getX(), loc.getY() + 1.0, loc.getZ());
 
-                            if (under.getBlock().getType().isSolid() && !up.getBlock().getType().isSolid() && up2.getBlock().getType().isSolid()) {
+                            if (under.getBlock().getType().isSolid() && !up.getBlock().getType().isSolid() && !up2.getBlock().getType().isSolid()) {
                                 String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
                                 new BukkitRunnable() {
 
