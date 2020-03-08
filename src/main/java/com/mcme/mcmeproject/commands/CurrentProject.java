@@ -61,7 +61,7 @@ public class CurrentProject  {
                                 if (r.first()) {
                                     do {
 
-                                        String p = r.getString("current.players");
+                                        String p = r.getString("pl_current");
                                         List<UUID> players = PluginData.convertListUUID(PluginData.unserialize(p));
                                         if (players.contains(pl.getUniqueId())) {
                                             projects.add(UUID.fromString(r.getString("idproject")));
@@ -80,13 +80,13 @@ public class CurrentProject  {
 
                                     assist.add(pl.getUniqueId());
                                     String s = serialize(assist);
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET current.players = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET pl_current = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                     final List<UUID> assist2 = getList(r, projects.get(0));
 
                                     assist2.remove(pl.getUniqueId());
                                     String s2 = serialize(assist2);
-                                    String stat2 = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET current.players = '" + s2 + "' WHERE idproject = '" + projects.get(0).toString() + "' ;";
+                                    String stat2 = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET pl_current = '" + s2 + "' WHERE idproject = '" + projects.get(0).toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate();
                                     PluginData.loadProjects();
                                     Mcproject.getPluginInstance().sendReload(pl, "projects");
