@@ -36,7 +36,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.decimal4j.util.DoubleRounder;
 
 /**
  *
@@ -302,7 +301,7 @@ public class ProjectDetails extends ProjectCommand {
 
             do {
 
-                if (r.getLong("blocks") > 100
+                if (r.getLong("blocks") > 10
                         && ((System.currentTimeMillis() - r.getLong("lastplayed")) * 1000) < 604800) {
 //1 week
                     OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(r.getString("player_uuid")));
@@ -437,7 +436,6 @@ public class ProjectDetails extends ProjectCommand {
         
         int i = (int) Math.round(number);
         Double decimalPart = number - i;
-        DoubleRounder.round(decimalPart, 3);
         Double middle = 0.50;
         if (decimalPart.compareTo(middle) >= 0) {
             return i + 1;
