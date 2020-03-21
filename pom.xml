@@ -16,7 +16,6 @@
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
-        
     </repositories>
     <build>
         <resources>
@@ -35,9 +34,12 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.decimal4j</groupId>
+                <artifactId>decimal4j</artifactId>
+                <version>1.0.3</version>
+            </plugin>
         </plugins>
-        
-        
     </build>
     <dependencies>
         <dependency>

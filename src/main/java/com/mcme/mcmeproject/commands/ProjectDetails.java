@@ -434,7 +434,7 @@ public class ProjectDetails extends ProjectCommand {
     }
 
     private static Integer exactTruncation(Double number) {
-
+        
         int i = (int) Math.round(number);
         Double decimalPart = number - i;
         DoubleRounder.round(decimalPart, 3);
