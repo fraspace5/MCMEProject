@@ -108,8 +108,9 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished)" + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished)" + "\n");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Closed " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
@@ -123,8 +124,9 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden)" + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden)" + "\n");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Updated " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
@@ -139,8 +141,10 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + "\n");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Updated " + time(pr.updated) + " ago");
+
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
@@ -217,8 +221,9 @@ public class ProjectDetails extends ProjectCommand {
                                 String ps = Bukkit.getOfflinePlayer(pr.head).getName();
                                 if (pr.main) {
                                     message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
-                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Updated " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
@@ -231,8 +236,9 @@ public class ProjectDetails extends ProjectCommand {
                                     );
                                 } else {
 
-                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Updated " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
