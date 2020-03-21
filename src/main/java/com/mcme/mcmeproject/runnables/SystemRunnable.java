@@ -218,64 +218,57 @@ public class SystemRunnable {
 
                         } while (r.next());
                     }
-                    new BukkitRunnable() {
 
-                        @Override
-                        public void run() {
-                            if (!totalList.isEmpty()) {
-                                for (final UUID projectid : totalList) {
-                                    StringBuilder ss = new StringBuilder();
-                                    final StringBuilder pp = new StringBuilder();
-                                    ss.append("UPDATE mcmeproject_people_data SET blocks = CASE player_uuid  ");
-                                    pp.append("UPDATE mcmeproject_people_data SET lastplayed = CASE player_uuid  ");
+                    if (!totalList.isEmpty()) {
+                        for (final UUID projectid : totalList) {
+                            StringBuilder ss = new StringBuilder();
+                            final StringBuilder pp = new StringBuilder();
+                            ss.append("UPDATE mcmeproject_people_data SET blocks = CASE player_uuid  ");
+                            pp.append("UPDATE mcmeproject_people_data SET lastplayed = CASE player_uuid  ");
 
-                                    Integer testCheck1 = 0;
-                                    Integer testCheck2 = 0;
+                            Integer testCheck1 = 0;
+                            Integer testCheck2 = 0;
 
-                                    for (UUID s : PluginData.getTemporaryBlocks().keySet()) {
+                            for (UUID s : PluginData.getTemporaryBlocks().keySet()) {
 
-                                        if (PluginData.getTemporaryBlocks().get(s).r.containsKey(projectid)) {
-                                            if (newlist.containsKey(s)) {
-                                                if (newlist.get(s).r.containsKey(projectid)) {
+                                if (PluginData.getTemporaryBlocks().get(s).r.containsKey(projectid)) {
+                                    if (newlist.containsKey(s)) {
+                                        if (newlist.get(s).r.containsKey(projectid)) {
 
-                                                    Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid) + newlist.get(s).r.get(projectid);
-                                                    ss.append("WHEN '" + s.toString() + "' THEN '" + nn.toString() + "'");
-                                                    testCheck1 = testCheck1 + 1;
-                                                    testCheck2 = testCheck2 + 1;
-                                                    pp.append("WHEN '" + s.toString() + "' THEN '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'");
+                                            Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid) + newlist.get(s).r.get(projectid);
+                                            ss.append("WHEN '" + s.toString() + "' THEN '" + nn.toString() + "'");
+                                            testCheck1 = testCheck1 + 1;
+                                            testCheck2 = testCheck2 + 1;
+                                            pp.append("WHEN '" + s.toString() + "' THEN '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'");
 
-                                                }
-                                            }
-                                        }
-
-                                    }
-
-                                    ss.append("ELSE blocks END WHERE idproject = '" + projectid.toString() + "' ;");
-                                    pp.append("ELSE lastplayed END WHERE idproject = '" + projectid.toString() + "' ;");
-
-                                    if (testCheck1 != 0) {
-                                        try {
-                                            Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate();
-
-                                        } catch (SQLException ex) {
-                                            Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
                                         }
                                     }
-                                    if (testCheck2 != 0) {
-                                        try {
-                                            Mcproject.getPluginInstance().con.prepareStatement(pp.toString()).executeUpdate();
+                                }
 
-                                        } catch (SQLException ex) {
-                                            Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
-                                    }
+                            }
 
+                            ss.append("ELSE blocks END WHERE idproject = '" + projectid.toString() + "' ;");
+                            pp.append("ELSE lastplayed END WHERE idproject = '" + projectid.toString() + "' ;");
+
+                            if (testCheck1 != 0) {
+                                try {
+                                    Mcproject.getPluginInstance().con.prepareStatement(ss.toString()).executeUpdate(ss.toString());
+
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                            if (testCheck2 != 0) {
+                                try {
+                                    Mcproject.getPluginInstance().con.prepareStatement(pp.toString()).executeUpdate(ss.toString());
+
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
 
                         }
-
-                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                    }
 
                     if (!totalList.isEmpty()) {
                         for (UUID projectid : totalList) {
@@ -307,7 +300,7 @@ public class SystemRunnable {
                             String text = ss.toString().substring(0, ss.toString().length() - 1) + (" ;");
 
                             if (testCheck1 != 0) {
-                                Mcproject.getPluginInstance().con.prepareStatement(text).executeUpdate();
+                                Mcproject.getPluginInstance().con.prepareStatement(text).executeUpdate(text);
                             }
 
                         }
