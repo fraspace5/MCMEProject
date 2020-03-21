@@ -36,6 +36,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.decimal4j.util.DoubleRounder;
 
 /**
  *
@@ -301,7 +302,7 @@ public class ProjectDetails extends ProjectCommand {
 
             do {
 
-                if (r.getLong("blocks") > 150
+                if (r.getLong("blocks") > 100
                         && ((System.currentTimeMillis() - r.getLong("lastplayed")) * 1000) < 604800) {
 //1 week
                     OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(r.getString("player_uuid")));
@@ -381,28 +382,28 @@ public class ProjectDetails extends ProjectCommand {
 
     public static String time(Long seconds) {
 
-        Long days = seconds / 86400000;
-
+        Double d = (double) seconds / 86400000.0;
+        Integer days = exactTruncation(d);
         if (days < 7 && days > 0) {
 
             return days + " days";
 
         } else if (days >= 7 && days <= 28) {
 
-            Long weeks = days / 7;
-
+            Double w = days / 7.0;
+            Integer weeks = exactTruncation(w);
             return weeks + " weeks";
 
         } else if (days > 28 && days < 31) {
 
-            Long y = days - 28;
+            Double y = days - 28.0;
             return "4 weeks and " + y + " days";
 
         } else if (days >= 31 && days <= 341) {
 
-            Long months = days / 31;
-
-            Long rd = days - (months * 31);
+            Double m = days / 31.0;
+            Integer months = exactTruncation(m);
+            Double rd = days - (months * 31.0);
             if (rd != 0) {
 
                 return months + " months and " + rd + " days";
@@ -412,12 +413,15 @@ public class ProjectDetails extends ProjectCommand {
             }
 
         } else if (days > 341 && days < 365) {
-            Long y = days - 341;
+
+            Double y = days - 341.0;
 
             return "11 months and " + y + " days";
         } else if (days >= 365) {
-            Long years = days / 365;
-            Long ys = days - (years * 365);
+
+            Double y = days / 365.0;
+            Integer years = exactTruncation(y);
+            Double ys = days - (years * 365.0);
 
             return years + " years and " + ys + " days";
 
@@ -425,6 +429,20 @@ public class ProjectDetails extends ProjectCommand {
 
             return "N/A";
 
+        }
+
+    }
+
+    private static Integer exactTruncation(Double number) {
+
+        int i = (int) Math.round(number);
+        Double decimalPart = number - i;
+        DoubleRounder.round(decimalPart, 3);
+        Double middle = 0.50;
+        if (decimalPart.compareTo(middle) >= 0) {
+            return i + 1;
+        } else {
+            return i;
         }
 
     }

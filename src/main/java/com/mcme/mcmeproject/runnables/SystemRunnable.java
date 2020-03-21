@@ -240,8 +240,8 @@ public class SystemRunnable {
 
                                                     Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid) + newlist.get(s).r.get(projectid);
                                                     ss.append("WHEN '" + s.toString() + "' THEN '" + nn.toString() + "'");
-                                                    testCheck1 += 1;
-                                                    testCheck2 += 1;
+                                                    testCheck1 = testCheck1 + 1;
+                                                    testCheck2 = testCheck2 + 1;
                                                     pp.append("WHEN '" + s.toString() + "' THEN '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'");
 
                                                 }
@@ -290,7 +290,7 @@ public class SystemRunnable {
                                     if (newlist.containsKey(s)) {
                                         if (!newlist.get(s).r.containsKey(projectid)) {
                                             Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid);
-                                            testCheck1 += 1;
+                                            testCheck1 = testCheck1 + 1;
                                             ss.append(" ('" + s.toString() + "', '" + projectid.toString() + "','" + nn.toString() + "', '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'),");
 
                                         }
@@ -298,7 +298,7 @@ public class SystemRunnable {
                                         Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid);
 
                                         ss.append(" ('" + s.toString() + "', '" + projectid.toString() + "','" + nn.toString() + "', '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'),");
-                                        testCheck1 += 1;
+                                        testCheck1 = testCheck1 + 1;
                                     }
                                 }
 
