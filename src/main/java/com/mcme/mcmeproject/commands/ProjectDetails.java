@@ -295,14 +295,11 @@ public class ProjectDetails extends ProjectCommand {
 
     public static String people(ResultSet r) throws NullPointerException, SQLException {
 
-        pers.clear();
-
         if (r.first()) {
 
             do {
 
-                if (r.getLong("blocks") > 10
-                        && ((System.currentTimeMillis() - r.getLong("lastplayed")) * 1000) < 604800) {
+                if (r.getLong("blocks") > 10 && ((System.currentTimeMillis() - r.getLong("lastplayed")) / 1000) < 604800) {
 //1 week
                     OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(r.getString("player_uuid")));
 
@@ -433,7 +430,7 @@ public class ProjectDetails extends ProjectCommand {
     }
 
     private static Integer exactTruncation(Double number) {
-        
+
         int i = (int) Math.round(number);
         Double decimalPart = number - i;
         Double middle = 0.50;
