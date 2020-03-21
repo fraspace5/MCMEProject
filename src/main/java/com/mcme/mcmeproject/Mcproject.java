@@ -430,7 +430,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                             }
 
                         }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                         new BukkitRunnable() {
+                        new BukkitRunnable() {
 
                             @Override
                             public void run() {
@@ -500,7 +500,17 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         SystemRunnable.startDatabaseRecoveryRunnable();
         PlayersRunnable.AddMinuteRunnable();
         PlayersRunnable.SetTodayUpdatedRunnable();
-        SystemRunnable.PlayersDataBlocksRunnable();
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+
+                SystemRunnable.PlayersDataBlocksRunnable(p -> {
+                    PluginData.getTemporaryBlocks().clear();
+                });
+
+            }
+        }.runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 400L, 1700L);
         SystemRunnable.variableDataMinutesRunnable();
         SystemRunnable.variableDataBlocksRunnable();
         SystemRunnable.statisticAllRunnable();

@@ -29,6 +29,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Consumer;
 
 /**
  *
@@ -166,7 +167,7 @@ public class SystemRunnable {
 
     }
 
-    public static void PlayersDataBlocksRunnable() {
+    public static void PlayersDataBlocksRunnable(Consumer<String> callback) {
         HashMap<UUID, PlayersData> newlist = new HashMap();
         List<UUID> totalList = new ArrayList<>();
 //idproject, idplayer
@@ -305,17 +306,15 @@ public class SystemRunnable {
 
                         }
                     }
-
-                    PluginData.getTemporaryBlocks().clear();
-
+                   
+                    
+                    callback.accept("s");
+                    
                 } catch (SQLException ex) {
                     Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
             }
-
-        }
-                .runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 400L, 1700L);
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
     }
 
