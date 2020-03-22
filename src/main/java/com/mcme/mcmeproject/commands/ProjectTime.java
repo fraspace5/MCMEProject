@@ -59,7 +59,7 @@ public class ProjectTime extends ProjectCommand {
 
                             try {
 
-                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[1], cs).toString() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[1], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                 PluginData.loadProjects();

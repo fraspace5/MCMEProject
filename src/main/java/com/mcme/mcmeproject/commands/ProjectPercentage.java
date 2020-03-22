@@ -58,7 +58,7 @@ public class ProjectPercentage extends ProjectCommand {
                             public void run() {
 
                                 try {
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                     PluginData.loadProjects();
                                     Mcproject.getPluginInstance().sendReload(pl, "projects");
@@ -86,7 +86,7 @@ public class ProjectPercentage extends ProjectCommand {
                                     public void run() {
 
                                         try {
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                             PluginData.loadProjects();
                                             Mcproject.getPluginInstance().sendReload(pl, "projects");
