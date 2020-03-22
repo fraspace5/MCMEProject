@@ -97,8 +97,8 @@ public class ProjectDetails extends ProjectCommand {
                                 final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
 
                                 Long r = (pr.time - System.currentTimeMillis());
-
-                                //seconds
+                                Long f = (System.currentTimeMillis() - pr.updated);
+                                //milliseconds
                                 FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
                                         .addSimple("Informations about " + pr.name);
 
@@ -108,8 +108,8 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished)" + "\n");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Closed " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished) ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Closed " + time(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
@@ -124,8 +124,8 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden)" + "\n");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Updated " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden) ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + time(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
@@ -141,8 +141,8 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + "\n");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Updated " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + time(f) + " ago");
 
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
@@ -212,8 +212,8 @@ public class ProjectDetails extends ProjectCommand {
                                 final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
 
                                 Long r = (pr.time - System.currentTimeMillis());
-
-                                //seconds
+                                Long f = (System.currentTimeMillis() - pr.updated);
+                                //milliseconds
                                 FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
                                         .addSimple("Informations about " + pr.name);
 
@@ -221,8 +221,8 @@ public class ProjectDetails extends ProjectCommand {
                                 String ps = Bukkit.getOfflinePlayer(pr.head).getName();
                                 if (pr.main) {
                                     message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
-                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Updated " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + " ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + time(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
@@ -236,8 +236,8 @@ public class ProjectDetails extends ProjectCommand {
                                     );
                                 } else {
 
-                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]", ChatColor.GREEN + "Updated " + time(pr.updated) + " ago");
+                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + " ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + time(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
