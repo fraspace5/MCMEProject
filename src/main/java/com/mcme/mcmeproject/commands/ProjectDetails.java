@@ -109,10 +109,10 @@ public class ProjectDetails extends ProjectCommand {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished) ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Closed " + time(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Closed " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + assistantsList(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
@@ -125,10 +125,10 @@ public class ProjectDetails extends ProjectCommand {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden) ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + time(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + assistantsList(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
@@ -142,11 +142,11 @@ public class ProjectDetails extends ProjectCommand {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + time(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
 
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + assistantsList(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
@@ -222,10 +222,10 @@ public class ProjectDetails extends ProjectCommand {
                                 if (pr.main) {
                                     message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + " ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + time(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.DARK_PURPLE + "-Assistants: " + assistantsList(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "-Extimated Time: " + time(r) + "\n"
@@ -237,10 +237,10 @@ public class ProjectDetails extends ProjectCommand {
                                 } else {
 
                                     message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + " ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + time(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.DARK_PURPLE + "-Assistants: " + assistantsList(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "-Extimated Time: " + time(r) + "\n"
@@ -320,7 +320,7 @@ public class ProjectDetails extends ProjectCommand {
 
     }
 
-    public static String tt(List<UUID> r) throws NullPointerException, SQLException {
+    public static String assistantsList(List<UUID> r) throws NullPointerException, SQLException {
 
         StringBuilder builder = new StringBuilder();
 
@@ -426,6 +426,83 @@ public class ProjectDetails extends ProjectCommand {
             Double ys = days - (years * 365.0);
 
             return years + " years and " + ys + " days";
+
+        } else {
+
+            return "N/A";
+
+        }
+
+    }
+
+    public static String accTime(Long seconds) {
+
+        Double d = (double) seconds / 86400000.0;
+        Integer days = exactTruncation(d);
+        if (days < 7 && days > 0) {
+
+            return days + " days";
+
+        } else if (days >= 7 && days <= 28) {
+
+            Double w = days / 7.0;
+            Integer weeks = exactTruncation(w);
+            return weeks + " weeks";
+
+        } else if (days > 28 && days < 31) {
+
+            Double y = days - 28.0;
+            return "4 weeks and " + y + " days";
+
+        } else if (days >= 31 && days <= 341) {
+
+            Double m = days / 31.0;
+            Integer months = exactTruncation(m);
+            Double rd = days - (months * 31.0);
+            if (rd != 0) {
+
+                return months + " months and " + rd + " days";
+            } else {
+
+                return months + " months";
+            }
+
+        } else if (days > 341 && days < 365) {
+
+            Double y = days - 341.0;
+
+            return "11 months and " + y + " days";
+        } else if (days >= 365) {
+
+            Double y = days / 365.0;
+            Integer years = exactTruncation(y);
+            Double ys = days - (years * 365.0);
+
+            return years + " years and " + ys + " days";
+
+        } else if (days == 0) {
+
+            Double h = seconds / 3600000.0;
+            Integer hour = exactTruncation(h);
+            if (hour > 0) {
+                Double m = seconds - (hour * 3600000.0);
+                Integer minutes = exactTruncation(m);
+
+                if (minutes != 0) {
+
+                    return hour + " hours and " + minutes + " minutes";
+
+                } else {
+
+                    return hour + " hours";
+                }
+
+            } else {
+
+                Integer min = exactTruncation(seconds / 60000.0);
+
+                return min + " minutes";
+            }
 
         } else {
 
