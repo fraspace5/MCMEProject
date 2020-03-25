@@ -300,6 +300,7 @@ public class ProjectDetails extends ProjectCommand {
     }
 
     public static String people(ResultSet r) throws NullPointerException, SQLException {
+        pers.clear();
 
         if (r.first()) {
 
