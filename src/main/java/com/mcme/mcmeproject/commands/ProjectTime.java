@@ -159,6 +159,6 @@ public class ProjectTime extends ProjectCommand {
     }
 
     private void sendNoTime(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "Error with the time value!");
+        PluginData.getMessageUtil().sendErrorMessage(cs, "Error with the time value(only integers)!");
     }
 }

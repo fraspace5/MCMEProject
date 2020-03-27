@@ -318,7 +318,7 @@ public class ProjectProgress extends ProjectCommand {
     }
 
     private void sendNoNumber(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You have to use a numeric value!");
+        PluginData.getMessageUtil().sendErrorMessage(cs, "You have to use a numeric value(only integers)!");
     }
 
 }
