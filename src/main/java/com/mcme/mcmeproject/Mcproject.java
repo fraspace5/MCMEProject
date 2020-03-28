@@ -26,6 +26,7 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.listener.JobListener;
 import com.mcme.mcmeproject.listener.PlayerListener;
 import com.mcme.mcmeproject.runnables.SystemRunnable;
+import com.mcme.mcmeproject.util.FontCustom;
 import com.mcme.mcmeproject.util.UpdaterCheck;
 import com.mcmiddleearth.thegaffer.ext.ExternalProjectHandler;
 import java.io.ByteArrayInputStream;
@@ -111,7 +112,17 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
             onStart();
             checkUpdate();
             ConnectionRunnable();
-
+            try {
+                FontCustom.ModifyAllowedCharacters();
+            } catch (NoSuchFieldException ex) {
+                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }
@@ -375,6 +386,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `assistants` LONGTEXT ,\n"
                                 + "  `minutes` INT ,\n"
                                 + "  `blocks` INT ,\n"
+                                + "  `plcurrent` LONGTEXT ,\n"
                                 + "  PRIMARY KEY (`idproject`));";
                         final String st5 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`mcmeproject_people_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
@@ -429,7 +441,6 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                             }
 
                         }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-
                         new BukkitRunnable() {
 
                             @Override
@@ -437,14 +448,20 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
                                 try {
                                     con.createStatement().execute(st6);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                                try {
                                     con.createStatement().execute(st7);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+
+                            }
+
+                        }.runTaskLater(Mcproject.getPluginInstance(), 40L);
+
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
                                 try {
                                     con.createStatement().execute(st8);
                                 } catch (SQLException ex) {
@@ -453,7 +470,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
                             }
 
-                        }.runTaskLater(Mcproject.getPluginInstance(), 40L);
+                        }.runTaskLater(Mcproject.getPluginInstance(), 60L);
 
                     } catch (SQLException ex) {
                         Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
@@ -494,7 +511,17 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         SystemRunnable.startDatabaseRecoveryRunnable();
         PlayersRunnable.AddMinuteRunnable();
         PlayersRunnable.SetTodayUpdatedRunnable();
-        SystemRunnable.PlayersDataBlocksRunnable();
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+
+                SystemRunnable.PlayersDataBlocksRunnable(p -> {
+                    PluginData.getTemporaryBlocks().clear();
+                });
+
+            }
+        }.runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 400L, 1700L);
         SystemRunnable.variableDataMinutesRunnable();
         SystemRunnable.variableDataBlocksRunnable();
         SystemRunnable.statisticAllRunnable();

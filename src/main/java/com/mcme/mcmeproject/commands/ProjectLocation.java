@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -55,6 +56,7 @@ public class ProjectLocation extends ProjectCommand {
                 if (playerPermission(args[0], cs)) {
                     if (PluginData.regions.containsKey(args[1]) && PluginData.regions.get(args[1]).idproject.equals(PluginData.projectsAll.get(args[0]).idproject)) {
                         if (PluginData.regions.get(args[1]).isInside(loc)) {
+
                             String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
                             new BukkitRunnable() {
 
@@ -110,7 +112,7 @@ public class ProjectLocation extends ProjectCommand {
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
 
         }
@@ -125,6 +127,20 @@ public class ProjectLocation extends ProjectCommand {
             sendNoPermission(cs);
             return false;
         }
+
+    }
+
+    private static Location SafeLocation(Location l) {
+        Location loc = (Location) l.clone();
+
+        Location under = new Location(loc.getWorld(), loc.getX(), loc.getY() - 1.0, loc.getZ());
+        Location up = new Location(loc.getWorld(), loc.getX(), loc.getY() + 1.0, loc.getZ());
+        Location up2 = new Location(loc.getWorld(), loc.getX(), loc.getY() + 2.0, loc.getZ());
+
+        while (under.getBlock().getType().isSolid() && !up.getBlock().getType().isSolid() && !up2.getBlock().getType().isSolid()) {
+            loc.setY(loc.getY() + 1.0);
+        }
+        return loc;
 
     }
 

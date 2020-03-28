@@ -1,4 +1,4 @@
-version: 3.3
+version: 3.5
 name: McMeProject
 main: com.mcme.mcmeproject.Mcproject
 author: Fraspace5
@@ -9,6 +9,18 @@ commands:
  project:
     aliases: [p,pj,prj]
     description: Command for the Project Plugin
+permissions:
+    project.owner:
+        description: Allows to use all the commands of this plugin
+        default: op
+    project.manager:
+        description: Allows to use all the commands of this plugin for managers
+    project.user:
+        description: Allows to use all the commands of this plugin for users
+    project.reload:
+        description: Allows to reload
+    project.create:
+        description: Allows to create a project
 
 #Copyright (C) 2020 MCME (Fraspace5)
  

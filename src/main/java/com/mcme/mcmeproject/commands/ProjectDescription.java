@@ -117,7 +117,7 @@ public class ProjectDescription extends ProjectCommand {
                 public void run() {
 
                     try {
-                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET description = '" + description + "' WHERE idproject = '" + PluginData.projectsAll.get(name).idproject.toString() + "' ;";
+                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET description = '" + description + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(name).idproject.toString() + "' ;";
                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                         PluginData.loadProjects();
                         Mcproject.getPluginInstance().sendReload(pl, "projects");
@@ -137,7 +137,7 @@ public class ProjectDescription extends ProjectCommand {
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
 
         }

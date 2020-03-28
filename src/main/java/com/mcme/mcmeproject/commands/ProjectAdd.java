@@ -35,20 +35,20 @@ import org.bukkit.scheduler.BukkitRunnable;
  * @author Fraspace5
  */
 public class ProjectAdd extends ProjectCommand {
-
+    
     public ProjectAdd(String... permissionNodes) {
         super(1, true, permissionNodes);
         setShortDescription(": Add a manager to the list");
         setUsageDescription(" <ProjectName> <PlayerName>: Add a manager to the project");
     }
-
+    
     private boolean manager;
-
+    
     private boolean head;
-
+    
     @Override
     protected void execute(final CommandSender cs, final String... args) {
-
+        
         head = false;
         manager = false;
         if (cs instanceof Player) {
@@ -57,109 +57,108 @@ public class ProjectAdd extends ProjectCommand {
                 if (playerPermission(args[0], cs)) {
                     try {
                         OfflinePlayer n = Bukkit.getOfflinePlayer(args[1]);
-
+                        
                         new BukkitRunnable() {
-
+                            
                             @Override
                             public void run() {
-
+                                
                                 try {
-
+                                    
                                     ProjectData p = PluginData.getProjectsAll().get(args[0]);
-
-                                    if (p.assistants.contains(pl.getUniqueId())) {
-
+                                    
+                                    if (p.assistants.contains(n.getUniqueId())) {
+                                        
                                         sendManagerError(cs);
-
+                                        
                                     } else {
-
+                                        
                                         if (Bukkit.getOfflinePlayer(args[1]).hasPlayedBefore()) {
                                             final List<UUID> assist = p.assistants;
-
-                                            assist.add(pl.getUniqueId());
+                                            
+                                            assist.add(n.getUniqueId());
                                             String s = serialize(assist);
                                             String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET assistants = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                             
+                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                             PluginData.loadProjects();
                                             Mcproject.getPluginInstance().sendReload(pl, "projects");
                                             sendManager(cs, args[1]);
                                         }
-
+                                        
                                     }
                                 } catch (SQLException ex) {
                                     Logger.getLogger(ProjectAdd.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-
+                                
                             }
-
+                            
                         }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
+                        
                     } catch (NullPointerException e) {
-
+                        
                     }
                 }
-
+                
             } else {
-
+                
                 sendNoProject(cs);
-
+                
             }
-
+            
         }
-
+        
     }
-
+    
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
-
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+        
+        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
-
+            
         }
         if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
             head = true;
-
+            
         }
-
+        Mcproject.getPluginInstance().clogger.sendMessage(manager + " " + head + " " + pl.hasPermission("project.owner"));
         if (manager || head || pl.hasPermission("project.owner")) {
             return true;
         } else {
             sendNoPermission(cs);
             return false;
         }
-
+        
     }
-
+    
     public String serialize(List<UUID> intlist) {
-
+        
         StringBuilder builder = new StringBuilder();
         if (!intlist.isEmpty()) {
             for (UUID s : intlist) {
-
+                
                 builder.append(s.toString()).append(";");
-
+                
             }
         }
         return builder.toString();
-
+        
     }
-
+    
     private void sendNoPermission(CommandSender cs) {
         PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
     }
-
+    
     private void sendNoProject(CommandSender cs) {
         PluginData.getMessageUtil().sendErrorMessage(cs, "This Project doesn't exists");
     }
-
+    
     private void sendManagerError(CommandSender cs) {
         PluginData.getMessageUtil().sendErrorMessage(cs, "This player is already a manager of this project");
     }
-
+    
     private void sendManager(CommandSender cs, String name) {
         PluginData.getMessageUtil().sendInfoMessage(cs, "Manager " + name + " added!");
     }
-
+    
 }

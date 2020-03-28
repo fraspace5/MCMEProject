@@ -55,18 +55,14 @@ public class ProjectProgress extends ProjectCommand {
                     Player pl = (Player) cs;
                     try {
                         if (!args[1].equalsIgnoreCase("=") && !args[2].equalsIgnoreCase("=")) {
-
-                            if (parseDouble(args[1]) > 100.0 || parseDouble(args[1]) < 0) {
-                                sendNoPercentage(cs);
-                            } else {
-
+                            if (args[1].endsWith("%")) {
                                 new BukkitRunnable() {
 
                                     @Override
                                     public void run() {
 
                                         try {
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
@@ -84,9 +80,38 @@ public class ProjectProgress extends ProjectCommand {
                                     }
 
                                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                            } else {
+                                if (parseDouble(args[1]) > 100.0 || parseDouble(args[1]) < 0) {
+                                    sendNoPercentage(cs);
+                                } else {
 
+                                    new BukkitRunnable() {
+
+                                        @Override
+                                        public void run() {
+
+                                            try {
+                                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+
+                                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+
+                                                String stat2 = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+
+                                                Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+                                                sendDone(cs, args[0]);
+                                                PluginData.loadProjects();
+                                                PluginData.setTodayEnd();
+                                                Mcproject.getPluginInstance().sendReload(pl, "projects");
+                                            } catch (SQLException ex) {
+                                                Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+
+                                        }
+
+                                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                                }
                             }
-
                         } else if (args[1].equalsIgnoreCase("=") && !args[2].equalsIgnoreCase("=")) {
 
                             new BukkitRunnable() {
@@ -115,9 +140,7 @@ public class ProjectProgress extends ProjectCommand {
                             }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
                         } else if (!args[1].equalsIgnoreCase("=") && args[2].equalsIgnoreCase("=")) {
-                            if (parseDouble(args[1]) > 100.0 || parseDouble(args[1]) < 0) {
-                                sendNoPercentage(cs);
-                            } else {
+                            if (args[1].endsWith("%")) {
 
                                 new BukkitRunnable() {
 
@@ -125,7 +148,7 @@ public class ProjectProgress extends ProjectCommand {
                                     public void run() {
 
                                         try {
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                             Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
@@ -143,7 +166,38 @@ public class ProjectProgress extends ProjectCommand {
                                     }
 
                                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                            } else {
 
+                                if (parseDouble(args[1]) > 100.0 || parseDouble(args[1]) < 0) {
+                                    sendNoPercentage(cs);
+                                } else {
+
+                                    new BukkitRunnable() {
+
+                                        @Override
+                                        public void run() {
+
+                                            try {
+                                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+
+                                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+
+                                                String stat2 = "DELETE FROM  " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+
+                                                Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+                                                sendDone(cs, args[0]);
+                                                PluginData.loadProjects();
+                                                PluginData.setTodayEnd();
+                                                Mcproject.getPluginInstance().sendReload(pl, "projects");
+                                            } catch (SQLException ex) {
+                                                Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+
+                                        }
+
+                                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                                }
                             }
                         } else if (args[1].equalsIgnoreCase("=") && args[2].equalsIgnoreCase("=")) {
 
@@ -184,35 +238,39 @@ public class ProjectProgress extends ProjectCommand {
 
     public Long setTime(String t, CommandSender cs) {
         String tt = t.substring(0, t.length() - 1);
+        try {
+            if (t.endsWith("y")) {
 
-        if (t.endsWith("y")) {
+                Long r = 86400000 * (365 * parseLong(tt)) + System.currentTimeMillis();
+                return r;
 
-            Long r = 86400000 * (365 * parseLong(tt)) + System.currentTimeMillis();
-            return r;
+                //years 365 days
+            } else if (t.endsWith("m")) {
 
-            //years 365 days
-        } else if (t.endsWith("m")) {
+                Long r = 86400000 * (31 * parseLong(tt)) + System.currentTimeMillis();
 
-            Long r = 86400000 * (31 * parseLong(tt)) + System.currentTimeMillis();
-
-            return r;
+                return r;
 
 //month 31 days
-        } else if (t.endsWith("w")) {
+            } else if (t.endsWith("w")) {
 
-            Long r = 86400000 * (7 * parseLong(tt)) + System.currentTimeMillis();
-            return r;
+                Long r = 86400000 * (7 * parseLong(tt)) + System.currentTimeMillis();
+                return r;
 //week 7 days
-        } else if (t.endsWith("d")) {
+            } else if (t.endsWith("d")) {
 
-            Long r = (86400000 * parseLong(tt)) + System.currentTimeMillis();
-            return r;
+                Long r = (86400000 * parseLong(tt)) + System.currentTimeMillis();
+                return r;
 
 //days
-        } else {
+            } else {
 
+                sendNoTime(cs);
+
+                return null;
+            }
+        } catch (NumberFormatException e) {
             sendNoTime(cs);
-
             return null;
         }
 
@@ -221,7 +279,7 @@ public class ProjectProgress extends ProjectCommand {
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
 
         }
@@ -260,7 +318,7 @@ public class ProjectProgress extends ProjectCommand {
     }
 
     private void sendNoNumber(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You have to use a numeric value!");
+        PluginData.getMessageUtil().sendErrorMessage(cs, "You have to use a numeric value(only integers)!");
     }
 
 }

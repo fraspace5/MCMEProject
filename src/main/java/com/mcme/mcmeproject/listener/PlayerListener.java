@@ -315,9 +315,8 @@ public class PlayerListener implements Listener {
 
                             }
 
-                        } else if (r.isNear(loc, 10) && PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
+                        } else if (!r.isNear(loc, 100) && PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
                             PluginData.informedRegion.get(PluginData.regions.get(region).idr).remove(pl.getUniqueId());
-
                         }
                     } else {
                         List<UUID> l = new ArrayList();

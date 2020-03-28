@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mcme</groupId>
     <artifactId>McMeProject</artifactId>
-    <version>3.3</version>
+    <version>3.5</version>
     <packaging>jar</packaging>
     <name>McMeProject</name>
     <url>http://www.mcmiddleearth.com/</url>
@@ -12,11 +12,10 @@
             <id>dynmap-repo</id>
             <url>http://repo.mikeprimm.com/</url>
         </repository>
-         <repository>
+        <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
-        
     </repositories>
     <build>
         <resources>
@@ -36,8 +35,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        
-        
     </build>
     <dependencies>
         <dependency>
@@ -77,6 +74,11 @@
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
             <version>7.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.14.4-R0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <properties>

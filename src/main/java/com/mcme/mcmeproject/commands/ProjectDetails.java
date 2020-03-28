@@ -83,105 +83,8 @@ public class ProjectDetails extends ProjectCommand {
 
                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-                if (!pl.hasPermission("project.manager") || !pl.hasPermission("project.owner")) {
-                    if (PluginData.projectsAll.get(args[0]).status.equals(ProjectStatus.SHOWED)) {
+                if (pl.hasPermission("project.manager") || pl.hasPermission("project.owner")) {
 
-                        new BukkitRunnable() {
-
-                            @Override
-                            public void run() {
-                                try {
-                                    ProjectData pr = PluginData.projectsAll.get(args[0]);
-
-                                    String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
-
-                                    final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
-
-                                    Long r = (pr.time - System.currentTimeMillis());
-
-                                    //seconds
-                                    FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
-                                            .addSimple("Informations about " + pr.name);
-                                    List<FancyMessage> messages = new ArrayList<>();
-
-                                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                    String ps = Bukkit.getOfflinePlayer(pr.head).getName();
-                                    if (pr.main) {
-                                        message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
-                                        message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n"
-                                                + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
-                                                + ChatColor.GOLD + pr.description + "\n"
-                                                + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
-                                                + ChatColor.GOLD + "+--------------------+" + "\n"
-                                                + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
-                                                + ChatColor.GREEN + "-Extimated Time: " + time(r) + "\n"
-                                                + ChatColor.GOLD + "-Other statistics:" + "\n"
-                                                + ChatColor.GREEN + "-Hours of work: " + Math.round(pr.minutes / 60) + "\n"
-                                                + ChatColor.GREEN + "-People that works on: " + people(r2) + "\n"
-                                                + ChatColor.GOLD + "+--------------------+"
-                                        );
-                                    } else {
-
-                                        message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + "\n"
-                                                + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
-                                                + ChatColor.GOLD + pr.description + "\n"
-                                                + ChatColor.DARK_PURPLE + "-Assistants: " + tt(pr.assistants) + "\n"
-                                                + ChatColor.GOLD + "+--------------------+" + "\n"
-                                                + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
-                                                + ChatColor.GREEN + "-Extimated Time: " + time(r) + "\n"
-                                                + ChatColor.GOLD + "-Other statistics:" + "\n"
-                                                + ChatColor.GREEN + "-Hours of work: " + Math.round(pr.minutes / 60) + "\n"
-                                                + ChatColor.GREEN + "-People that works on: " + people(r2) + "\n"
-                                                + ChatColor.GOLD + "+--------------------+"
-                                        );
-                                    }
-                                    jj(pr);
-
-                                    if (!jobs.isEmpty()) {
-                                        message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
-
-                                        message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
-                                    } else {
-                                        message.addSimple(ChatColor.RED + "\n" + "No jobs linked to this project");
-                                        message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
-                                    }
-
-                                    for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
-
-                                        message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
-                                        if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
-                                            message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project warp " + pr.name + " " + region).setRunDirect();
-
-                                        } else {
-                                            message.addSimple(ChatColor.RED + "No warp available for this region");
-
-                                        }
-
-                                        messages.add(message);
-
-                                    }
-                                    if (!pr.link.equalsIgnoreCase("Nothing")) {
-                                        message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "-Forum Thread", pr.link, "Click to go on the forum");
-                                    }
-
-                                    messages.add(message);
-
-                                    PluginData.getMessageUtil().sendFancyListMessage((Player) cs, header, messages, "/project details " + pr.name, 1);
-
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-
-                            }
-
-                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                    } else {
-
-                        sendProjectError(cs);
-
-                    }
-                } else {
                     new BukkitRunnable() {
 
                         @Override
@@ -194,11 +97,10 @@ public class ProjectDetails extends ProjectCommand {
                                 final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
 
                                 Long r = (pr.time - System.currentTimeMillis());
-
-                                //seconds
+                                Long f = (System.currentTimeMillis() - pr.updated);
+                                //milliseconds
                                 FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
                                         .addSimple("Informations about " + pr.name);
-                                List<FancyMessage> messages = new ArrayList<>();
 
                                 FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                                 String ps = Bukkit.getOfflinePlayer(pr.head).getName();
@@ -206,10 +108,11 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished)" + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished) ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Closed " + accTime(f) + " ago");
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + assistantsList(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GOLD + "Other statistics:" + "\n"
@@ -221,10 +124,11 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden)" + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden) ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + assistantsList(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
@@ -237,10 +141,12 @@ public class ProjectDetails extends ProjectCommand {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
-                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + "\n"
-                                            + ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                    message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
+
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
-                                            + ChatColor.DARK_PURPLE + "Assistants: " + tt(pr.assistants) + "\n"
+                                            + ChatColor.DARK_PURPLE + "Assistants: " + assistantsList(pr.assistants) + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
                                             + ChatColor.GREEN + "Extimated Time: " + time(r) + "\n"
@@ -276,8 +182,6 @@ public class ProjectDetails extends ProjectCommand {
 
                                             }
 
-                                            messages.add(message);
-
                                         }
                                     }
                                 }
@@ -286,9 +190,7 @@ public class ProjectDetails extends ProjectCommand {
                                     message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "-Forum Thread", pr.link, "Click to go on the forum");
                                 }
 
-                                messages.add(message);
-
-                                PluginData.getMessageUtil().sendFancyListMessage((Player) cs, header, messages, "/project details " + pr.name, 1);
+                                message.send(pl);
                             } catch (SQLException ex) {
                                 Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -297,6 +199,93 @@ public class ProjectDetails extends ProjectCommand {
 
                     }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
+                } else {
+                    new BukkitRunnable() {
+
+                        @Override
+                        public void run() {
+                            try {
+                                ProjectData pr = PluginData.projectsAll.get(args[0]);
+
+                                String stat2 = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_people_data WHERE idproject = '" + pr.idproject.toString() + "' ;";
+
+                                final ResultSet r2 = Mcproject.getPluginInstance().con.prepareStatement(stat2).executeQuery();
+
+                                Long r = (pr.time - System.currentTimeMillis());
+                                Long f = (System.currentTimeMillis() - pr.updated);
+                                //milliseconds
+                                FancyMessage header = new FancyMessage(MessageType.INFO, PluginData.getMessageUtil())
+                                        .addSimple("Informations about " + pr.name);
+
+                                FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                String ps = Bukkit.getOfflinePlayer(pr.head).getName();
+                                if (pr.main) {
+                                    message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
+                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + " ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                            + ChatColor.GOLD + pr.description + "\n"
+                                            + ChatColor.DARK_PURPLE + "-Assistants: " + assistantsList(pr.assistants) + "\n"
+                                            + ChatColor.GOLD + "+--------------------+" + "\n"
+                                            + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
+                                            + ChatColor.GREEN + "-Extimated Time: " + time(r) + "\n"
+                                            + ChatColor.GOLD + "-Other statistics:" + "\n"
+                                            + ChatColor.GREEN + "-Hours of work: " + Math.round(pr.minutes / 60) + "\n"
+                                            + ChatColor.GREEN + "-People that works on: " + people(r2) + "\n"
+                                            + ChatColor.GOLD + "+--------------------+"
+                                    );
+                                } else {
+
+                                    message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + " ");
+                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
+                                    message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
+                                            + ChatColor.GOLD + pr.description + "\n"
+                                            + ChatColor.DARK_PURPLE + "-Assistants: " + assistantsList(pr.assistants) + "\n"
+                                            + ChatColor.GOLD + "+--------------------+" + "\n"
+                                            + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
+                                            + ChatColor.GREEN + "-Extimated Time: " + time(r) + "\n"
+                                            + ChatColor.GOLD + "-Other statistics:" + "\n"
+                                            + ChatColor.GREEN + "-Hours of work: " + Math.round(pr.minutes / 60) + "\n"
+                                            + ChatColor.GREEN + "-People that works on: " + people(r2) + "\n"
+                                            + ChatColor.GOLD + "+--------------------+"
+                                    );
+                                }
+                                jj(pr);
+
+                                if (!jobs.isEmpty()) {
+                                    message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
+
+                                    message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
+                                } else {
+                                    message.addSimple(ChatColor.RED + "\n" + "No jobs linked to this project");
+                                    message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
+                                }
+
+                                for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject)) {
+
+                                    message.addSimple("\n" + ChatColor.AQUA + region.toUpperCase() + ": ");
+                                    if (PluginData.warps.containsKey(PluginData.regions.get(region).idr)) {
+                                        message.addClickable(ChatColor.GREEN.UNDERLINE + "Click to teleport", "/project warp " + pr.name + " " + region).setRunDirect();
+
+                                    } else {
+                                        message.addSimple(ChatColor.RED + "No warp available for this region");
+
+                                    }
+
+                                }
+                                if (!pr.link.equalsIgnoreCase("Nothing")) {
+                                    message.addFancy("\n" + ChatColor.LIGHT_PURPLE + "-Forum Thread", pr.link, "Click to go on the forum");
+                                }
+
+                                message.send(pl);
+
+                            } catch (SQLException ex) {
+                                Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                        }
+
+                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
                     //
                 }
 
@@ -311,15 +300,13 @@ public class ProjectDetails extends ProjectCommand {
     }
 
     public static String people(ResultSet r) throws NullPointerException, SQLException {
-
         pers.clear();
 
         if (r.first()) {
 
             do {
 
-                if (r.getLong("blocks") > 150
-                        && ((System.currentTimeMillis() - r.getLong("lastplayed")) * 1000) < 604800) {
+                if (r.getLong("blocks") > 10 && ((System.currentTimeMillis() - r.getLong("lastplayed")) / 1000) < 604800) {
 //1 week
                     OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(r.getString("player_uuid")));
 
@@ -334,7 +321,7 @@ public class ProjectDetails extends ProjectCommand {
 
     }
 
-    public static String tt(List<UUID> r) throws NullPointerException, SQLException {
+    public static String assistantsList(List<UUID> r) throws NullPointerException, SQLException {
 
         StringBuilder builder = new StringBuilder();
 
@@ -398,28 +385,28 @@ public class ProjectDetails extends ProjectCommand {
 
     public static String time(Long seconds) {
 
-        Long days = seconds / 86400000;
-
+        Double d = (double) seconds / 86400000.0;
+        Integer days = exactTruncation(d);
         if (days < 7 && days > 0) {
 
             return days + " days";
 
         } else if (days >= 7 && days <= 28) {
 
-            Long weeks = days / 7;
-
+            Double w = days / 7.0;
+            Integer weeks = exactTruncation(w);
             return weeks + " weeks";
 
         } else if (days > 28 && days < 31) {
 
-            Long y = days - 28;
+            Double y = days - 28.0;
             return "4 weeks and " + y + " days";
 
         } else if (days >= 31 && days <= 341) {
 
-            Long months = days / 31;
-
-            Long rd = days - (months * 31);
+            Double m = days / 31.0;
+            Integer months = exactTruncation(m);
+            Double rd = days - (months * 31.0);
             if (rd != 0) {
 
                 return months + " months and " + rd + " days";
@@ -429,12 +416,15 @@ public class ProjectDetails extends ProjectCommand {
             }
 
         } else if (days > 341 && days < 365) {
-            Long y = days - 341;
+
+            Double y = days - 341.0;
 
             return "11 months and " + y + " days";
         } else if (days >= 365) {
-            Long years = days / 365;
-            Long ys = days - (years * 365);
+
+            Double y = days / 365.0;
+            Integer years = exactTruncation(y);
+            Double ys = days - (years * 365.0);
 
             return years + " years and " + ys + " days";
 
@@ -442,6 +432,96 @@ public class ProjectDetails extends ProjectCommand {
 
             return "N/A";
 
+        }
+
+    }
+
+    public static String accTime(Long seconds) {
+
+        Double d = (double) seconds / 86400000.0;
+        Integer days = exactTruncation(d);
+        if (days < 7 && days > 0) {
+
+            return days + " days";
+
+        } else if (days >= 7 && days <= 28) {
+
+            Double w = days / 7.0;
+            Integer weeks = exactTruncation(w);
+            return weeks + " weeks";
+
+        } else if (days > 28 && days < 31) {
+
+            Double y = days - 28.0;
+            return "4 weeks and " + y + " days";
+
+        } else if (days >= 31 && days <= 341) {
+
+            Double m = days / 31.0;
+            Integer months = exactTruncation(m);
+            Double rd = days - (months * 31.0);
+            if (rd != 0) {
+
+                return months + " months and " + rd + " days";
+            } else {
+
+                return months + " months";
+            }
+
+        } else if (days > 341 && days < 365) {
+
+            Double y = days - 341.0;
+
+            return "11 months and " + y + " days";
+        } else if (days >= 365) {
+
+            Double y = days / 365.0;
+            Integer years = exactTruncation(y);
+            Double ys = days - (years * 365.0);
+
+            return years + " years and " + ys + " days";
+
+        } else if (days == 0) {
+
+            Double h = seconds / 3600000.0;
+            Integer hour = exactTruncation(h);
+            if (hour > 0) {
+                Double m = seconds - (hour * 3600000.0);
+                Integer minutes = exactTruncation(m);
+
+                if (minutes != 0) {
+
+                    return hour + " hours and " + minutes + " minutes";
+
+                } else {
+
+                    return hour + " hours";
+                }
+
+            } else {
+
+                Integer min = exactTruncation(seconds / 60000.0);
+
+                return min + " minutes";
+            }
+
+        } else {
+
+            return "N/A";
+
+        }
+
+    }
+
+    private static Integer exactTruncation(Double number) {
+
+        int i = (int) Math.round(number);
+        Double decimalPart = number - i;
+        Double middle = 0.50;
+        if (decimalPart.compareTo(middle) >= 0) {
+            return i + 1;
+        } else {
+            return i;
         }
 
     }

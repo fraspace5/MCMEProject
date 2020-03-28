@@ -86,6 +86,6 @@ public class ProjectHelp extends ProjectCommand {
     //TODO
 
     private void sendManualMessage(CommandSender cs) {
-        PluginData.getMessageUtil().sendNoPrefixInfoMessage(cs, "Manual: ");
+        PluginData.getMessageUtil().sendNoPrefixInfoMessage(cs, "Manual:https://www.mcmiddleearth.com/community/resources/mcmeproject-plugin-guide.147/ ");
     }
 }

@@ -89,7 +89,7 @@ public class ProjectReopen extends ProjectCommand {
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
 
         }

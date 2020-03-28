@@ -64,7 +64,7 @@ public class ProjectRemove extends ProjectCommand {
                                 UUID uuid = n.getUniqueId();
                                 ProjectData p = PluginData.getProjectsAll().get(args[0]);
 
-                                if (!p.assistants.contains(pl.getUniqueId())) {
+                                if (!p.assistants.contains(uuid)) {
 
                                     sendManagerError(cs, args[1], args[0]);
 
@@ -72,7 +72,7 @@ public class ProjectRemove extends ProjectCommand {
 
                                     final List<UUID> assist = p.assistants;
 
-                                    assist.remove(pl.getUniqueId());
+                                    assist.remove(uuid);
                                     String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
                                     Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
                                     sendManager(cs, args[1]);
@@ -102,7 +102,7 @@ public class ProjectRemove extends ProjectCommand {
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
 
         }

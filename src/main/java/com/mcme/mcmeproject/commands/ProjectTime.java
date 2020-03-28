@@ -18,7 +18,6 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
-import static java.lang.Double.parseDouble;
 import static java.lang.Long.parseLong;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -59,12 +58,14 @@ public class ProjectTime extends ProjectCommand {
                         public void run() {
 
                             try {
-                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[1], cs).toString() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+
+                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[1], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                 Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
                                 PluginData.loadProjects();
                                 Mcproject.getPluginInstance().sendReload(pl, "projects");
                                 sendDone(cs);
+
                             } catch (SQLException ex) {
                                 Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -86,35 +87,39 @@ public class ProjectTime extends ProjectCommand {
 
     public Long setTime(String t, CommandSender cs) {
         String tt = t.substring(0, t.length() - 1);
+        try {
+            if (t.endsWith("y")) {
 
-        if (t.endsWith("y")) {
+                Long r = 86400000 * (365 * parseLong(tt)) + System.currentTimeMillis();
+                return r;
 
-            Long r = 86400000 * (365 * parseLong(tt)) + System.currentTimeMillis();
-            return r;
+                //years 365 days
+            } else if (t.endsWith("m")) {
 
-            //years 365 days
-        } else if (t.endsWith("m")) {
+                Long r = 86400000 * (31 * parseLong(tt)) + System.currentTimeMillis();
 
-            Long r = 86400000 * (31 * parseLong(tt)) + System.currentTimeMillis();
-
-            return r;
+                return r;
 
 //month 31 days
-        } else if (t.endsWith("w")) {
+            } else if (t.endsWith("w")) {
 
-            Long r = 86400000 * (7 * parseLong(tt)) + System.currentTimeMillis();
-            return r;
+                Long r = 86400000 * (7 * parseLong(tt)) + System.currentTimeMillis();
+                return r;
 //week 7 days
-        } else if (t.endsWith("d")) {
+            } else if (t.endsWith("d")) {
 
-            Long r = (86400000 * parseLong(tt)) + System.currentTimeMillis();
-            return r;
+                Long r = (86400000 * parseLong(tt)) + System.currentTimeMillis();
+                return r;
 
 //days
-        } else {
+            } else {
 
+                sendNoTime(cs);
+
+                return null;
+            }
+        } catch (NumberFormatException e) {
             sendNoTime(cs);
-
             return null;
         }
 
@@ -123,7 +128,7 @@ public class ProjectTime extends ProjectCommand {
     public boolean playerPermission(final String prr, CommandSender cs) {
         final Player pl = (Player) cs;
 
-        if (PluginData.projectsAll.get(prr).assistants.equals(pl.getUniqueId())) {
+        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
             manager = true;
 
         }
@@ -154,6 +159,6 @@ public class ProjectTime extends ProjectCommand {
     }
 
     private void sendNoTime(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "Error with the time value!");
+        PluginData.getMessageUtil().sendErrorMessage(cs, "Error with the time value(only integers)!");
     }
 }
