@@ -109,7 +109,7 @@ public class ProjectDetails extends ProjectCommand {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Finished) ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Closed " + accTime(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Closed " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + assistantsList(pr.assistants) + "\n"
@@ -125,7 +125,7 @@ public class ProjectDetails extends ProjectCommand {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " (Hidden) ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "Assistants: " + assistantsList(pr.assistants) + "\n"
@@ -142,7 +142,7 @@ public class ProjectDetails extends ProjectCommand {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     }
                                     message.addSimple(ChatColor.BOLD.GOLD + "PROJECT: " + pr.name + " ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
 
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
@@ -222,7 +222,7 @@ public class ProjectDetails extends ProjectCommand {
                                 if (pr.main) {
                                     message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
                                     message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + " ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "-Assistants: " + assistantsList(pr.assistants) + "\n"
@@ -237,7 +237,7 @@ public class ProjectDetails extends ProjectCommand {
                                 } else {
 
                                     message.addSimple(ChatColor.GOLD.BOLD + "Project name: " + pr.name + " ");
-                                    message.addTooltipped(ChatColor.AQUA + "[■ ■ ■]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
+                                    message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Project Leader: " + ps + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.DARK_PURPLE + "-Assistants: " + assistantsList(pr.assistants) + "\n"
