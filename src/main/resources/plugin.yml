@@ -1,5 +1,5 @@
-version: 3.5
-name: McMeProject
+version: ${project.version}
+name: ${project.artifactId}
 main: com.mcme.mcmeproject.Mcproject
 author: Fraspace5
 website: ${project.url}

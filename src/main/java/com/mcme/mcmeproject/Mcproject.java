@@ -26,7 +26,6 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.listener.JobListener;
 import com.mcme.mcmeproject.listener.PlayerListener;
 import com.mcme.mcmeproject.runnables.SystemRunnable;
-import com.mcme.mcmeproject.util.FontCustom;
 import com.mcme.mcmeproject.util.UpdaterCheck;
 import com.mcmiddleearth.thegaffer.ext.ExternalProjectHandler;
 import java.io.ByteArrayInputStream;
@@ -77,10 +76,12 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
     @Getter
     public String nameserver;
-
+    /*
+    
     private void checkUpdate() {
         final UpdaterCheck updater = new UpdaterCheck(this);
     }
+     */
 
     @Getter
     private static Mcproject pluginInstance;
@@ -110,19 +111,9 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         if (this.isEnabled()) {
             nameserver = "default";
             onStart();
-            checkUpdate();
+            //  checkUpdate();
             ConnectionRunnable();
-            try {
-                FontCustom.ModifyAllowedCharacters();
-            } catch (NoSuchFieldException ex) {
-                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-            }
+
         }
 
     }
