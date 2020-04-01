@@ -4,7 +4,7 @@ main: com.mcme.mcmeproject.Mcproject
 author: Fraspace5
 api-version: 1.15
 website: ${project.url}
-softdepend: [TheGaffer,Dynmap,WorldEdit,PluginUtils]
+softdepend: [TheGaffer,dynmap,WorldEdit,PluginUtils]
 description: A plugin for the MCME server
 commands:
  project:
