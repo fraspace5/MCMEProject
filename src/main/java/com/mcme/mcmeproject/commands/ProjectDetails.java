@@ -306,8 +306,8 @@ public class ProjectDetails extends ProjectCommand {
 
             do {
 
-                if (r.getLong("blocks") > 10 && ((System.currentTimeMillis() - r.getLong("lastplayed")) / 1000) < 604800) {
-//1 week
+                if (r.getLong("blocks") > 10) {
+
                     OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(r.getString("player_uuid")));
 
                     pers.add(p.getName());
