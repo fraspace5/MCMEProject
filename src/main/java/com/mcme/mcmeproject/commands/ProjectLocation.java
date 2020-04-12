@@ -130,20 +130,6 @@ public class ProjectLocation extends ProjectCommand {
 
     }
 
-    private static Location SafeLocation(Location l) {
-        Location loc = (Location) l.clone();
-
-        Location under = new Location(loc.getWorld(), loc.getX(), loc.getY() - 1.0, loc.getZ());
-        Location up = new Location(loc.getWorld(), loc.getX(), loc.getY() + 1.0, loc.getZ());
-        Location up2 = new Location(loc.getWorld(), loc.getX(), loc.getY() + 2.0, loc.getZ());
-
-        while (under.getBlock().getType().isSolid() && !up.getBlock().getType().isSolid() && !up2.getBlock().getType().isSolid()) {
-            loc.setY(loc.getY() + 1.0);
-        }
-        return loc;
-
-    }
-
     private void sendNoPermission(CommandSender cs) {
         PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
     }

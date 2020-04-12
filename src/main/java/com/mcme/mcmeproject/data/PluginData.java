@@ -165,6 +165,7 @@ public class PluginData {
     public static void loadRegions() {
         regions.clear();
         regionsReadable.clear();
+        regionsUUID.clear();
         new BukkitRunnable() {
 
             @Override
@@ -199,8 +200,12 @@ public class PluginData {
 
                                 regions.put(r.getString("name"), new RegionData(r.getString("name"), UUID.fromString(r.getString("idregion")), UUID.fromString(r.getString("idproject")), rr, r.getString("server"), r.getString("type")));
                                 regionsUUID.put(UUID.fromString(r.getString("idregion")), r.getString("name"));
+
                                 if (regionsReadable.containsKey(UUID.fromString(r.getString("idproject")))) {
-                                    regionsReadable.get(UUID.fromString(r.getString("idproject"))).add(r.getString("name"));
+                                    List<String> s = regionsReadable.get(UUID.fromString(r.getString("idproject")));
+                                    s.add(r.getString("name"));
+                                    regionsReadable.remove(UUID.fromString(r.getString("idproject")));
+                                    regionsReadable.put(UUID.fromString(r.getString("idproject")), s);
                                 } else {
                                     List<String> l = new ArrayList();
                                     l.add(r.getString("name"));
@@ -221,8 +226,12 @@ public class PluginData {
                                 PrismoidRegion rr = new PrismoidRegion(loc, xlist, zlist, ymin, ymax);
                                 regions.put(r.getString("name"), new RegionData(r.getString("name"), UUID.fromString(r.getString("idregion")), UUID.fromString(r.getString("idproject")), rr, r.getString("server"), r.getString("type")));
                                 regionsUUID.put(UUID.fromString(r.getString("idregion")), r.getString("name"));
+
                                 if (regionsReadable.containsKey(UUID.fromString(r.getString("idproject")))) {
-                                    regionsReadable.get(UUID.fromString(r.getString("idproject"))).add(r.getString("name"));
+                                    List<String> s = regionsReadable.get(UUID.fromString(r.getString("idproject")));
+                                    s.add(r.getString("name"));
+                                    regionsReadable.remove(UUID.fromString(r.getString("idproject")));
+                                    regionsReadable.put(UUID.fromString(r.getString("idproject")), s);
                                 } else {
                                     List<String> l = new ArrayList();
                                     l.add(r.getString("name"));
@@ -291,7 +300,7 @@ public class PluginData {
                     if (r.first()) {
                         do {
 
-                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"), r.getInt("minutes"), convertListUUID(unserialize(r.getString("assistants"))),convertListUUID(unserialize(r.getString("plcurrent")))));
+                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"), r.getInt("minutes"), convertListUUID(unserialize(r.getString("assistants"))), convertListUUID(unserialize(r.getString("plcurrent")))));
                             projectsUUID.put(UUID.fromString(r.getString("idproject")), r.getString("name"));
                         } while (r.next());
 
