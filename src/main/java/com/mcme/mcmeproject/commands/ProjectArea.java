@@ -66,7 +66,7 @@ public class ProjectArea extends ProjectCommand {
                     if (args[1].equalsIgnoreCase("add")) {
 
                         if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[0]).idproject)) {
-                            
+
                             if (!PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject).contains(args[2])) {
                                 try {
                                     WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");

@@ -115,15 +115,4 @@ public abstract class ProjectCommand {
         return true;
     }
 
-    protected void sendNoAreaErrorMessage(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "No Guidebook area with that name.");
-    }
-
-    protected void sentInvalidArgumentMessage(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "Invalid Argument");
-    }
-
-    protected void sendIOErrorMessage(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "There was an error. Guideboo data were NOT saved.");
-    }
 }

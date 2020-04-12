@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -101,8 +100,8 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
         getCommand("project").setExecutor(new ProjectCommandExecutor());
         getCommand("project").setTabCompleter(new ProjectCommandExecutor());
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "mcme:project");
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "mcme:project", this);
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new JobListener(), this);
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
@@ -130,7 +129,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (!channel.equals("mcme:project")) {
+        if (!channel.equals("BungeeCord")) {
             return;
         }
         ByteArrayDataInput in = ByteStreams.newDataInput(message);
@@ -233,7 +232,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
         out.writeUTF("GetServer");
 
-        player.sendPluginMessage(this, "mcme:project", out.toByteArray());
+        player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
     }
 
     public void sendReload(Player player, String s) {
