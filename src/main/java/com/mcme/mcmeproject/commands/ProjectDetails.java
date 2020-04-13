@@ -110,8 +110,8 @@ public class ProjectDetails extends ProjectCommand {
                                     }
                                     message.addSimple(ChatColor.BOLD + "PROJECT: " + pr.name + " (Finished) ");
                                     message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Closed " + accTime(f) + " ago");
-                                    message.addSimple(ChatColor.RED.BOLD + "Leader: " + ChatColor.DARK_PURPLE + ps + "\n"
-                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + "\n"
+                                    message.addSimple(ChatColor.BOLD + "Leader: " + ChatColor.DARK_PURPLE + ps + "\n"
+                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + ChatColor.GOLD + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
@@ -126,7 +126,7 @@ public class ProjectDetails extends ProjectCommand {
                                     message.addSimple(ChatColor.BOLD + "PROJECT: " + pr.name + " (Hidden) ");
                                     message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Leader: " + ChatColor.DARK_PURPLE + ps + "\n"
-                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + "\n"
+                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + ChatColor.GOLD + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
@@ -134,7 +134,6 @@ public class ProjectDetails extends ProjectCommand {
                                             + ChatColor.GREEN + "Hours of work: " + Math.round(pr.minutes / 60) + "\n"
                                             + ChatColor.GREEN + "People that works on: " + people(r2) + "\n"
                                             + ChatColor.GOLD + "+--------------------+");
-
                                 } else {
                                     if (pr.main) {
                                         message.addSimple(ChatColor.DARK_RED + "Main Project of the Server" + "\n");
@@ -143,7 +142,7 @@ public class ProjectDetails extends ProjectCommand {
                                     message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
 
                                     message.addSimple(ChatColor.RED.BOLD + "Leader: " + ChatColor.DARK_PURPLE + ps + "\n"
-                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + "\n"
+                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + ChatColor.GOLD + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "Current percentage: " + pr.percentage.toString() + "%" + "\n"
@@ -221,7 +220,7 @@ public class ProjectDetails extends ProjectCommand {
                                     message.addSimple(ChatColor.BOLD + "Project name: " + pr.name + " ");
                                     message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Leader: " + ChatColor.DARK_PURPLE + ps + "\n"
-                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + "\n"
+                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + ChatColor.GOLD + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
@@ -235,7 +234,7 @@ public class ProjectDetails extends ProjectCommand {
                                     message.addSimple(ChatColor.BOLD + "Project name: " + pr.name + " ");
                                     message.addTooltipped(ChatColor.AQUA + "[...]" + "\n", ChatColor.GREEN + "Updated " + accTime(f) + " ago");
                                     message.addSimple(ChatColor.RED.BOLD + "Leader: " + ChatColor.DARK_PURPLE + ps + "\n"
-                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + "\n"
+                                            + ChatColor.BOLD + "Assistants: " + ChatColor.DARK_PURPLE + assistantsList(pr.assistants) + ChatColor.GOLD + "\n"
                                             + ChatColor.GOLD + pr.description + "\n"
                                             + ChatColor.GOLD + "+--------------------+" + "\n"
                                             + ChatColor.GREEN + "-Current percentage: " + pr.percentage.toString() + "%" + "\n"
@@ -401,13 +400,29 @@ public class ProjectDetails extends ProjectCommand {
 
             Double m = days / 31.0;
             Integer months = exactTruncation(m);
-            Double rd = days - (months * 31.0);
-            if (rd != 0) {
+            Integer month2 = truncationForDifect(m);
+            Double s = months * 31.0;
+            Double rd = days - s;
+            Double s2 = month2 * 31.0;
+            Double rd2 = days - s2;
+            if (months == month2) {
+                if (rd != 0 && rd > 0) {
 
-                return months + " months and " + rd + " days";
+                    return months + " months and " + rd + " days";
+
+                } else {
+
+                    return months + " months";
+                }
             } else {
+                if (rd2 != 0 && rd2 > 0) {
 
-                return months + " months";
+                    return month2 + " months and " + rd2 + " days";
+
+                } else {
+
+                    return month2 + " months";
+                }
             }
 
         } else if (days > 341 && days < 365) {
@@ -415,13 +430,19 @@ public class ProjectDetails extends ProjectCommand {
             Double y = days - 341.0;
 
             return "11 months and " + y + " days";
+
         } else if (days >= 365) {
 
             Double y = days / 365.0;
             Integer years = exactTruncation(y);
+
             Double ys = days - (years * 365.0);
 
-            return years + " years and " + ys + " days";
+            if (ys > 0) {
+                return years + " years and " + ys + " days";
+            } else {
+                return years + " years";
+            }
 
         } else {
 
@@ -485,7 +506,7 @@ public class ProjectDetails extends ProjectCommand {
                 Double mm = seconds - m;
                 Integer minutes = exactTruncation(mm);
 
-                if (minutes != 0) {
+                if (minutes > 0) {
 
                     return hour + " hours and " + minutes + " minutes";
 
@@ -519,6 +540,16 @@ public class ProjectDetails extends ProjectCommand {
         } else {
             return i;
         }
+
+    }
+
+    private static Integer truncationForDifect(Double number) {
+
+        int i = (int) Math.round(number);
+        Double decimalPart = number - i;
+        Double middle = 0.10;
+
+        return i;
 
     }
 

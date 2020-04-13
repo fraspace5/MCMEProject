@@ -300,7 +300,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         out.writeShort(msgbytes.toByteArray().length);
         out.write(msgbytes.toByteArray());
 
-        player.sendPluginMessage(this, "mcme:project", out.toByteArray());
+        player.sendPluginMessage(this, "Bungeecord", out.toByteArray());
     }
 
 
