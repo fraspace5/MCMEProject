@@ -75,6 +75,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
     @Getter
     public String nameserver;
+    
     /*
     
     private void checkUpdate() {
