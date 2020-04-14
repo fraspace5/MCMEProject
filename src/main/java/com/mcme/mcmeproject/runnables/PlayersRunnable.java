@@ -68,8 +68,7 @@ public class PlayersRunnable {
                                     } else {
                                         PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, 1);
                                     }
-                                    PluginData.getMin().remove(player);
-                                    PluginData.getMin().put(player, false);
+
                                     if (PluginData.getTodayStat().containsKey("today")) {
                                         PluginData.getTodayStat().get("today").min = PluginData.getTodayStat().get("today").min + 1;
                                         if (!PluginData.getTodayStat().get("today").players.contains(player)) {
@@ -89,6 +88,10 @@ public class PlayersRunnable {
                                         PluginData.getTodayStat().put("today", new ProjectStatistics(0, l, 1, pr));
 
                                     }
+
+                                    PluginData.getMin().remove(player);
+                                    PluginData.getMin().put(player, false);
+
                                 }
 
                             }
@@ -119,7 +122,6 @@ public class PlayersRunnable {
         }.runTaskTimer(Mcproject.getPluginInstance(), 400L, 288000L);
 
     }
-   
 
     public static void updatedReminderRunnable(final String project, final Player pl, final Long time) {
 

@@ -26,6 +26,9 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.regions.Polygonal2DRegion;
 import com.sk89q.worldedit.regions.Region;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
@@ -66,8 +69,8 @@ public class ProjectArea extends ProjectCommand {
                     if (args[1].equalsIgnoreCase("add")) {
 
                         if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[0]).idproject)) {
-
-                            if (!PluginData.regionsReadable.get(PluginData.projectsAll.get(args[0]).idproject).contains(args[2])) {
+                            List l = createList(PluginData.projectsAll.get(args[0]).idproject);
+                            if (!l.contains(args[2].toLowerCase())) {
                                 try {
                                     WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
 
@@ -368,5 +371,13 @@ public class ProjectArea extends ProjectCommand {
 
     private void sendInvalidSelection(Player player) {
         PluginData.getMessageUtil().sendErrorMessage(player, "For a cuboid or polygonal area make a valid WorldEdit selection first.");
+    }
+
+    public static List<String> createList(UUID id) {
+        List<String> s = new ArrayList<>();
+        for (String regions : PluginData.regionsReadable.get(id)) {
+            s.add(regions.toLowerCase());
+        }
+        return s;
     }
 }
