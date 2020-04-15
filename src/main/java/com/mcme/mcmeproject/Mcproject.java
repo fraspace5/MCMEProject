@@ -26,7 +26,6 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.listener.JobListener;
 import com.mcme.mcmeproject.listener.PlayerListener;
 import com.mcme.mcmeproject.runnables.SystemRunnable;
-import com.mcme.mcmeproject.util.UpdaterCheck;
 import com.mcmiddleearth.thegaffer.ext.ExternalProjectHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
