@@ -59,7 +59,10 @@ public class SystemRunnable {
 
                                     @Override
                                     public void run() {
-                                        PluginData.loadAllDynmap();
+                                        if (!Mcproject.getPluginInstance().nameserver.equals("default")) {
+                                            PluginData.loadAllDynmap();
+
+                                        }
                                     }
 
                                 }.runTaskLater(Mcproject.getPluginInstance(), 100L);

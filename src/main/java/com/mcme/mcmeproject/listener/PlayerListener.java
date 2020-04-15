@@ -217,7 +217,8 @@ public class PlayerListener implements Listener {
         if (Mcproject.getPluginInstance().nameserver.equals("default")) {
 
             Mcproject.getPluginInstance().sendNameServer(p);
-
+            PluginData.loadAllDynmap();
+       
         }
 
         new BukkitRunnable() {
