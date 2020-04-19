@@ -161,6 +161,9 @@ public class ProjectArea extends ProjectCommand {
                                 Logger.getLogger(ProjectArea.class.getName()).log(Level.SEVERE, null, ex);
                                 if (ex instanceof NullPointerException) {
                                     sendInvalidSelection(pl);
+                                } else if (ex instanceof IncompleteRegionException) {
+                                    sendInvalidSelection(pl);
+
                                 }
                             }
 
