@@ -67,16 +67,15 @@ public class PlayerListener implements Listener {
                 reg.add(region);
             }
         }
-        String weightMax = reg.get(0);
-
-        for (String re : reg) {
-            if (PluginData.regions.get(re).weight > PluginData.regions.get(weightMax).weight) {
-                weightMax = re;
-            }
-        }
 
         if (!reg.isEmpty()) {
+            String weightMax = reg.get(0);
 
+            for (String re : reg) {
+                if (PluginData.regions.get(re).weight > PluginData.regions.get(weightMax).weight) {
+                    weightMax = re;
+                }
+            }
             RegionData region = PluginData.regions.get(weightMax);
 
             if (region.region.isInside(loc)) {
@@ -158,15 +157,15 @@ public class PlayerListener implements Listener {
                 reg.add(region);
             }
         }
-        String weightMax = reg.get(0);
-
-        for (String re : reg) {
-            if (PluginData.regions.get(re).weight > PluginData.regions.get(weightMax).weight) {
-                weightMax = re;
-            }
-        }
 
         if (!reg.isEmpty()) {
+            String weightMax = reg.get(0);
+
+            for (String re : reg) {
+                if (PluginData.regions.get(re).weight > PluginData.regions.get(weightMax).weight) {
+                    weightMax = re;
+                }
+            }
 
             RegionData region = PluginData.regions.get(weightMax);
 
@@ -364,9 +363,6 @@ public class PlayerListener implements Listener {
             }
 
         }
-        
-        
-        
 
     }
 
