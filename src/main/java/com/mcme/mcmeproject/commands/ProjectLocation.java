@@ -58,6 +58,7 @@ public class ProjectLocation extends ProjectCommand {
                         if (PluginData.regions.get(args[1]).isInside(loc)) {
 
                             String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
+                           
                             new BukkitRunnable() {
 
                                 @Override
@@ -74,6 +75,7 @@ public class ProjectLocation extends ProjectCommand {
 
                                         String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+
                                         PluginData.loadWarps();
                                         Mcproject.getPluginInstance().sendReload(pl, "warps");
                                     } catch (SQLException ex) {
@@ -83,20 +85,22 @@ public class ProjectLocation extends ProjectCommand {
                                 }
 
                             }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
+                            
+                            sendDone(cs);
                             DynmapUtil.createMarkerWarp(n, loc);
                             PluginData.loadAllDynmap();
                             Mcproject.getPluginInstance().sendReload(pl, "map");
-                            sendDone(cs);
 
                         } else {
                             sendNoInside(cs);
                         }
+                    } else {
+
+                        sendNoRegion(cs, args[1], args[0]);
+
                     }
                 } else {
-
-                    sendNoRegion(cs, args[1], args[0]);
-
+                    sendNoPermission(cs);
                 }
 
             } else {
