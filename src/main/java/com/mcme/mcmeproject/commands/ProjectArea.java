@@ -68,8 +68,11 @@ public class ProjectArea extends ProjectCommand {
             if (PluginData.projectsAll.containsKey(args[0])) {
                 if (playerPermission(args[0], cs)) {
                     if (args[1].equalsIgnoreCase("add")) {
-                        List l = createList(PluginData.projectsAll.get(args[0]).idproject);
-                        if (!l.contains(args[2].toLowerCase())) {
+                        List l = new ArrayList<>();
+                        if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[0]).idproject)) {
+                            l = createList(PluginData.projectsAll.get(args[0]).idproject);
+                        }
+                        if (!l.contains(args[2].toLowerCase()) || l.isEmpty()) {
                             try {
                                 WorldEditPlugin worldEdit = (WorldEditPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
 
@@ -293,6 +296,7 @@ public class ProjectArea extends ProjectCommand {
 
     public static List<String> createList(UUID id) {
         List<String> s = new ArrayList<>();
+
         for (String regions : PluginData.regionsReadable.get(id)) {
             s.add(regions.toLowerCase());
         }
