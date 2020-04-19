@@ -37,8 +37,10 @@ public class RegionData {
     public final String server;
 
     public final String type;
+    
+    public final Integer weight;
 
-    public RegionData(String namem, UUID idregion, UUID idpr, Region rn, String sr, String t) {
+    public RegionData(String namem, UUID idregion, UUID idpr, Region rn, String sr, String t,Integer wei) {
 
         name = namem;
 
@@ -51,6 +53,8 @@ public class RegionData {
         server = sr;
 
         type = t;
+        
+        weight = wei;
 
     }
 

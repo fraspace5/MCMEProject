@@ -402,6 +402,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `zlist` LONGTEXT NOT NULL,\n"
                                 + "  `ymin` INT NOT NULL,\n"
                                 + "  `ymax` INT NOT NULL,\n"
+                                + "  `weight` INT NOT NULL,\n"
                                 + "  `location` LONGTEXT NOT NULL,\n"
                                 + "  `server` VARCHAR(100) NOT NULL,\n"
                                 + "  PRIMARY KEY (`idregion`));";
