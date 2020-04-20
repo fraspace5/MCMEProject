@@ -194,7 +194,7 @@ public class PluginData {
                                         ymax,
                                         parseInt(zlist[1]));
                                 
-                                Location loc = new Location(Bukkit.getWorld(UUID.fromString(location[0])), parseDouble(location[1]), parseDouble(location[2]), parseDouble(location[3]));
+                                Location loc = new Location(Bukkit.getWorld(location[0]), parseDouble(location[1]), parseDouble(location[2]), parseDouble(location[3]));
                                 
                                 CuboidRegion rr = new CuboidRegion(loc, minCorner, maxCorner);
                                 
@@ -221,7 +221,7 @@ public class PluginData {
                                 Integer ymax = r.getInt("ymax");
                                 List<Integer> xlist = StringtoListInt(unserialize(r.getString("xlist")));
                                 List<Integer> zlist = StringtoListInt(unserialize(r.getString("zlist")));
-                                Location loc = new Location(Bukkit.getWorld(UUID.fromString(location[0])), parseDouble(location[1]), parseDouble(location[2]), parseDouble(location[3]));
+                                Location loc = new Location(Bukkit.getWorld(location[0]), parseDouble(location[1]), parseDouble(location[2]), parseDouble(location[3]));
                                 
                                 PrismoidRegion rr = new PrismoidRegion(loc, xlist, zlist, ymin, ymax);
                                 regions.put(r.getString("name"), new RegionData(r.getString("name"), UUID.fromString(r.getString("idregion")), UUID.fromString(r.getString("idproject")), rr, r.getString("server"), r.getString("type"), r.getInt("weight")));
@@ -268,9 +268,9 @@ public class PluginData {
                     if (r.first()) {
                         do {
                             
-                            Location loc = new Location(Bukkit.getWorld(UUID.fromString(r.getString("world"))), r.getFloat("x"), r.getFloat("y"), r.getFloat("z"));
+                            Location loc = new Location(Bukkit.getWorld(r.getString("world")), r.getFloat("x"), r.getFloat("y"), r.getFloat("z"));
                             
-                            warps.put(UUID.fromString(r.getString("idregion")), new WarpData(UUID.fromString(r.getString("idproject")), UUID.fromString(r.getString("idregion")), loc, r.getString("server")));
+                            warps.put(UUID.fromString(r.getString("idregion")), new WarpData(UUID.fromString(r.getString("idproject")), UUID.fromString(r.getString("idregion")), loc, r.getString("server"),r.getString("world")));
                             
                         } while (r.next());
                         
