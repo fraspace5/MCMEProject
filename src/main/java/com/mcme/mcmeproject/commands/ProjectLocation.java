@@ -58,7 +58,7 @@ public class ProjectLocation extends ProjectCommand {
                         if (PluginData.regions.get(args[1]).isInside(loc)) {
 
                             String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
-                           
+
                             new BukkitRunnable() {
 
                                 @Override
@@ -85,7 +85,7 @@ public class ProjectLocation extends ProjectCommand {
                                 }
 
                             }.runTaskAsynchronously(Mcproject.getPluginInstance());
-                            
+
                             sendDone(cs);
                             DynmapUtil.createMarkerWarp(n, loc);
                             PluginData.loadAllDynmap();
