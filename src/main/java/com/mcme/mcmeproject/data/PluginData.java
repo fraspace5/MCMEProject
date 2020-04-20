@@ -270,7 +270,7 @@ public class PluginData {
                             
                             Location loc = new Location(Bukkit.getWorld(UUID.fromString(r.getString("world"))), r.getFloat("x"), r.getFloat("y"), r.getFloat("z"));
                             
-                            warps.put(UUID.fromString(r.getString("idregion")), new WarpData(UUID.fromString(r.getString("idproject")), UUID.fromString(r.getString("idregion")), loc, r.getString("server")));
+                            warps.put(UUID.fromString(r.getString("idregion")), new WarpData(UUID.fromString(r.getString("idproject")), UUID.fromString(r.getString("idregion")), loc, r.getString("server"),r.getString("world")));
                             
                         } while (r.next());
                         

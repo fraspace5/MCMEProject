@@ -73,7 +73,7 @@ public class ProjectLocation extends ProjectCommand {
                                             DynmapUtil.deleteWarp(n);
                                         }
 
-                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getUID().toString() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
+                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getName() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
 
                                         PluginData.loadWarps();
