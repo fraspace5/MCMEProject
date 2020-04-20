@@ -90,6 +90,10 @@ public class ProjectWarp extends ProjectCommand {
                                 Location loc = PluginData.warps.get(PluginData.regions.get(args[1]).idr).location;
 
                                 ConnectUtil.teleportPlayer(pl, PluginData.warps.get(PluginData.regions.get(args[1]).idr).server, PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName(), loc);
+                                System.out.println(loc.getX() + " Y" + loc.getY() + " z " + loc.getX() + " " + loc.getWorld().getName());
+                                System.out.println("server " + PluginData.warps.get(PluginData.regions.get(args[1]).idr).server);
+                                System.out.println("name " + PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName());
+
                             }
                         } else {
 
