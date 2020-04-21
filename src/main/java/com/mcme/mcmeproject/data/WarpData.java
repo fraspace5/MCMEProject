@@ -33,7 +33,7 @@ public class WarpData {
 
     public final Location location;
 
-    public final World wl;
+    public final String wl;
     
     public final String server;
 
@@ -45,7 +45,7 @@ public class WarpData {
 
         location = l;
 
-        wl = Bukkit.getWorld(world);
+        wl = world;
 
         server = nameserver;
     }

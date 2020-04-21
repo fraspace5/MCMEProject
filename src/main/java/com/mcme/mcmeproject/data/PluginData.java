@@ -43,6 +43,7 @@ import static java.lang.Double.parseDouble;
 import com.mcmiddleearth.pluginutil.region.CuboidRegion;
 import org.bukkit.Location;
 import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
+import org.bukkit.World;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
@@ -267,10 +268,16 @@ public class PluginData {
 
                     if (r.first()) {
                         do {
+                            Location l;
 
-                            Location loc = new Location(Bukkit.getWorld(r.getString("world")), r.getFloat("x"), r.getFloat("y"), r.getFloat("z"));
-
-                            warps.put(UUID.fromString(r.getString("idregion")), new WarpData(UUID.fromString(r.getString("idproject")), UUID.fromString(r.getString("idregion")), loc, r.getString("server"), r.getString("world")));
+                            if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(r.getString("server"))) {
+                                l = new Location(Bukkit.getWorld(r.getString("world")),
+                                        r.getFloat("x"), r.getFloat("y"), r.getFloat("z"));
+                            } else {
+                                l = new Location(null,
+                                        r.getFloat("x"), r.getFloat("y"), r.getFloat("z"));
+                            }
+                            warps.put(UUID.fromString(r.getString("idregion")), new WarpData(UUID.fromString(r.getString("idproject")), UUID.fromString(r.getString("idregion")), l, r.getString("server"), r.getString("world")));
 
                         } while (r.next());
 
