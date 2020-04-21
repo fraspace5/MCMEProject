@@ -22,6 +22,7 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcmiddleearth.connect.util.ConnectUtil;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
+import com.sun.media.jfxmedia.logging.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -88,14 +89,13 @@ public class ProjectWarp extends ProjectCommand {
                             } else {
 
                                 Location loc = PluginData.warps.get(PluginData.regions.get(args[1]).idr).location;
-
-                                ConnectUtil.teleportPlayer(pl, PluginData.warps.get(PluginData.regions.get(args[1]).idr).server, PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName(), loc);
-                                
-                                System.out.println(loc.getX() + " Y" + loc.getY() + " z " + loc.getX() + " " + loc.getWorld().getName());
-                                System.out.println("server " + PluginData.warps.get(PluginData.regions.get(args[1]).idr).server);
-                                System.out.println("name " + PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName());
-
+                                Mcproject.getPluginInstance().clogger.sendMessage(loc.getX() + " Y" + loc.getY() + " z " + loc.getX() + " " + loc.getWorld().getName());
+                                Mcproject.getPluginInstance().clogger.sendMessage("server " + PluginData.warps.get(PluginData.regions.get(args[1]).idr).server);
+                                Mcproject.getPluginInstance().clogger.sendMessage("name " + PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName());
                                
+                                
+                                ConnectUtil.teleportPlayer(pl, PluginData.warps.get(PluginData.regions.get(args[1]).idr).server, PluginData.warps.get(PluginData.regions.get(args[1]).idr).wl.getName(), loc);
+
                             }
                         } else {
 
