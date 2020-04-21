@@ -500,7 +500,7 @@ public class PluginData {
         for (UUID name : warps.keySet()) {
             WarpData s = warps.get(name);
             if (!(projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.FINISHED) || projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.HIDDEN))) {
-                if (Bukkit.getWorlds().contains(s.wl) && Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(s.server)) {
+                if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(s.server)) {
                     String n = regionsUUID.get(s.idregion).toUpperCase() + " (" + projectsUUID.get(s.idproject).toLowerCase() + ")";
                     DynmapUtil.createMarkerWarp(n, s.location);
 
