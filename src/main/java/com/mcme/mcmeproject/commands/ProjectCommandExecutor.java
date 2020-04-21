@@ -125,6 +125,7 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 arguments.add("finish");
                 arguments.add("reopen");
                 arguments.add("main");
+                arguments.add("reload");
             }
 
             //                                       2      1        1       2      3        1             2       2        2        2              3          2         2      2        1        2       1       0        1
@@ -238,6 +239,16 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
                 } else if (args[0].equalsIgnoreCase("list")) {
 
                     List<String> a = Arrays.asList("1", "2", "3");
+                    for (String s : a) {
+                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                            fotherlist.add(s);
+                        }
+                    }
+                    return fotherlist;
+
+                } else if (args[0].equalsIgnoreCase("reload")) {
+
+                    List<String> a = Arrays.asList("map", "projects", "all","regions","warps");
                     for (String s : a) {
                         if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
                             fotherlist.add(s);
