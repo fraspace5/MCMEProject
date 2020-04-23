@@ -497,11 +497,12 @@ public class PluginData {
 
             RegionData s = regions.get(name);
 
-            if (Bukkit.getWorlds().contains(s.region.getWorld()) && Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(s.server)) {
+            if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(s.server)) {
                 if (!(projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.FINISHED) || projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.HIDDEN))) {
                     if (s.type.equals("cuboid")) {
                         DynmapUtil.createMarkeronLoadCuboid(s.name, projectsUUID.get(s.idproject), (CuboidRegion) s.region);
-                    } else {
+                    }
+                    else {
                         DynmapUtil.createMarkeronLoad(s.name, projectsUUID.get(s.idproject), (PrismoidRegion) s.region);
                     }
 
@@ -515,7 +516,7 @@ public class PluginData {
             if (!(projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.FINISHED) || projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.HIDDEN))) {
                 if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(s.server)) {
                     String n = regionsUUID.get(s.idregion).toUpperCase() + " (" + projectsUUID.get(s.idproject).toLowerCase() + ")";
-                    DynmapUtil.createMarkerWarp(n, s.location);
+                    DynmapUtil.createMarkerWarp(n, s.location, s.wl);
 
                 }
             }
