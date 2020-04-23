@@ -87,7 +87,7 @@ public class ProjectLocation extends ProjectCommand {
                             }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
                             sendDone(cs);
-                            DynmapUtil.createMarkerWarp(n, loc);
+                            DynmapUtil.createMarkerWarp(n, loc, loc.getWorld().getName());
                             PluginData.loadAllDynmap();
                             Mcproject.getPluginInstance().sendReload(pl, "map");
 

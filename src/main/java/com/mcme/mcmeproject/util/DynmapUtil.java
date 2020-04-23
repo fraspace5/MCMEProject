@@ -158,7 +158,7 @@ public class DynmapUtil {
 
     }
 
-    public static void createMarkerWarp(String name, Location l) {
+    public static void createMarkerWarp(String name, Location l, String world) {
 
         if (!enabled) {
             return;
@@ -169,7 +169,7 @@ public class DynmapUtil {
         if (init) {
 
             //  markerWarpSet.getDefaultMarkerIcon().setMarkerIconImage(Mcproject.getPluginInstance().getResource("greenflag.png"));
-            Marker m = markerWarpSet.createMarker(name, name, true, l.getWorld().getName(), l.getX(), l.getY(), l.getZ(), markerWarpSet.getDefaultMarkerIcon(), false);
+            Marker m = markerWarpSet.createMarker(name, name, true, world, l.getX(), l.getY(), l.getZ(), markerWarpSet.getDefaultMarkerIcon(), false);
 
         }
     }
