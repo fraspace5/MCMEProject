@@ -42,37 +42,43 @@ public class ProjectReload extends ProjectCommand {
             switch (args[0]) {
                 case "all":
                     pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
-                    new BukkitRunnable() {
+                    try {
 
-                        @Override
-                        public void run() {
+                        new BukkitRunnable() {
 
-                            PluginData.loadProjects();
-                            PluginData.loadRegions();
-                            pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Projects");
-                            pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Regions");
-                            new BukkitRunnable() {
+                            @Override
+                            public void run() {
 
-                                @Override
-                                public void run() {
-                                    PluginData.loadWarps();
-                                    pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Warps");
-                                    new BukkitRunnable() {
+                                PluginData.loadProjects();
+                                PluginData.loadRegions();
+                                pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Projects");
+                                pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Regions");
+                                new BukkitRunnable() {
 
-                                        @Override
-                                        public void run() {
-                                            PluginData.loadAllDynmap();
-                                            pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Map");
-                                            pl.sendMessage(ChatColor.GREEN + "Reload Completed, no errors found");
-                                        }
+                                    @Override
+                                    public void run() {
+                                        PluginData.loadWarps();
+                                        pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Warps");
+                                        new BukkitRunnable() {
 
-                                    }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                                }
+                                            @Override
+                                            public void run() {
+                                                PluginData.loadAllDynmap();
+                                                pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Map");
+                                                pl.sendMessage(ChatColor.GREEN + "Reload Completed, no errors found");
+                                            }
 
-                            }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                        }
+                                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                                    }
 
-                    }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                                }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                            }
+
+                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+
+                    } catch (Exception e) {
+                        pl.sendMessage(ChatColor.RED + "Errors Found - " + e.getClass().getName());
+                    }
                     break;
                 case "projects":
                     PluginData.loadProjects();

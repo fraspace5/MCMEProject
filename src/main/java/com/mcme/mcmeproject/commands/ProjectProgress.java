@@ -210,7 +210,7 @@ public class ProjectProgress extends ProjectCommand {
                                         String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
                                         Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-
+                                        PluginData.loadProjects();
                                         sendDone(cs, args[0]);
 
                                     } catch (SQLException ex) {
