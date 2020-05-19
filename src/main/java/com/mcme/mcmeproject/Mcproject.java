@@ -345,19 +345,18 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
             clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.YELLOW + "Plugin INITIALIZED, change database information!");
             Bukkit.getPluginManager().disablePlugin(this);
         } else {
-
-            con = DriverManager.getConnection("jdbc:mysql://" + Mcproject.getPluginInstance().host + ":"
-                    + Mcproject.getPluginInstance().port + "/"
-                    + Mcproject.getPluginInstance().database + "?useSSL=false&allowPublicKeyRetrieval=true",
-                    Mcproject.getPluginInstance().username,
-                    Mcproject.getPluginInstance().password);
-            clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.GREEN + "Database Found! ");
-
             new BukkitRunnable() {
 
                 @Override
                 public void run() {
                     try {
+                        con = DriverManager.getConnection("jdbc:mysql://" + Mcproject.getPluginInstance().host + ":"
+                                + Mcproject.getPluginInstance().port + "/"
+                                + Mcproject.getPluginInstance().database + "?useSSL=false&allowPublicKeyRetrieval=true",
+                                Mcproject.getPluginInstance().username,
+                                Mcproject.getPluginInstance().password);
+                        clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.GREEN + "Database Found! ");
+
                         String st1 = "CREATE TABLE IF NOT EXISTS `" + Mcproject.getPluginInstance().database + "`.`mcmeproject_news_data` (\n"
                                 + "  `player_uuid` VARCHAR(50) NOT NULL,\n"
                                 + "  `idproject` VARCHAR(50) NOT NULL);";
@@ -491,7 +490,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                 try {
                     if (!con.isValid(5)) {
                         con.close();
-                      
+
                         openConnection();
 
                     }
@@ -501,7 +500,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
             }
 
-        }.runTaskTimer(Mcproject.getPluginInstance(), 150L, 1000L);
+        }.runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 150L, 1000L);
 
     }
 
