@@ -20,6 +20,7 @@ import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -74,7 +75,9 @@ public class ProjectRemove extends ProjectCommand {
 
                                     assist.remove(uuid);
                                     String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
+                                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                    statm.setQueryTimeout(10);
+                                    statm.executeUpdate(stat);
                                     sendManager(cs, args[1]);
                                     PluginData.loadProjects();
                                     Mcproject.getPluginInstance().sendReload(pl, "projects");

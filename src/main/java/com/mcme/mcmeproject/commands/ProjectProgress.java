@@ -21,6 +21,7 @@ import com.mcme.mcmeproject.data.PluginData;
 import static java.lang.Double.parseDouble;
 import static java.lang.Long.parseLong;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -64,11 +65,15 @@ public class ProjectProgress extends ProjectCommand {
                                         try {
                                             String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                            statm.setQueryTimeout(10);
+                                            statm.executeUpdate(stat);
 
                                             String stat2 = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+                                            Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                            statm2.setQueryTimeout(10);
+                                            statm2.executeUpdate(stat2);
                                             sendDone(cs, args[0]);
                                             PluginData.loadProjects();
                                             PluginData.setTodayEnd();
@@ -93,11 +98,15 @@ public class ProjectProgress extends ProjectCommand {
                                             try {
                                                 String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                                statm.setQueryTimeout(10);
+                                                statm.executeUpdate(stat);
 
                                                 String stat2 = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                                Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+                                                Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                                statm2.setQueryTimeout(10);
+                                                statm2.executeUpdate(stat2);
                                                 sendDone(cs, args[0]);
                                                 PluginData.loadProjects();
                                                 PluginData.setTodayEnd();
@@ -122,11 +131,15 @@ public class ProjectProgress extends ProjectCommand {
                                     try {
                                         String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                        statm.setQueryTimeout(10);
+                                        statm.executeUpdate(stat);
 
                                         String stat2 = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                        Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+                                        Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                        statm2.setQueryTimeout(10);
+                                        statm2.executeUpdate(stat2);
                                         sendDone(cs, args[0]);
                                         PluginData.loadProjects();
                                         PluginData.setTodayEnd();
@@ -150,11 +163,15 @@ public class ProjectProgress extends ProjectCommand {
                                         try {
                                             String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                            statm.setQueryTimeout(10);
+                                            statm.executeUpdate(stat);
 
                                             String stat2 = "DELETE FROM  " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+                                            Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                            statm2.setQueryTimeout(10);
+                                            statm2.executeUpdate(stat2);
                                             sendDone(cs, args[0]);
                                             PluginData.loadProjects();
                                             PluginData.setTodayEnd();
@@ -180,11 +197,15 @@ public class ProjectProgress extends ProjectCommand {
                                             try {
                                                 String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                                statm.setQueryTimeout(10);
+                                                statm.executeUpdate(stat);
 
                                                 String stat2 = "DELETE FROM  " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                                Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+                                                Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                                statm2.setQueryTimeout(10);
+                                                statm2.executeUpdate(stat2);
                                                 sendDone(cs, args[0]);
                                                 PluginData.loadProjects();
                                                 PluginData.setTodayEnd();
@@ -209,7 +230,9 @@ public class ProjectProgress extends ProjectCommand {
                                     try {
                                         String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
 
-                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                        statm.setQueryTimeout(10);
+                                        statm.executeUpdate(stat);
                                         PluginData.loadProjects();
                                         sendDone(cs, args[0]);
 

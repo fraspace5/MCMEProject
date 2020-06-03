@@ -20,6 +20,7 @@ import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -59,7 +60,9 @@ public class ProjectHide extends ProjectCommand {
 
                                 try {
                                     String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET status = '" + ProjectStatus.HIDDEN.toString() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                    statm.setQueryTimeout(10);
+                                    statm.executeUpdate(stat);
                                     PluginData.loadProjects();
                                     Mcproject.getPluginInstance().sendReload(pl, "projects");
                                     sendDone(cs);

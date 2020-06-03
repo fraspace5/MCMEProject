@@ -19,6 +19,7 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -58,7 +59,9 @@ public class ProjectLink extends ProjectCommand {
 
                             try {
                                 String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET link = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                statm.setQueryTimeout(10);
+                                statm.executeUpdate(stat);
                                 PluginData.loadProjects();
                                 Mcproject.getPluginInstance().sendReload(pl, "projects");
                             } catch (SQLException ex) {

@@ -57,11 +57,7 @@ public class ProjectStatistics extends ProjectCommand {
                     @Override
                     public void run() {
                         try {
-                            Calendar cal = Calendar.getInstance();
-                            int day = cal.get(Calendar.DAY_OF_MONTH);
-                            int month = cal.get(Calendar.MONTH);
-                            int year = cal.get(Calendar.YEAR);
-
+                            Calendar cal = Calendar.getInstance();                    
                             String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "';";
                             ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
 

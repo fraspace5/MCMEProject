@@ -20,6 +20,7 @@ import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.util.DynmapUtil;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Location;
@@ -68,14 +69,17 @@ public class ProjectLocation extends ProjectCommand {
                                         if (PluginData.warps.containsKey(PluginData.regions.get(args[1]).idr)) {
                                             String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data WHERE idregion = '" + PluginData.regions.get(args[1]).idr.toString() + "' ;";
 
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate(stat2);
+                                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                            statm.setQueryTimeout(10);
+                                            statm.executeUpdate(stat2);
 
                                             DynmapUtil.deleteWarp(n);
                                         }
 
                                         String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getName() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
-                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
-
+                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                        statm.setQueryTimeout(10);
+                                        statm.executeUpdate(stat);
                                         PluginData.loadWarps();
                                         Mcproject.getPluginInstance().sendReload(pl, "warps");
                                     } catch (SQLException ex) {

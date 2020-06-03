@@ -20,6 +20,7 @@ import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -71,7 +72,9 @@ public class ProjectMain extends ProjectCommand {
 
                                         try {
                                             String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET main = 1 WHERE idproject = '" + pr.idproject.toString() + "' ;";
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                            statm.setQueryTimeout(10);
+                                            statm.executeUpdate(stat);
                                             sendDone(cs, args[0]);
                                             PluginData.loadProjects();
                                             Mcproject.getPluginInstance().sendReload(pl, "projects");
@@ -97,7 +100,9 @@ public class ProjectMain extends ProjectCommand {
 
                                     try {
                                         String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET main = 0 WHERE idproject = '" + pr.idproject.toString() + "' ;";
-                                        Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                        statm.setQueryTimeout(10);
+                                        statm.executeUpdate(stat);
                                         sendDoneOff(cs, args[0]);
                                         PluginData.loadProjects();
                                         Mcproject.getPluginInstance().sendReload(pl, "projects");

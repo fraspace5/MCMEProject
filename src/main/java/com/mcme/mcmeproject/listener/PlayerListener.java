@@ -29,6 +29,7 @@ import com.mcmiddleearth.pluginutil.message.MessageType;
 import com.mcmiddleearth.pluginutil.region.Region;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -264,7 +265,10 @@ public class PlayerListener implements Listener {
                 try {
                     String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool WHERE player_uuid = '" + p.getUniqueId().toString() + "' ;";
 
-                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                    Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    statm1.setQueryTimeout(10);
+                    final ResultSet r = statm1.executeQuery(statement);
+
                     if (PluginData.getPlayernotification()) {
                         if (r.first()) {
 
@@ -283,7 +287,9 @@ public class PlayerListener implements Listener {
                         } else {
 
                             String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool (bool, player_uuid) VALUES (true,'" + p.getUniqueId().toString() + "') ; ";
-                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                            statm.setQueryTimeout(10);
+                            statm.executeUpdate(stat);
                             new BukkitRunnable() {
 
                                 @Override

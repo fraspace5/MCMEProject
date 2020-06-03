@@ -43,6 +43,7 @@ import static java.lang.Double.parseDouble;
 import com.mcmiddleearth.pluginutil.region.CuboidRegion;
 import org.bukkit.Location;
 import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
+import java.sql.Statement;
 import org.bukkit.World;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -130,7 +131,9 @@ public class PluginData {
                 try {
                     String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
 
-                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    statm.setQueryTimeout(10);
+                    final ResultSet r = statm.executeQuery(statement);
                     if (r.first()) {
                         do {
                             Integer milliweeks = 1000 * 60 * 60 * 24 * 7;
@@ -175,7 +178,9 @@ public class PluginData {
                 try {
                     String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data ;";
 
-                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    statm.setQueryTimeout(10);
+                    final ResultSet r = statm.executeQuery(statement);
 
                     if (r.first()) {
                         do {
@@ -277,7 +282,9 @@ public class PluginData {
                 try {
                     String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data ;";
 
-                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    statm.setQueryTimeout(10);
+                    final ResultSet r = statm.executeQuery(statement);
 
                     if (r.first()) {
                         do {
@@ -315,7 +322,9 @@ public class PluginData {
                 try {
                     String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
 
-                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    statm.setQueryTimeout(10);
+                    final ResultSet r = statm.executeQuery(statement);
 
                     if (r.first()) {
                         do {
@@ -360,7 +369,9 @@ public class PluginData {
                 try {
                     String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE player_uuid = '" + e.getPlayer().getUniqueId().toString() + "' ;";
 
-                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    statm.setQueryTimeout(10);
+                    final ResultSet r = statm.executeQuery(statement);
 
                     for (final String name : projectsAll.keySet()) {
                         int i = 0;
@@ -501,8 +512,7 @@ public class PluginData {
                 if (!(projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.FINISHED) || projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.HIDDEN))) {
                     if (s.type.equals("cuboid")) {
                         DynmapUtil.createMarkeronLoadCuboid(s.name, projectsUUID.get(s.idproject), (CuboidRegion) s.region);
-                    }
-                    else {
+                    } else {
                         DynmapUtil.createMarkeronLoad(s.name, projectsUUID.get(s.idproject), (PrismoidRegion) s.region);
                     }
 

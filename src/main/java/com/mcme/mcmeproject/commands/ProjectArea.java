@@ -38,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import static java.lang.Integer.parseInt;
+import java.sql.Statement;
 
 /**
  *
@@ -91,12 +92,14 @@ public class ProjectArea extends ProjectCommand {
                                             PrismoidRegion r = new PrismoidRegion(loc, (com.sk89q.worldedit.regions.Polygonal2DRegion) weRegion);
                                             try {
                                                 String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server, weight ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "','" + parseInt(args[3]) + "' ) ;";
-                                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                                statm.executeUpdate(stat);
                                                 PluginData.loadRegions();
                                                 PluginData.loadWarps();
                                                 Mcproject.getPluginInstance().sendReload(pl, "regions");
                                                 Mcproject.getPluginInstance().sendReload(pl, "warps");
 
+                                                statm.setQueryTimeout(10);
                                             } catch (SQLException | NumberFormatException ex) {
                                                 if (ex instanceof NumberFormatException) {
                                                     PluginData.getMessageUtil().sendErrorMessage(cs, "It should be an integer number");
@@ -129,12 +132,14 @@ public class ProjectArea extends ProjectCommand {
                                             Vector maxCorner = r.getMaxCorner();
                                             try {
                                                 String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server, weight ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().nameserver + "','" + parseInt(args[3]) + "' ) ;";
-                                                Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate(stat);
+                                                Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                                statm.executeUpdate(stat);
                                                 PluginData.loadRegions();
                                                 PluginData.loadWarps();
                                                 Mcproject.getPluginInstance().sendReload(pl, "regions");
                                                 Mcproject.getPluginInstance().sendReload(pl, "warps");
 
+                                                statm.setQueryTimeout(10);
                                             } catch (SQLException | NumberFormatException ex) {
                                                 if (ex instanceof NumberFormatException) {
                                                     PluginData.getMessageUtil().sendErrorMessage(cs, "It should be an integer number");
@@ -181,9 +186,14 @@ public class ProjectArea extends ProjectCommand {
 
                                         try {
                                             String stat = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data WHERE idregion = '" + PluginData.regions.get(args[2]).idr.toString() + "' ;";
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
+                                            Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                            statm1.executeUpdate(stat);
                                             String stat2 = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data WHERE idregion = '" + PluginData.regions.get(args[2]).idr.toString() + "' ;";
-                                            Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate();
+                                            Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                            statm2.executeUpdate(stat);
+                                            statm1.setQueryTimeout(10);
+                                            statm2.setQueryTimeout(10);
+
                                             sendDel(cs);
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();

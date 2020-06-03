@@ -20,6 +20,7 @@ import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -53,8 +54,9 @@ public class ProjectCreate extends ProjectCommand {
                         try {
 
                             String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, updated, status, main, jobs, minutes, endDate, assistants, plcurrent) VALUES ('" + PluginData.createId().toString() + "', '" + args[0] + "', '" + pl.getUniqueId().toString() + "', '" + System.currentTimeMillis() + "', '0', 'nothing', '" + System.currentTimeMillis() + "', ' ', '" + System.currentTimeMillis() + "', '" + ProjectStatus.HIDDEN.name().toUpperCase() + "', 0, ' ', '0', '0', ' ', ' ') ;";
-                            Mcproject.getPluginInstance().con.prepareStatement(stat).execute();
-                            
+                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);          
+                            statm.setQueryTimeout(10);
+                            statm.execute(stat);
                             sendCreated(cs, args[0]);
                             PluginData.loadProjects();
                             Mcproject.getPluginInstance().sendReload(pl, "projects");
