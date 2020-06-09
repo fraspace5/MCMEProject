@@ -18,6 +18,8 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
+import com.mcme.mcmeproject.util.bungee;
+import com.mcme.mcmeproject.util.utils;
 import static java.lang.Long.parseLong;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,82 +41,70 @@ public class ProjectTime extends ProjectCommand {
         setUsageDescription(" <ProjectName> <ExtimatedTime>: Change time");
     }
 
-    private boolean manager;
-
-    private boolean head;
-
     @Override
     protected void execute(final CommandSender cs, final String... args) {
 
-        if (cs instanceof Player) {
-            head = false;
-            manager = false;
-            if (PluginData.projectsAll.containsKey(args[0])) {
-                Player pl = (Player) cs;
-                if (playerPermission(args[0], cs)) {
+        if (PluginData.getProjectsAll().containsKey(args[0])) {
+            Player pl = (Player) cs;
 
-                    new BukkitRunnable() {
+            if (utils.playerPermission(args[0], cs)) {
 
-                        @Override
-                        public void run() {
+                new BukkitRunnable() {
 
-                            try {
+                    @Override
+                    public void run() {
 
-                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[1], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                        try {
 
-                                Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                statm.setQueryTimeout(10);
-                                statm.executeUpdate(stat);
-                                PluginData.loadProjects();
-                                Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                sendDone(cs);
+                            String stat = "UPDATE mcmeproject_project_data SET time = '" + setTime(args[1], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
 
-                            } catch (SQLException ex) {
-                                Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                            statm.setQueryTimeout(10);
+                            statm.executeUpdate(stat);
+                            PluginData.loadProjects();
+                            bungee.sendReload(pl, "projects");
+                            sendDone(cs);
 
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
-                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                    }
 
-                }
-            } else {
-
-                sendNoProject(cs);
+                }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
             }
+        } else {
+
+            sendNoProject(cs);
 
         }
 
     }
 
-    public Long setTime(String t, CommandSender cs) {
+    private Long setTime(String t, CommandSender cs) {
         String tt = t.substring(0, t.length() - 1);
         try {
             if (t.endsWith("y")) {
 
                 Long r = 86400000 * (365 * parseLong(tt)) + System.currentTimeMillis();
+               
                 return r;
-
-                //years 365 days
             } else if (t.endsWith("m")) {
 
                 Long r = 86400000 * (31 * parseLong(tt)) + System.currentTimeMillis();
 
                 return r;
-
-//month 31 days
             } else if (t.endsWith("w")) {
 
                 Long r = 86400000 * (7 * parseLong(tt)) + System.currentTimeMillis();
                 return r;
-//week 7 days
+
             } else if (t.endsWith("d")) {
 
                 Long r = (86400000 * parseLong(tt)) + System.currentTimeMillis();
                 return r;
 
-//days
             } else {
 
                 sendNoTime(cs);
@@ -126,31 +116,6 @@ public class ProjectTime extends ProjectCommand {
             return null;
         }
 
-    }
-
-    public boolean playerPermission(final String prr, CommandSender cs) {
-        final Player pl = (Player) cs;
-
-        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
-            manager = true;
-
-        }
-        if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
-            head = true;
-
-        }
-
-        if (manager || head || pl.hasPermission("project.owner")) {
-            return true;
-        } else {
-            sendNoPermission(cs);
-            return false;
-        }
-
-    }
-
-    private void sendNoPermission(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
     }
 
     private void sendNoProject(CommandSender cs) {

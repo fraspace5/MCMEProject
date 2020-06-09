@@ -18,6 +18,8 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
+import com.mcme.mcmeproject.util.bungee;
+import com.mcme.mcmeproject.util.utils;
 import static java.lang.Double.parseDouble;
 import static java.lang.Long.parseLong;
 import java.sql.SQLException;
@@ -41,109 +43,36 @@ public class ProjectProgress extends ProjectCommand {
     }
     //extimated time y/m/w/d
 
-    private boolean manager;
-
-    private boolean head;
-
     @Override
     protected void execute(final CommandSender cs, final String... args) {
 
-        if (cs instanceof Player) {
-            manager = false;
-            head = false;
-            if (PluginData.projectsAll.containsKey(args[0])) {
-                if (playerPermission(args[0], cs)) {
-                    Player pl = (Player) cs;
-                    try {
-                        if (!args[1].equalsIgnoreCase("=") && !args[2].equalsIgnoreCase("=")) {
-                            if (args[1].endsWith("%")) {
-                                new BukkitRunnable() {
-
-                                    @Override
-                                    public void run() {
-
-                                        try {
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-
-                                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                            statm.setQueryTimeout(10);
-                                            statm.executeUpdate(stat);
-
-                                            String stat2 = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-
-                                            Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
-                                            statm2.setQueryTimeout(10);
-                                            statm2.executeUpdate(stat2);
-                                            sendDone(cs, args[0]);
-                                            PluginData.loadProjects();
-                                            PluginData.setTodayEnd();
-                                            Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                        } catch (SQLException ex) {
-                                            Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
-
-                                    }
-
-                                }.runTaskAsynchronously(Mcproject.getPluginInstance());
-                            } else {
-                                if (parseDouble(args[1]) > 100.0 || parseDouble(args[1]) < 0) {
-                                    sendNoPercentage(cs);
-                                } else {
-
-                                    new BukkitRunnable() {
-
-                                        @Override
-                                        public void run() {
-
-                                            try {
-                                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-
-                                                Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                                statm.setQueryTimeout(10);
-                                                statm.executeUpdate(stat);
-
-                                                String stat2 = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-
-                                                Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
-                                                statm2.setQueryTimeout(10);
-                                                statm2.executeUpdate(stat2);
-                                                sendDone(cs, args[0]);
-                                                PluginData.loadProjects();
-                                                PluginData.setTodayEnd();
-                                                Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                            } catch (SQLException ex) {
-                                                Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                                            }
-
-                                        }
-
-                                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                                }
-                            }
-                        } else if (args[1].equalsIgnoreCase("=") && !args[2].equalsIgnoreCase("=")) {
-
+        if (PluginData.getProjectsAll().containsKey(args[0])) {
+            if (utils.playerPermission(args[0], cs)) {
+                Player pl = (Player) cs;
+                try {
+                    if (!args[1].equalsIgnoreCase("=") && !args[2].equalsIgnoreCase("=")) {
+                        if (args[1].endsWith("%")) {
                             new BukkitRunnable() {
 
                                 @Override
                                 public void run() {
 
                                     try {
-                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                        String stat = "UPDATE mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
 
-                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                                         statm.setQueryTimeout(10);
                                         statm.executeUpdate(stat);
 
-                                        String stat2 = "DELETE FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                        String stat2 = "DELETE FROM mcmeproject_news_data WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
 
-                                        Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                        Statement statm2 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2);
                                         statm2.setQueryTimeout(10);
                                         statm2.executeUpdate(stat2);
                                         sendDone(cs, args[0]);
                                         PluginData.loadProjects();
                                         PluginData.setTodayEnd();
-                                        Mcproject.getPluginInstance().sendReload(pl, "projects");
+                                        bungee.sendReload(pl, "projects");
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -151,9 +80,10 @@ public class ProjectProgress extends ProjectCommand {
                                 }
 
                             }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                        } else if (!args[1].equalsIgnoreCase("=") && args[2].equalsIgnoreCase("=")) {
-                            if (args[1].endsWith("%")) {
+                        } else {
+                            if (parseDouble(args[1]) > 100.0 || parseDouble(args[1]) < 0) {
+                                sendNoPercentage(cs);
+                            } else {
 
                                 new BukkitRunnable() {
 
@@ -161,21 +91,21 @@ public class ProjectProgress extends ProjectCommand {
                                     public void run() {
 
                                         try {
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String stat = "UPDATE mcmeproject_project_data SET percentage = '" + args[1] + "', time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
 
-                                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                                             statm.setQueryTimeout(10);
                                             statm.executeUpdate(stat);
 
-                                            String stat2 = "DELETE FROM  " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                            String stat2 = "DELETE FROM mcmeproject_news_data WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
 
-                                            Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
+                                            Statement statm2 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2);
                                             statm2.setQueryTimeout(10);
                                             statm2.executeUpdate(stat2);
                                             sendDone(cs, args[0]);
                                             PluginData.loadProjects();
                                             PluginData.setTodayEnd();
-                                            Mcproject.getPluginInstance().sendReload(pl, "projects");
+                                            bungee.sendReload(pl, "projects");
                                         } catch (SQLException ex) {
                                             Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                         }
@@ -183,44 +113,42 @@ public class ProjectProgress extends ProjectCommand {
                                     }
 
                                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
-                            } else {
 
-                                if (parseDouble(args[1]) > 100.0 || parseDouble(args[1]) < 0) {
-                                    sendNoPercentage(cs);
-                                } else {
-
-                                    new BukkitRunnable() {
-
-                                        @Override
-                                        public void run() {
-
-                                            try {
-                                                String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-
-                                                Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                                statm.setQueryTimeout(10);
-                                                statm.executeUpdate(stat);
-
-                                                String stat2 = "DELETE FROM  " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-
-                                                Statement statm2 = Mcproject.getPluginInstance().con.prepareStatement(stat2);
-                                                statm2.setQueryTimeout(10);
-                                                statm2.executeUpdate(stat2);
-                                                sendDone(cs, args[0]);
-                                                PluginData.loadProjects();
-                                                PluginData.setTodayEnd();
-                                                Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                            } catch (SQLException ex) {
-                                                Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                                            }
-
-                                        }
-
-                                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                                }
                             }
-                        } else if (args[1].equalsIgnoreCase("=") && args[2].equalsIgnoreCase("=")) {
+                        }
+                    } else if (args[1].equalsIgnoreCase("=") && !args[2].equalsIgnoreCase("=")) {
+
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
+                                try {
+                                    String stat = "UPDATE mcmeproject_project_data SET time = '" + setTime(args[2], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+
+                                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                    statm.setQueryTimeout(10);
+                                    statm.executeUpdate(stat);
+
+                                    String stat2 = "DELETE FROM mcmeproject_news_data WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+
+                                    Statement statm2 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2);
+                                    statm2.setQueryTimeout(10);
+                                    statm2.executeUpdate(stat2);
+                                    sendDone(cs, args[0]);
+                                    PluginData.loadProjects();
+                                    PluginData.setTodayEnd();
+                                    bungee.sendReload(pl, "projects");
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                            }
+
+                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                    } else if (!args[1].equalsIgnoreCase("=") && args[2].equalsIgnoreCase("=")) {
+                        if (args[1].endsWith("%")) {
 
                             new BukkitRunnable() {
 
@@ -228,14 +156,21 @@ public class ProjectProgress extends ProjectCommand {
                                 public void run() {
 
                                     try {
-                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
+                                        String stat = "UPDATE mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
 
-                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                                         statm.setQueryTimeout(10);
                                         statm.executeUpdate(stat);
-                                        PluginData.loadProjects();
-                                        sendDone(cs, args[0]);
 
+                                        String stat2 = "DELETE FROM  mcmeproject_news_data WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+
+                                        Statement statm2 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2);
+                                        statm2.setQueryTimeout(10);
+                                        statm2.executeUpdate(stat2);
+                                        sendDone(cs, args[0]);
+                                        PluginData.loadProjects();
+                                        PluginData.setTodayEnd();
+                                        bungee.sendReload(pl, "projects");
                                     } catch (SQLException ex) {
                                         Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -243,23 +178,81 @@ public class ProjectProgress extends ProjectCommand {
                                 }
 
                             }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                        } else {
+
+                            if (parseDouble(args[1]) > 100.0 || parseDouble(args[1]) < 0) {
+                                sendNoPercentage(cs);
+                            } else {
+
+                                new BukkitRunnable() {
+
+                                    @Override
+                                    public void run() {
+
+                                        try {
+                                            String stat = "UPDATE mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+
+                                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                            statm.setQueryTimeout(10);
+                                            statm.executeUpdate(stat);
+
+                                            String stat2 = "DELETE FROM  mcmeproject_news_data WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+
+                                            Statement statm2 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2);
+                                            statm2.setQueryTimeout(10);
+                                            statm2.executeUpdate(stat2);
+                                            sendDone(cs, args[0]);
+                                            PluginData.loadProjects();
+                                            PluginData.setTodayEnd();
+                                            bungee.sendReload(pl, "projects");
+                                        } catch (SQLException ex) {
+                                            Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+
+                                    }
+
+                                }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                            }
                         }
+                    } else if (args[1].equalsIgnoreCase("=") && args[2].equalsIgnoreCase("=")) {
 
-                    } catch (NumberFormatException | NullPointerException nfe) {
-                        sendNoNumber(cs);
+                        new BukkitRunnable() {
+
+                            @Override
+                            public void run() {
+
+                                try {
+                                    String stat = "UPDATE mcmeproject_project_data SET updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+
+                                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                    statm.setQueryTimeout(10);
+                                    statm.executeUpdate(stat);
+                                    PluginData.loadProjects();
+                                    sendDone(cs, args[0]);
+                                    bungee.sendReload(pl, "projects");
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                            }
+
+                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
                     }
+
+                } catch (NumberFormatException | NullPointerException nfe) {
+                    sendNoNumber(cs);
                 }
-            } else {
-
-                sendNoProject(cs);
-
             }
+        } else {
+
+            sendNoProject(cs);
 
         }
 
     }
 
-    public Long setTime(String t, CommandSender cs) {
+    private Long setTime(String t, CommandSender cs) {
         String tt = t.substring(0, t.length() - 1);
         try {
             if (t.endsWith("y")) {
@@ -297,31 +290,6 @@ public class ProjectProgress extends ProjectCommand {
             return null;
         }
 
-    }
-
-    public boolean playerPermission(final String prr, CommandSender cs) {
-        final Player pl = (Player) cs;
-
-        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
-            manager = true;
-
-        }
-        if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
-            head = true;
-
-        }
-
-        if (manager || head || pl.hasPermission("project.owner")) {
-            return true;
-        } else {
-            sendNoPermission(cs);
-            return false;
-        }
-
-    }
-
-    private void sendNoPermission(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
     }
 
     private void sendNoProject(CommandSender cs) {

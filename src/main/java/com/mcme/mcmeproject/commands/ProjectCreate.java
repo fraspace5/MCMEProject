@@ -19,6 +19,8 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.util.ProjectStatus;
+import com.mcme.mcmeproject.util.bungee;
+import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
@@ -42,37 +44,35 @@ public class ProjectCreate extends ProjectCommand {
     @Override
     protected void execute(final CommandSender cs, final String... args) {
 
-        if (cs instanceof Player) {
-            final Player pl = (Player) cs;
-            if (!PluginData.getProjectsAll().containsKey(args[0])) {
+        final Player pl = (Player) cs;
+        if (!PluginData.getProjectsAll().containsKey(args[0])) {
 
-                new BukkitRunnable() {
+            new BukkitRunnable() {
 
-                    @Override
-                    public void run() {
+                @Override
+                public void run() {
 
-                        try {
+                    try {
 
-                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, updated, status, main, jobs, minutes, endDate, assistants, plcurrent) VALUES ('" + PluginData.createId().toString() + "', '" + args[0] + "', '" + pl.getUniqueId().toString() + "', '" + System.currentTimeMillis() + "', '0', 'nothing', '" + System.currentTimeMillis() + "', ' ', '" + System.currentTimeMillis() + "', '" + ProjectStatus.HIDDEN.name().toUpperCase() + "', 0, ' ', '0', '0', ' ', ' ') ;";
-                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);          
-                            statm.setQueryTimeout(10);
-                            statm.execute(stat);
-                            sendCreated(cs, args[0]);
-                            PluginData.loadProjects();
-                            Mcproject.getPluginInstance().sendReload(pl, "projects");
+                        String stat = "INSERT INTO mcmeproject_project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, updated, status, main, jobs, minutes, endDate, assistants, plcurrent) VALUES ('" + utils.createId().toString() + "', '" + args[0] + "', '" + pl.getUniqueId().toString() + "', '" + System.currentTimeMillis() + "', '0', 'nothing', '" + System.currentTimeMillis() + "', ' ', '" + System.currentTimeMillis() + "', '" + ProjectStatus.HIDDEN.name().toUpperCase() + "', 0, ' ', '0', '0', ' ', ' ') ;";
+                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                        statm.setQueryTimeout(10);
+                        statm.execute(stat);
+                        sendCreated(cs, args[0]);
+                        PluginData.loadProjects();
 
-                        } catch (SQLException ex) {
-                            Logger.getLogger(ProjectCreate.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        bungee.sendReload(pl, "projects");
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ProjectCreate.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
 
-                }.runTaskAsynchronously(Mcproject.getPluginInstance());
+            }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-            } else {
+        } else {
 
-                sendAlreadyProject(cs);
-
-            }
+            sendAlreadyProject(cs);
 
         }
 

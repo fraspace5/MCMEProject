@@ -19,6 +19,7 @@ package com.mcme.mcmeproject.data;
 import com.mcme.mcmeproject.util.ProjectStatus;
 import java.util.List;
 import java.util.UUID;
+import lombok.Getter;
 
 /**
  *
@@ -26,43 +27,44 @@ import java.util.UUID;
  */
 public class ProjectData {
 
-    public String name;
+    @Getter
+    private String name;
+    @Getter
+    private UUID idproject;
+    @Getter
+    private ProjectStatus status;
+    @Getter
+    private boolean main;
+    @Getter
+    private String description;
+    @Getter
+    private List<String> jobs;
+    @Getter
+    private UUID head;
+    @Getter
+    private Long time;
+    @Getter
+    private Integer percentage;
+    @Getter
+    private String link;
+    @Getter
+    private Long updated;
+    @Getter
+    private int minutes;
+    @Getter
+    private int blocks;
+    @Getter
+    private List<UUID> assistants;
+    @Getter
+    private List<UUID> currentpl;
 
-    public UUID idproject;
-
-    public ProjectStatus status;
-
-    public boolean main;
-
-    public String description;
-
-    public List<String> jobs;
-
-    public UUID head;
-
-    public Long time;
-
-    public Integer percentage;
-
-    public String link;
-
-    public Long updated;
-
-    public int minutes;
-
-    public int blocks;
-
-    public List<UUID> assistants;
-
-    public List<UUID> currentpl;
-
-    public ProjectData(String namem, 
-            UUID idpr, 
-            ProjectStatus rn, 
+    public ProjectData(String namem,
+            UUID idpr,
+            ProjectStatus rn,
             Boolean bol,
-            List jj, 
-            UUID he, 
-            Long t, 
+            List jj,
+            UUID he,
+            Long t,
             Integer per,
             String desc,
             String l,
@@ -85,7 +87,7 @@ public class ProjectData {
         jobs = jj;
 
         time = t;
-
+ 
         percentage = per;
 
         link = l;

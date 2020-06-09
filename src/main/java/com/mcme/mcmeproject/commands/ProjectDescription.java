@@ -18,6 +18,8 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
+import com.mcme.mcmeproject.util.bungee;
+import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
@@ -56,30 +58,21 @@ public class ProjectDescription extends ProjectCommand {
 
     private String name;
 
-    private boolean manager;
-
-    private boolean head;
-
     private Player pl;
 
     @Override
     protected void execute(CommandSender cs, String... args) {
 
-        if (cs instanceof Player) {
-            manager = false;
-            head = false;
-            if (PluginData.projectsAll.containsKey(args[0])) {
-                if (playerPermission(args[0], cs)) {
-                    Player pp = (Player) cs;
-                    name = args[0];
-                    conversationFactory.buildConversation((Conversable) cs).begin();
-                    pl = pp;
-                }
-
-            } else {
-                sendNoProject(cs);
+        if (PluginData.getProjectsAll().containsKey(args[0])) {
+            if (utils.playerPermission(args[0], cs)) {
+                Player pp = (Player) cs;
+                name = args[0];
+                conversationFactory.buildConversation((Conversable) cs).begin();
+                pl = pp;
             }
 
+        } else {
+            sendNoProject(cs);
         }
 
     }
@@ -118,12 +111,13 @@ public class ProjectDescription extends ProjectCommand {
                 public void run() {
 
                     try {
-                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET description = '" + description + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(name).idproject.toString() + "' ;";
-                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                        String stat = "UPDATE mcmeproject_project_data SET description = '" + description + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(name).getIdproject().toString() + "' ;";
+                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                         statm.setQueryTimeout(10);
                         statm.executeUpdate(stat);
                         PluginData.loadProjects();
-                        Mcproject.getPluginInstance().sendReload(pl, "projects");
+                        bungee.sendReload(pl, "projects");
+
                     } catch (SQLException ex) {
                         Logger.getLogger(ProjectDescription.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -137,36 +131,8 @@ public class ProjectDescription extends ProjectCommand {
 
     }
 
-    public boolean playerPermission(final String prr, CommandSender cs) {
-        final Player pl = (Player) cs;
-
-        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
-            manager = true;
-
-        }
-        if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
-            head = true;
-
-        }
-
-        if (manager || head || pl.hasPermission("project.owner")) {
-            return true;
-        } else {
-            sendNoPermission(cs);
-            return false;
-        }
-
-    }
-
-    private void sendNoPermission(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
-    }
-
     private void sendNoProject(CommandSender cs) {
         PluginData.getMessageUtil().sendErrorMessage(cs, "This Project does not exists");
     }
 
-    private void sendDone(CommandSender cs) {
-        PluginData.getMessageUtil().sendInfoMessage(cs, "Description updated!");
-    }
 }

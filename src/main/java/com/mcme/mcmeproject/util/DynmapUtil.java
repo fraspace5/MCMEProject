@@ -31,7 +31,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.dynmap.DynmapAPI;
 import org.dynmap.markers.AreaMarker;
-import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.Marker;
 
@@ -45,7 +44,6 @@ public class DynmapUtil {
     private static final boolean enabled = getDynmapConfig().getBoolean("enabled", false);
 
     private static DynmapAPI dynmapPlugin;
-    private static MarkerAPI markerAPI;
     private static MarkerSet markerSet;
     private static int borderColor;
     private static MarkerSet markerWarpSet;
@@ -53,8 +51,6 @@ public class DynmapUtil {
     private static int borderWidth;
     private static double borderOpacity;
     private static double areaOpacity;
-    private static final String DEFAULT_ICON_ID = "greenflag-flag";
-    private static Plugin plugin;
 
     private static void init() {
         if (!enabled) {
@@ -182,7 +178,7 @@ public class DynmapUtil {
             init();
         }
         if (init) {
-            ProjectData pr = PluginData.projectsAll.get(project);
+            ProjectData pr = PluginData.getProjectsAll().get(project);
 
             String newMarkerId = region.toLowerCase() + ".marker";
             for (AreaMarker marker : markerSet.getAreaMarkers()) {
@@ -213,7 +209,7 @@ public class DynmapUtil {
         }
         if (init) {
 
-            ProjectData pr = PluginData.projectsAll.get(project);
+            ProjectData pr = PluginData.getProjectsAll().get(project);
             Integer[] xx = r.getXPoints();
             Integer[] zz = r.getZPoints();
 
@@ -259,7 +255,7 @@ public class DynmapUtil {
             init();
         }
         if (init) {
-            ProjectData pr = PluginData.projectsAll.get(project);
+            ProjectData pr = PluginData.getProjectsAll().get(project);
 
             String newMarkerId = region.toLowerCase() + ".marker";
             for (AreaMarker marker : markerSet.getAreaMarkers()) {

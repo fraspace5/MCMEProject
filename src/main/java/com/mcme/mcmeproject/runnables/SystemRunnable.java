@@ -19,6 +19,7 @@ package com.mcme.mcmeproject.runnables;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PlayersData;
 import com.mcme.mcmeproject.data.PluginData;
+import com.mcme.mcmeproject.util.utils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,7 +31,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Consumer;
 
 /**
  *
@@ -60,7 +60,7 @@ public class SystemRunnable {
 
                                     @Override
                                     public void run() {
-                                        if (!Mcproject.getPluginInstance().nameserver.equals("default")) {
+                                        if (!Mcproject.getPluginInstance().getNameserver().equals("default")) {
                                             PluginData.loadAllDynmap();
 
                                         }
@@ -82,6 +82,29 @@ public class SystemRunnable {
 
     }
 
+    public static void ConnectionRunnable() {
+
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (!Mcproject.getPluginInstance().getConnection().isValid(5)) {
+
+                        Mcproject.getPluginInstance().getConnection().close();
+                        Mcproject.getPluginInstance().openConnection();
+
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }.runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 150L, 1000L);
+
+    }
+
     public static void variableDataMinutesRunnable() {
 
         new BukkitRunnable() {
@@ -92,9 +115,9 @@ public class SystemRunnable {
                 try {
 
                     if (!PluginData.getTemporaryMinute().isEmpty()) {
-                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
+                        String statement = "SELECT * FROM mcmeproject_project_data ;";
 
-                        Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                        Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                         statm1.setQueryTimeout(10);
                         final ResultSet r = statm1.executeQuery(statement);
 
@@ -107,14 +130,14 @@ public class SystemRunnable {
                                 if (PluginData.getTemporaryMinute().containsKey(UUID.fromString(r.getString("idproject")))) {
                                     Integer i = r.getInt("minutes") + PluginData.getTemporaryMinute().get(UUID.fromString(r.getString("idproject")));
 
-                                    ss.append(" WHEN '" + r.getString("idproject") + "' THEN '" + i.toString() + "' ");
+                                    ss.append(" WHEN '").append(r.getString("idproject")).append("' THEN '").append(i.toString()).append("' ");
                                 }
 
                             } while (r.next());
 
                             ss.append("ELSE minutes END;");
 
-                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(ss.toString());
+                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(ss.toString());
                             statm.setQueryTimeout(10);
                             statm.executeUpdate(ss.toString());
 
@@ -142,9 +165,9 @@ public class SystemRunnable {
                 try {
 
                     if (!PluginData.getAllblocks().isEmpty()) {
-                        String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
+                        String statement = "SELECT * FROM mcmeproject_project_data ;";
 
-                        Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                        Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                         statm1.setQueryTimeout(10);
                         final ResultSet r = statm1.executeQuery(statement);
 
@@ -156,12 +179,12 @@ public class SystemRunnable {
                                 if (PluginData.getAllblocks().containsKey(UUID.fromString(r.getString("idproject")))) {
                                     Integer i = r.getInt("blocks") + PluginData.getAllblocks().get(UUID.fromString(r.getString("idproject")));
 
-                                    ss.append(" WHEN '" + r.getString("idproject") + "' THEN '" + i.toString() + "' ");
+                                    ss.append(" WHEN '").append(r.getString("idproject")).append("' THEN '").append(i.toString()).append("' ");
                                 }
                             } while (r.next());
                             ss.append("ELSE blocks END;");
 
-                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(ss.toString());
+                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(ss.toString());
                             statm.setQueryTimeout(10);
                             statm.executeUpdate(ss.toString());
 
@@ -189,32 +212,28 @@ public class SystemRunnable {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_people_data ;";
+                    String statement = "SELECT * FROM mcmeproject_people_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                     statm.setQueryTimeout(10);
                     final ResultSet r = statm.executeQuery(statement);
-                    for (UUID idplayer : PluginData.getTemporaryBlocks().keySet()) {
-
-                        for (UUID idproject : PluginData.getTemporaryBlocks().get(idplayer).r.keySet()) {
-
+                    PluginData.getTemporaryBlocks().keySet().forEach((idplayer) -> {
+                        PluginData.getTemporaryBlocks().get(idplayer).getR().keySet().forEach((idproject) -> {
                             if (!totalList.contains(idproject)) {
                                 totalList.add(idproject);
 
                             }
-
-                        }
-
-                    }
+                        });
+                    });
                     if (r.first()) {
                         do {
 
                             if (newlist.containsKey(UUID.fromString(r.getString("player_uuid")))) {
 
-                                if (!newlist.get(UUID.fromString(r.getString("player_uuid"))).r.containsKey(UUID.fromString(r.getString("idproject")))) {
+                                if (!newlist.get(UUID.fromString(r.getString("player_uuid"))).getR().containsKey(UUID.fromString(r.getString("idproject")))) {
 
-                                    HashMap<UUID, Integer> s = newlist.get(UUID.fromString(r.getString("player_uuid"))).r;
-                                    HashMap<UUID, Long> s2 = newlist.get(UUID.fromString(r.getString("player_uuid"))).lastplayed;
+                                    HashMap<UUID, Integer> s = newlist.get(UUID.fromString(r.getString("player_uuid"))).getR();
+                                    HashMap<UUID, Long> s2 = newlist.get(UUID.fromString(r.getString("player_uuid"))).getLastplayed();
                                     s.put((UUID.fromString(r.getString("idproject"))), r.getInt("blocks"));
                                     s2.put(UUID.fromString(r.getString("idproject")), r.getLong("lastplayed"));
                                     newlist.remove(UUID.fromString(r.getString("player_uuid")));
@@ -235,41 +254,37 @@ public class SystemRunnable {
                     }
 
                     if (!totalList.isEmpty()) {
-                        for (final UUID projectid : totalList) {
+                        totalList.forEach((projectid) -> {
                             StringBuilder ss = new StringBuilder();
                             final StringBuilder pp = new StringBuilder();
                             ss.append("UPDATE mcmeproject_people_data SET blocks = CASE player_uuid  ");
                             pp.append("UPDATE mcmeproject_people_data SET lastplayed = CASE player_uuid  ");
-
                             Integer testCheck1 = 0;
                             Integer testCheck2 = 0;
-
                             for (UUID s : PluginData.getTemporaryBlocks().keySet()) {
 
-                                if (PluginData.getTemporaryBlocks().get(s).r.containsKey(projectid)) {
+                                if (PluginData.getTemporaryBlocks().get(s).getR().containsKey(projectid)) {
                                     if (newlist.containsKey(s)) {
-                                        if (newlist.get(s).r.containsKey(projectid)) {
+                                        if (newlist.get(s).getR().containsKey(projectid)) {
 
-                                            Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid) + newlist.get(s).r.get(projectid);
-                                            ss.append("WHEN '" + s.toString() + "' THEN '" + nn.toString() + "'");
+                                            Integer nn = PluginData.getTemporaryBlocks().get(s).getR().get(projectid) + newlist.get(s).getR().get(projectid);
+                                            ss.append("WHEN '").append(s.toString()).append("' THEN '").append(nn.toString()).append("'");
                                             testCheck1 = testCheck1 + 1;
                                             testCheck2 = testCheck2 + 1;
-                                            pp.append("WHEN '" + s.toString() + "' THEN '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'");
+                                            pp.append("WHEN '").append(s.toString()).append("' THEN '").append(PluginData.getTemporaryBlocks().get(s).getLastplayed().get(projectid)).append("'");
 
                                         }
                                     }
                                 }
 
                             }
-
-                            ss.append("ELSE blocks END WHERE idproject = '" + projectid.toString() + "' ;");
-                            pp.append("ELSE lastplayed END WHERE idproject = '" + projectid.toString() + "' ;");
-
+                            ss.append("ELSE blocks END WHERE idproject = '").append(projectid.toString()).append("' ;");
+                            pp.append("ELSE lastplayed END WHERE idproject = '").append(projectid.toString()).append("' ;");
                             if (testCheck1 != 0) {
                                 try {
-                                    Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(ss.toString());
-                                    statm.setQueryTimeout(10);
-                                    statm.executeUpdate(ss.toString());
+                                    Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(ss.toString());
+                                    statm1.setQueryTimeout(10);
+                                    statm1.executeUpdate(ss.toString());
 
                                 } catch (SQLException ex) {
                                     Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
@@ -277,15 +292,14 @@ public class SystemRunnable {
                             }
                             if (testCheck2 != 0) {
                                 try {
-                                    Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(pp.toString());
-                                    statm.setQueryTimeout(10);
-                                    statm.executeUpdate(pp.toString());
+                                    Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(pp.toString());
+                                    statm1.setQueryTimeout(10);
+                                    statm1.executeUpdate(pp.toString());
                                 } catch (SQLException ex) {
                                     Logger.getLogger(SystemRunnable.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
-
-                        }
+                        });
                     }
 
                     if (!totalList.isEmpty()) {
@@ -297,18 +311,18 @@ public class SystemRunnable {
 
                             for (UUID s : PluginData.getTemporaryBlocks().keySet()) {
 
-                                if (PluginData.getTemporaryBlocks().get(s).r.containsKey(projectid)) {
+                                if (PluginData.getTemporaryBlocks().get(s).getR().containsKey(projectid)) {
                                     if (newlist.containsKey(s)) {
-                                        if (!newlist.get(s).r.containsKey(projectid)) {
-                                            Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid);
+                                        if (!newlist.get(s).getR().containsKey(projectid)) {
+                                            Integer nn = PluginData.getTemporaryBlocks().get(s).getR().get(projectid);
                                             testCheck1 = testCheck1 + 1;
-                                            ss.append(" ('" + s.toString() + "', '" + projectid.toString() + "','" + nn.toString() + "', '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'),");
+                                            ss.append(" ('").append(s.toString()).append("', '").append(projectid.toString()).append("','").append(nn.toString()).append("', '").append(PluginData.getTemporaryBlocks().get(s).getLastplayed().get(projectid)).append("'),");
 
                                         }
                                     } else {
-                                        Integer nn = PluginData.getTemporaryBlocks().get(s).r.get(projectid);
+                                        Integer nn = PluginData.getTemporaryBlocks().get(s).getR().get(projectid);
 
-                                        ss.append(" ('" + s.toString() + "', '" + projectid.toString() + "','" + nn.toString() + "', '" + PluginData.getTemporaryBlocks().get(s).lastplayed.get(projectid) + "'),");
+                                        ss.append(" ('").append(s.toString()).append("', '").append(projectid.toString()).append("','").append(nn.toString()).append("', '").append(PluginData.getTemporaryBlocks().get(s).getLastplayed().get(projectid)).append("'),");
                                         testCheck1 = testCheck1 + 1;
                                     }
                                 }
@@ -318,9 +332,9 @@ public class SystemRunnable {
                             String text = ss.toString().substring(0, ss.toString().length() - 1) + (" ;");
 
                             if (testCheck1 != 0) {
-                                Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(text);
-                                statm.setQueryTimeout(10);
-                                statm.executeUpdate(text);
+                                Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(text);
+                                statm1.setQueryTimeout(10);
+                                statm1.executeUpdate(text);
                             }
 
                         }
@@ -347,47 +361,43 @@ public class SystemRunnable {
                         try {
                             Calendar cal = Calendar.getInstance();
 
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data WHERE day =" + cal.get(Calendar.DAY_OF_MONTH) + " AND month = " + cal.get(Calendar.MONTH) + " AND year =" + cal.get(Calendar.YEAR) + " ;";
+                            String statement = "SELECT * FROM mcmeproject_statistics_data WHERE day =" + cal.get(Calendar.DAY_OF_MONTH) + " AND month = " + cal.get(Calendar.MONTH) + " AND year =" + cal.get(Calendar.YEAR) + " ;";
 
-                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                             statm.setQueryTimeout(10);
                             final ResultSet r = statm.executeQuery(statement);
                             if (PluginData.getTodayStat().containsKey("today")) {
 
                                 if (r.first()) {
-                                    List<UUID> play = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                    List<UUID> projects = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
-                                    for (UUID uuid : PluginData.getTodayStat().get("today").players) {
-
+                                    List<UUID> play = utils.convertListUUID(utils.unserialize(r.getString("players")));
+                                    List<UUID> projects = utils.convertListUUID(utils.unserialize(r.getString("projects")));
+                                    PluginData.getTodayStat().get("today").getPlayers().forEach((uuid) -> {
                                         if (!play.contains(uuid)) {
 
                                             play.add(uuid);
 
                                         }
-
-                                    }
-                                    for (UUID uuid : PluginData.getTodayStat().get("today").projects) {
-
+                                    });
+                                    PluginData.getTodayStat().get("today").getProjects().forEach((uuid) -> {
                                         if (!projects.contains(uuid)) {
 
                                             projects.add(uuid);
 
                                         }
+                                    });
 
-                                    }
+                                    String stat = "UPDATE mcmeproject_statistics_data SET players = '" + serialize(play) + "', projects = '" + serialize(projects) + "', minutes = " + (r.getInt("minutes") + PluginData.getTodayStat().get("today").getMin()) + ", blocks = " + (r.getInt("blocks") + PluginData.getTodayStat().get("today").getBlocks()) + " WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "' ;";
 
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data SET players = '" + serialize(play) + "', projects = '" + serialize(projects) + "', minutes = " + (r.getInt("minutes") + PluginData.getTodayStat().get("today").min) + ", blocks = " + (r.getInt("blocks") + PluginData.getTodayStat().get("today").blocks) + " WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "' ;";
-
-                                    Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                    Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                                     statm1.setQueryTimeout(10);
                                     statm1.executeUpdate(stat);
 
                                     PluginData.getTodayStat().clear();
                                 } else {
 
-                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data (day, month, year, blocks, minutes, players, projects) VALUES ('" + cal.get(Calendar.DAY_OF_MONTH) + "' ,'" + cal.get(Calendar.MONTH) + "' ,'" + cal.get(Calendar.YEAR) + "' ,'" + PluginData.getTodayStat().get("today").blocks + "' ,'" + PluginData.getTodayStat().get("today").min + "' ,'" + serialize(PluginData.getTodayStat().get("today").players) + "','" + serialize(PluginData.getTodayStat().get("today").projects) + "') ;";
+                                    String stat = "INSERT INTO mcmeproject_statistics_data (day, month, year, blocks, minutes, players, projects) VALUES ('" + cal.get(Calendar.DAY_OF_MONTH) + "' ,'" + cal.get(Calendar.MONTH) + "' ,'" + cal.get(Calendar.YEAR) + "' ,'" + PluginData.getTodayStat().get("today").getBlocks() + "' ,'" + PluginData.getTodayStat().get("today").getMin() + "' ,'" + serialize(PluginData.getTodayStat().get("today").getPlayers()) + "','" + serialize(PluginData.getTodayStat().get("today").getProjects()) + "') ;";
 
-                                    Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                    Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                                     statm1.setQueryTimeout(10);
                                     statm1.executeUpdate(stat);
 
@@ -405,18 +415,15 @@ public class SystemRunnable {
             }
 
         }.runTaskTimer(Mcproject.getPluginInstance(), 1000L, 1200L);
-        //sistema a 25
     }
 
-    public static String serialize(List<UUID> intlist) {
+    private static String serialize(List<UUID> intlist) {
 
         StringBuilder builder = new StringBuilder();
         if (!intlist.isEmpty()) {
-            for (UUID s : intlist) {
-
+            intlist.forEach((s) -> {
                 builder.append(s.toString()).append(";");
-
-            }
+            });
         }
         return builder.toString();
 
@@ -425,11 +432,11 @@ public class SystemRunnable {
 }
 
 /*
- Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+ Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                                     statm.setQueryTimeout(10);
                                     statm.executeUpdate(stat);
 
- Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+ Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                                     statm.setQueryTimeout(10);
                                  final ResultSet r =  statm.executeUpdate(stat);
 

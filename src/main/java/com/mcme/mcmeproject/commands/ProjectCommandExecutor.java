@@ -130,379 +130,386 @@ public class ProjectCommandExecutor implements CommandExecutor, TabExecutor {
 
             //                                       2      1        1       2      3        1             2       2        2        2              3          2         2      2        1        2       1       0        1
             //                                       /      /        /       /      /       /              /       /        /        /              /          /       /      /       /         !       /       /        /
-            List<String> Flist = new ArrayList<String>();
+            List<String> Flist = new ArrayList<>();
 
-            if (args.length == 1) {
-                for (String s : arguments) {
-                    if (s.toLowerCase().startsWith(args[0].toLowerCase())) {
-                        Flist.add(s);
-                    }
-                }
-                return Flist;
-            } else if (args.length == 2) {
-
-                List<String> ProjectList = new ArrayList<>();
-                List<String> ProjectListShowed = new ArrayList<>();
-                List<String> ProjectListHidden = new ArrayList<>();
-                List<String> ProjectListFinished = new ArrayList<>();
-
-                for (Entry<String, ProjectData> entry : PluginData.projectsAll.entrySet()) {
-                    ProjectStatus lowerCaseKey = entry.getValue().status;
-
-                    switch (lowerCaseKey) {
-                        case HIDDEN:
-                            ProjectListHidden.add(entry.getValue().name);
-                            ProjectList.add(entry.getValue().name);
-                            break;
-                        case SHOWED:
-                            ProjectListShowed.add(entry.getValue().name);
-                            ProjectList.add(entry.getValue().name);
-                            break;
-                        case FINISHED:
-                            ProjectListFinished.add(entry.getValue().name);
-                            break;
-                        default:
-                            break;
-                    }
-
-                }
-
-                List<String> fproject = new ArrayList<>();
-                List<String> fshowed = new ArrayList<>();
-                List<String> fhidden = new ArrayList<>();
-                List<String> ffinished = new ArrayList<>();
-                List<String> fotherlist = new ArrayList<>();
-                if (args[0].equalsIgnoreCase("show")) {
-
-                    for (String s : ProjectListHidden) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fhidden.add(s);
+            switch (args.length) {
+                case 1:
+                    for (String s : arguments) {
+                        if (s.toLowerCase().startsWith(args[0].toLowerCase())) {
+                            Flist.add(s);
                         }
                     }
-                    return fhidden;
-
-                } else if (args[0].equalsIgnoreCase("hide")) {
-                    for (String s : ProjectListShowed) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fshowed.add(s);
+                    return Flist;
+                case 2:
+                {
+                    
+                    List<String> ProjectList = new ArrayList<>();
+                    List<String> ProjectListShowed = new ArrayList<>();
+                    List<String> ProjectListHidden = new ArrayList<>();
+                    List<String> ProjectListFinished = new ArrayList<>();
+                    
+                    for (Entry<String, ProjectData> entry : PluginData.getProjectsAll().entrySet()) {
+                        ProjectStatus lowerCaseKey = entry.getValue().getStatus();
+                        
+                        switch (lowerCaseKey) {
+                            case HIDDEN:
+                                ProjectListHidden.add(entry.getValue().getName());
+                                ProjectList.add(entry.getValue().getName());
+                                break;
+                            case SHOWED:
+                                ProjectListShowed.add(entry.getValue().getName());
+                                ProjectList.add(entry.getValue().getName());
+                                break;
+                            case FINISHED:
+                                ProjectListFinished.add(entry.getValue().getName());
+                                break;
+                            default:
+                                break;
                         }
+                        
                     }
-                    return fshowed;
-
-                } else if (args[0].equalsIgnoreCase("description")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                    
+                    List<String> fproject = new ArrayList<>();
+                    List<String> fshowed = new ArrayList<>();
+                    List<String> fhidden = new ArrayList<>();
+                    List<String> ffinished = new ArrayList<>();
+                    List<String> fotherlist = new ArrayList<>();
+                    if (args[0].equalsIgnoreCase("show")) {
+                        
+                        for (String s : ProjectListHidden) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fhidden.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-
-                } else if (args[0].equalsIgnoreCase("main")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fhidden;
+                        
+                    } else if (args[0].equalsIgnoreCase("hide")) {
+                        for (String s : ProjectListShowed) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fshowed.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-
-                } else if (args[0].equalsIgnoreCase("details")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fshowed;
+                        
+                    } else if (args[0].equalsIgnoreCase("description")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-
-                }else if (args[0].equalsIgnoreCase("current")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                        
+                    } else if (args[0].equalsIgnoreCase("main")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-
-                } else if (args[0].equalsIgnoreCase("reopen")) {
-                    for (String s : ProjectListFinished) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            ffinished.add(s);
+                        return fproject;
+                        
+                    } else if (args[0].equalsIgnoreCase("details")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return ffinished;
-
-                } else if (args[0].equalsIgnoreCase("finish")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                        
+                    }else if (args[0].equalsIgnoreCase("current")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("list")) {
-
-                    List<String> a = Arrays.asList("1", "2", "3");
-                    for (String s : a) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fotherlist.add(s);
+                        return fproject;
+                        
+                    } else if (args[0].equalsIgnoreCase("reopen")) {
+                        for (String s : ProjectListFinished) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                ffinished.add(s);
+                            }
                         }
-                    }
-                    return fotherlist;
-
-                } else if (args[0].equalsIgnoreCase("reload")) {
-
-                    List<String> a = Arrays.asList("map", "projects", "all","regions","warps");
-                    for (String s : a) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fotherlist.add(s);
+                        return ffinished;
+                        
+                    } else if (args[0].equalsIgnoreCase("finish")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fotherlist;
-
-                } else if (args[0].equalsIgnoreCase("statistic")) {
-
-                    List<String> a = Arrays.asList("week", "today", "month", "custom");
-                    for (String s : a) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fotherlist.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("list")) {
+                        
+                        List<String> a = Arrays.asList("1", "2", "3");
+                        for (String s : a) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fotherlist.add(s);
+                            }
                         }
-                    }
-                    return fotherlist;
-
-                } else if (args[0].equalsIgnoreCase("news")) {
-
-                    List<String> a = Arrays.asList("true", "false");
-                    for (String s : a) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fotherlist.add(s);
+                        return fotherlist;
+                        
+                    } else if (args[0].equalsIgnoreCase("reload")) {
+                        
+                        List<String> a = Arrays.asList("map", "projects", "all","regions","warps");
+                        for (String s : a) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fotherlist.add(s);
+                            }
                         }
-                    }
-                    return fotherlist;
-
-                } else if (args[0].equalsIgnoreCase("add")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fotherlist;
+                        
+                    } else if (args[0].equalsIgnoreCase("statistic")) {
+                        
+                        List<String> a = Arrays.asList("week", "today", "month", "custom");
+                        for (String s : a) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fotherlist.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("area")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fotherlist;
+                        
+                    } else if (args[0].equalsIgnoreCase("news")) {
+                        
+                        List<String> a = Arrays.asList("true", "false");
+                        for (String s : a) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fotherlist.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("leader")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fotherlist;
+                        
+                    } else if (args[0].equalsIgnoreCase("add")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("link")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("area")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("name")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("leader")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("percentage")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("link")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("progress")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("name")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("location")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("percentage")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("time")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("progress")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("warp")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("location")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else if (args[0].equalsIgnoreCase("remove")) {
-                    for (String s : ProjectList) {
-                        if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
-                            fproject.add(s);
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("time")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
                         }
-                    }
-                    return fproject;
-                } else {
-
-                    return null;
-                }
-
-            } else if (args.length == 3) {
-
-                List<String> RegionList = new ArrayList<>();
-                List<String> fregion = new ArrayList<>();
-                List<String> fotherlist = new ArrayList<>();
-                List<String> fo2 = new ArrayList<>();
-                if (PluginData.projectsAll.containsKey(args[1])) {
-                    if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[1]).idproject) && !PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject).isEmpty()) {
-                        RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
-
-                    }
-                }
-
-                if (args[0].equalsIgnoreCase("add")) {
-
-                    return null;
-                } else if (args[0].equalsIgnoreCase("remove")) {
-
-                    return null;
-                } else if (args[0].equalsIgnoreCase("leader")) {
-
-                    return null;
-                } else if (args[0].equalsIgnoreCase("link")) {
-
-                    return null;
-                } else if (args[0].equalsIgnoreCase("name")) {
-
-                    return null;
-                } else if (args[0].equalsIgnoreCase("percentage")) {
-
-                    return null;
-                } else if (args[0].equalsIgnoreCase("list")) {
-
-                    if (pl.hasPermission("project.manager")) {
-                        List<String> l = Arrays.asList("archive");
-                        return l;
-
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("warp")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
+                        }
+                        return fproject;
+                    } else if (args[0].equalsIgnoreCase("remove")) {
+                        for (String s : ProjectList) {
+                            if (s.toLowerCase().startsWith(args[1].toLowerCase())) {
+                                fproject.add(s);
+                            }
+                        }
+                        return fproject;
                     } else {
+                        
                         return null;
                     }
-                } else if (args[0].equalsIgnoreCase("statistic")) {
 
-                    if (args[1].equalsIgnoreCase("custom")) {
-                        List<String> l = Arrays.asList("dd/mm/yyyy");
-
-                        return l;
-
-                    } else {
-                        return null;
-                    }
-                } else if (args[0].equalsIgnoreCase("time")) {
-
-                    return null;
-                } else if (args[0].equalsIgnoreCase("location")) {
-
-                    for (String s : RegionList) {
-                        if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
-                            fregion.add(s);
-                        }
-                    }
-                    return fregion;
-                } else if (args[0].equalsIgnoreCase("warp")) {
-
-                    for (String s : RegionList) {
-                        if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
-                            fregion.add(s);
-                        }
-                    }
-                    return fregion;
-                } else if (args[0].equalsIgnoreCase("progress")) {
-
-                    List<String> l = Arrays.asList("percentage", "=");
-                    for (String s : l) {
-                        if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
-                            fo2.add(s);
-                        }
-                    }
-
-                    return fo2;
-
-                } else if (args[0].equalsIgnoreCase("area")) {
-
-                    List<String> l = Arrays.asList("add", "remove");
-                    for (String s : l) {
-                        if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
-                            fotherlist.add(s);
-                        }
-                    }
-                    return fotherlist;
-
-                } else {
-                    return null;
                 }
-
-            } else if (args.length == 4) {
-
-                List<String> RegionList = new ArrayList<>();
-                List<String> fregion = new ArrayList<>();
-                List<String> fo2 = new ArrayList<>();
-
-                if (PluginData.projectsAll.containsKey(args[1])) {
-                    if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(args[1]).idproject) && !PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject).isEmpty()) {
-                        RegionList = PluginData.regionsReadable.get(PluginData.projectsAll.get(args[1]).idproject);
-
-                    }
-                }
-
-                if (args[0].equalsIgnoreCase("progress")) {
-
-                    List<String> l = Arrays.asList("time", "=");
-                    for (String s : l) {
-                        if (s.toLowerCase().startsWith(args[3].toLowerCase())) {
-                            fo2.add(s);
+                case 3:
+                {
+                    
+                    List<String> RegionList = new ArrayList<>();
+                    List<String> fregion = new ArrayList<>();
+                    List<String> fotherlist = new ArrayList<>();
+                    List<String> fo2 = new ArrayList<>();
+                    if (PluginData.getProjectsAll().containsKey(args[1])) {
+                        if (PluginData.getRegionsReadable().containsKey(PluginData.getProjectsAll().get(args[1]).getIdproject()) && !PluginData.getRegionsReadable().get(PluginData.getProjectsAll().get(args[1]).getIdproject()).isEmpty()) {
+                            RegionList = PluginData.getRegionsReadable().get(PluginData.getProjectsAll().get(args[1]).getIdproject());
+                            
                         }
                     }
-                    return fo2;
-
-                } else if (args[0].equalsIgnoreCase("statistic")) {
-
-                    if (args[1].equalsIgnoreCase("custom")) {
-                        List<String> l = Arrays.asList("dd/mm/yyyy");
-                        return l;
-
-                    } else {
+                    
+                    if (args[0].equalsIgnoreCase("add")) {
+                        
                         return null;
-                    }
-                } else if (args[0].equalsIgnoreCase("area")) {
-
-                    if (args[2].equalsIgnoreCase("remove")) {
+                    } else if (args[0].equalsIgnoreCase("remove")) {
+                        
+                        return null;
+                    } else if (args[0].equalsIgnoreCase("leader")) {
+                        
+                        return null;
+                    } else if (args[0].equalsIgnoreCase("link")) {
+                        
+                        return null;
+                    } else if (args[0].equalsIgnoreCase("name")) {
+                        
+                        return null;
+                    } else if (args[0].equalsIgnoreCase("percentage")) {
+                        
+                        return null;
+                    } else if (args[0].equalsIgnoreCase("list")) {
+                        
+                        if (pl.hasPermission("project.manager")) {
+                            List<String> l = Arrays.asList("archive");
+                            return l;
+                            
+                        } else {
+                            return null;
+                        }
+                    } else if (args[0].equalsIgnoreCase("statistic")) {
+                        
+                        if (args[1].equalsIgnoreCase("custom")) {
+                            List<String> l = Arrays.asList("dd/mm/yyyy");
+                            
+                            return l;
+                            
+                        } else {
+                            return null;
+                        }
+                    } else if (args[0].equalsIgnoreCase("time")) {
+                        
+                        return null;
+                    } else if (args[0].equalsIgnoreCase("location")) {
+                        
                         for (String s : RegionList) {
-                            if (s.toLowerCase().startsWith(args[3].toLowerCase())) {
+                            if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
                                 fregion.add(s);
                             }
                         }
                         return fregion;
-
+                    } else if (args[0].equalsIgnoreCase("warp")) {
+                        
+                        for (String s : RegionList) {
+                            if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
+                                fregion.add(s);
+                            }
+                        }
+                        return fregion;
+                    } else if (args[0].equalsIgnoreCase("progress")) {
+                        
+                        List<String> l = Arrays.asList("percentage", "=");
+                        for (String s : l) {
+                            if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
+                                fo2.add(s);
+                            }
+                        }
+                        
+                        return fo2;
+                        
+                    } else if (args[0].equalsIgnoreCase("area")) {
+                        
+                        List<String> l = Arrays.asList("add", "remove");
+                        for (String s : l) {
+                            if (s.toLowerCase().startsWith(args[2].toLowerCase())) {
+                                fotherlist.add(s);
+                            }
+                        }
+                        return fotherlist;
+                        
                     } else {
                         return null;
                     }
-
-                } else {
-                    return null;
+                    
                 }
-            } else {
-                return null;
+                case 4:
+                {
+                    
+                    List<String> RegionList = new ArrayList<>();
+                    List<String> fregion = new ArrayList<>();
+                    List<String> fo2 = new ArrayList<>();
+                    
+                    if (PluginData.getProjectsAll().containsKey(args[1])) {
+                        if (PluginData.getRegionsReadable().containsKey(PluginData.getProjectsAll().get(args[1]).getIdproject()) && !PluginData.getRegionsReadable().get(PluginData.getProjectsAll().get(args[1]).getIdproject()).isEmpty()) {
+                            RegionList = PluginData.getRegionsReadable().get(PluginData.getProjectsAll().get(args[1]).getIdproject());
+                            
+                        }
+                    }
+                    
+                    if (args[0].equalsIgnoreCase("progress")) {
+                        
+                        List<String> l = Arrays.asList("time", "=");
+                        for (String s : l) {
+                            if (s.toLowerCase().startsWith(args[3].toLowerCase())) {
+                                fo2.add(s);
+                            }
+                        }
+                        return fo2;
+                        
+                    } else if (args[0].equalsIgnoreCase("statistic")) {
+                        
+                        if (args[1].equalsIgnoreCase("custom")) {
+                            List<String> l = Arrays.asList("dd/mm/yyyy");
+                            return l;
+                            
+                        } else {
+                            return null;
+                        }
+                    } else if (args[0].equalsIgnoreCase("area")) {
+                        
+                        if (args[2].equalsIgnoreCase("remove")) {
+                            for (String s : RegionList) {
+                                if (s.toLowerCase().startsWith(args[3].toLowerCase())) {
+                                    fregion.add(s);
+                                }
+                            }
+                            return fregion;
+                            
+                        } else {
+                            return null;
+                        }
+                        
+                    } else {
+                        return null;
+                    }
+                }
+                default:
+                    return null;
             }
 
         } else {

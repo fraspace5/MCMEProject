@@ -57,95 +57,92 @@ public class ProjectList extends ProjectCommand {
         FancyMessage header = new FancyMessage(MessageType.WHITE, PluginData.getMessageUtil())
                 .addSimple(ChatColor.DARK_GREEN + "Project opens (click for details)" + "\n");
         List<FancyMessage> messages = new ArrayList<>();
-        for (String project : PluginData.projectsAll.keySet()) {
-
-            ProjectData pr = PluginData.projectsAll.get(project);
+        PluginData.getProjectsAll().keySet().forEach((project) -> {
+            ProjectData pr = PluginData.getProjectsAll().get(project);
             String s = ChatColor.WHITE + "+" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.BLUE + "-" + ChatColor.GOLD + "-" + ChatColor.WHITE + "+";
 
             if (pl.hasPermission("project.manager") || pl.hasPermission("project.owner")) {
                 if (args.length == 2) {
                     if (args[1].equalsIgnoreCase("archive") || args[0].equalsIgnoreCase("archive")) {
-                        if (pr.status.equals(ProjectStatus.SHOWED)) {
-
-                            if (pr.main == true) {
-
+                        switch (pr.getStatus()) {
+                            case SHOWED:
+                                if (pr.isMain() == true) {
+                                    
+                                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                    message.addSimple(ChatColor.GOLD + "- ");
+                                    message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
+                                    message.addSimple("\n" + s);
+                                    messages.add(message);
+                                    
+                                } else {
+                                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                    message.addSimple(ChatColor.GOLD + "- ");
+                                    message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
+                                    
+                                    message.addSimple("\n" + s);
+                                    messages.add(message);
+                                }   break;
+                            case HIDDEN:
+                                if (pr.isMain() == true) {
+                                    
+                                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                    message.addSimple(ChatColor.GOLD + "- ");
+                                    message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
+                                    
+                                    message.addSimple("\n" + s);
+                                    messages.add(message);
+                                } else {
+                                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                                    message.addSimple(ChatColor.GOLD + "- ");
+                                    message.addFancy(ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
+                                    
+                                    message.addSimple("\n" + s);
+                                    messages.add(message);
+                                }   break;
+                            default:
                                 FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                                 message.addSimple(ChatColor.GOLD + "- ");
-                                message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                                message.addFancy(ChatColor.DARK_RED + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
                                 message.addSimple("\n" + s);
                                 messages.add(message);
-
-                            } else {
-                                FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                message.addSimple(ChatColor.GOLD + "- ");
-                                message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
-
-                                message.addSimple("\n" + s);
-                                messages.add(message);
-                            }
-
-                        } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
-                            if (pr.main == true) {
-
-                                FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                message.addSimple(ChatColor.GOLD + "- ");
-                                message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
-
-                                message.addSimple("\n" + s);
-                                messages.add(message);
-                            } else {
-                                FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                message.addSimple(ChatColor.GOLD + "- ");
-                                message.addFancy(ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
-
-                                message.addSimple("\n" + s);
-                                messages.add(message);
-                            }
-
-                        } else {
-                            FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                            message.addSimple(ChatColor.GOLD + "- ");
-                            message.addFancy(ChatColor.DARK_RED + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
-
-                            message.addSimple("\n" + s);
-                            messages.add(message);
+                                break;
                         }
                     }
 
                 } else {
 
-                    if (pr.status.equals(ProjectStatus.SHOWED)) {
+                    if (pr.getStatus().equals(ProjectStatus.SHOWED)) {
 
-                        if (pr.main == true) {
+                        if (pr.isMain() == true) {
 
                             FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                             message.addSimple(ChatColor.GOLD + "- ");
-                            message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                            message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
                             message.addSimple("\n" + s);
                             messages.add(message);
 
                         } else {
                             FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                             message.addSimple(ChatColor.GOLD + "- ");
-                            message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                            message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
 
                             message.addSimple("\n" + s);
                             messages.add(message);
                         }
 
-                    } else if (pr.status.equals(ProjectStatus.HIDDEN)) {
-                        if (pr.main == true) {
+                    } else if (pr.getStatus().equals(ProjectStatus.HIDDEN)) {
+                        if (pr.isMain() == true) {
 
                             FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                             message.addSimple(ChatColor.GOLD + "- ");
-                            message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                            message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
 
                             message.addSimple("\n" + s);
                             messages.add(message);
                         } else {
                             FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                             message.addSimple(ChatColor.GOLD + "- ");
-                            message.addFancy(ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                            message.addFancy(ChatColor.YELLOW + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
 
                             message.addSimple("\n" + s);
                             messages.add(message);
@@ -155,13 +152,13 @@ public class ProjectList extends ProjectCommand {
 
                 }
             } else {
-                if (pr.status.equals(ProjectStatus.SHOWED)) {
+                if (pr.getStatus().equals(ProjectStatus.SHOWED)) {
 
-                    if (pr.main == true) {
+                    if (pr.isMain() == true) {
 
                         FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                         message.addSimple(ChatColor.GOLD + "- ");
-                        message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                        message.addFancy(ChatColor.DARK_RED + "MAIN " + ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
 
                         message.addSimple("\n" + s);
                         messages.add(message);
@@ -169,7 +166,7 @@ public class ProjectList extends ProjectCommand {
                     } else {
                         FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
                         message.addSimple(ChatColor.GOLD + "- ");
-                        message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.description);
+                        message.addFancy(ChatColor.DARK_GREEN + project, "/project details " + project, ChatColor.DARK_GREEN + pr.getDescription());
 
                         message.addSimple("\n" + s);
                         messages.add(message);
@@ -178,8 +175,7 @@ public class ProjectList extends ProjectCommand {
                 }
 
             }
-
-        }
+        });
         PluginData.getMessageUtil().sendFancyListMessage((Player) cs, header, messages, "/project list ", page);
     }
 

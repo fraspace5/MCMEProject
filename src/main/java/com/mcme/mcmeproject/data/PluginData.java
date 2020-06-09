@@ -19,6 +19,7 @@ package com.mcme.mcmeproject.data;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.util.DynmapUtil;
 import com.mcme.mcmeproject.util.ProjectStatus;
+import com.mcme.mcmeproject.util.utils;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import lombok.Getter;
@@ -44,7 +45,6 @@ import com.mcmiddleearth.pluginutil.region.CuboidRegion;
 import org.bukkit.Location;
 import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
 import java.sql.Statement;
-import org.bukkit.World;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
@@ -61,25 +61,25 @@ public class PluginData {
     }
 
     @Getter
-    public static Map<String, ProjectData> projectsAll = new HashMap<>();
+    private static Map<String, ProjectData> projectsAll = new HashMap<>();
     @Getter
-    public static Map<UUID, String> projectsUUID = new HashMap<>();
+    private static Map<UUID, String> projectsUUID = new HashMap<>();
 
     @Getter
-    public static Map<String, RegionData> regions = new HashMap<>();
+    private static Map<String, RegionData> regions = new HashMap<>();
     //name region
 
     @Getter
-    public static Map<UUID, String> regionsUUID = new HashMap<>();
+    private static Map<UUID, String> regionsUUID = new HashMap<>();
     @Getter
     @Setter
-    public static Map<UUID, List<String>> regionsReadable = new HashMap<>();
+    private static Map<UUID, List<String>> regionsReadable = new HashMap<>();
 
     @Getter
-    public static Map<UUID, WarpData> warps = new HashMap<>();
+    private static Map<UUID, WarpData> warps = new HashMap<>();
 
     @Getter
-    public static Map<UUID, List<UUID>> informedRegion = new HashMap<>();
+    private static Map<UUID, List<UUID>> informedRegion = new HashMap<>();
     //regionid, List of playerid
     @Getter
     private static Long time = Mcproject.getPluginInstance().getConfig().getLong("time");
@@ -110,17 +110,6 @@ public class PluginData {
     @Getter
     private static List<String> today = new ArrayList();
 
-    public static String serialize(UUID uuid, Boolean bool) {
-        return uuid + ";" + bool;
-    }
-
-    public static String[] unserialize(String line) {
-        String[] dataArray = line.split(";");
-
-        return dataArray;
-
-    }
-
     public static void setTodayEnd() {
         today.clear();
 
@@ -129,9 +118,9 @@ public class PluginData {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
+                    String statement = "SELECT * FROM mcmeproject_project_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                     statm.setQueryTimeout(10);
                     final ResultSet r = statm.executeQuery(statement);
                     if (r.first()) {
@@ -158,14 +147,6 @@ public class PluginData {
 
     }
 
-    public static UUID createId() {
-
-        UUID uuid = UUID.randomUUID();
-
-        return uuid;
-
-    }
-
     public static void loadRegions() {
         regions.clear();
         regionsReadable.clear();
@@ -176,9 +157,9 @@ public class PluginData {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_regions_data ;";
+                    String statement = "SELECT * FROM mcmeproject_regions_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                     statm.setQueryTimeout(10);
                     final ResultSet r = statm.executeQuery(statement);
 
@@ -187,9 +168,9 @@ public class PluginData {
 
                             if (r.getString("type").equalsIgnoreCase("cuboid")) {
 
-                                String[] xlist = unserialize(r.getString("xlist"));
-                                String[] zlist = unserialize(r.getString("zlist"));
-                                String[] location = unserialize(r.getString("location"));
+                                String[] xlist = utils.unserialize(r.getString("xlist"));
+                                String[] zlist = utils.unserialize(r.getString("zlist"));
+                                String[] location = utils.unserialize(r.getString("location"));
 
                                 Integer ymin = r.getInt("ymin");
                                 Integer ymax = r.getInt("ymax");
@@ -202,7 +183,7 @@ public class PluginData {
 
                                 Location loc;
 
-                                if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(r.getString("server"))) {
+                                if (Mcproject.getPluginInstance().getNameserver().equalsIgnoreCase(r.getString("server"))) {
                                     loc = new Location(Bukkit.getWorld(location[0]), parseDouble(location[1]), parseDouble(location[2]), parseDouble(location[3]));
                                 } else {
                                     loc = new Location(null,
@@ -226,17 +207,15 @@ public class PluginData {
 
                             } else {
 
-                                String[] xl = unserialize(r.getString("xlist"));
-                                String[] zl = unserialize(r.getString("zlist"));
-                                String[] location = unserialize(r.getString("location"));
+                                String[] location = utils.unserialize(r.getString("location"));
                                 Integer ymin = r.getInt("ymin");
                                 Integer ymax = r.getInt("ymax");
-                                List<Integer> xlist = StringtoListInt(unserialize(r.getString("xlist")));
-                                List<Integer> zlist = StringtoListInt(unserialize(r.getString("zlist")));
+                                List<Integer> xlist = utils.StringtoListInt(utils.unserialize(r.getString("xlist")));
+                                List<Integer> zlist = utils.StringtoListInt(utils.unserialize(r.getString("zlist")));
 
                                 Location loc;
 
-                                if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(r.getString("server"))) {
+                                if (Mcproject.getPluginInstance().getNameserver().equalsIgnoreCase(r.getString("server"))) {
                                     loc = new Location(Bukkit.getWorld(location[0]), parseDouble(location[1]), parseDouble(location[2]), parseDouble(location[3]));
                                 } else {
                                     loc = new Location(null,
@@ -280,9 +259,9 @@ public class PluginData {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data ;";
+                    String statement = "SELECT * FROM mcmeproject_warps_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                     statm.setQueryTimeout(10);
                     final ResultSet r = statm.executeQuery(statement);
 
@@ -290,7 +269,7 @@ public class PluginData {
                         do {
                             Location l;
 
-                            if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(r.getString("server"))) {
+                            if (Mcproject.getPluginInstance().getNameserver().equalsIgnoreCase(r.getString("server"))) {
                                 l = new Location(Bukkit.getWorld(r.getString("world")),
                                         r.getFloat("x"), r.getFloat("y"), r.getFloat("z"));
                             } else {
@@ -320,16 +299,16 @@ public class PluginData {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
+                    String statement = "SELECT * FROM mcmeproject_project_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                     statm.setQueryTimeout(10);
                     final ResultSet r = statm.executeQuery(statement);
 
                     if (r.first()) {
                         do {
 
-                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), convertListString(unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"), r.getInt("minutes"), convertListUUID(unserialize(r.getString("assistants"))), convertListUUID(unserialize(r.getString("plcurrent"))), r.getInt("blocks")));
+                            projectsAll.put(r.getString("name"), new ProjectData(r.getString("name"), UUID.fromString(r.getString("idproject")), ProjectStatus.valueOf(r.getString("status")), r.getBoolean("main"), utils.convertListString(utils.unserialize(r.getString("jobs"))), UUID.fromString(r.getString("staff_uuid")), r.getLong("time"), r.getInt("percentage"), r.getString("description"), r.getString("link"), r.getLong("updated"), r.getInt("minutes"), utils.convertListUUID(utils.unserialize(r.getString("assistants"))), utils.convertListUUID(utils.unserialize(r.getString("plcurrent"))), r.getInt("blocks")));
                             projectsUUID.put(UUID.fromString(r.getString("idproject")), r.getString("name"));
                         } while (r.next());
 
@@ -343,20 +322,6 @@ public class PluginData {
 
     }
 
-    /*
-    
-     new BukkitRunnable() {
-            
-     @Override
-     public void run() {
-                
-                
-     }
-            
-     }.runTaskAsynchronously(Mcproject.getPluginInstance());
-    
-    
-     */
     public static void sendNews(PlayerJoinEvent e) {
 
         final List<String> projects = new ArrayList<>();
@@ -367,9 +332,9 @@ public class PluginData {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_data WHERE player_uuid = '" + e.getPlayer().getUniqueId().toString() + "' ;";
+                    String statement = "SELECT * FROM mcmeproject_news_data WHERE player_uuid = '" + e.getPlayer().getUniqueId().toString() + "' ;";
 
-                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                     statm.setQueryTimeout(10);
                     final ResultSet r = statm.executeQuery(statement);
 
@@ -379,7 +344,7 @@ public class PluginData {
                         if (r.first()) {
                             do {
 
-                                if (UUID.fromString(r.getString("idproject")).equals(projectsAll.get(name).idproject)) {
+                                if (UUID.fromString(r.getString("idproject")).equals(projectsAll.get(name).getIdproject())) {
                                     i = 1;
 
                                 }
@@ -443,94 +408,35 @@ public class PluginData {
 
     }
 
-    public static List<Integer> StringtoListInt(String[] s) {
-
-        List<Integer> list = new ArrayList();
-
-        for (int i = 0; i < s.length; i++) {
-            list.add(Integer.parseInt(s[i]));
-        }
-        return list;
-    }
-
-    public static List<String> convertListString(String[] s) {
-
-        List<String> list = new ArrayList();
-
-        for (int i = 0; i < s.length; i++) {
-            list.add(s[i]);
-        }
-        return list;
-    }
-
-    public static List<UUID> convertListUUID(String[] s) {
-
-        List<UUID> list = new ArrayList();
-
-        for (int i = 0; i < s.length; i++) {
-            try {
-                list.add(UUID.fromString(s[i]));
-
-            } catch (IllegalArgumentException exception) {
-
-            }
-
-        }
-        return list;
-    }
-
-    public static Integer getInt(ResultSet r, UUID projectid, UUID playerid) throws SQLException {
-        if (r.first()) {
-            do {
-
-                if (r.getString("idproject").equals(projectid.toString()) && r.getString("player_uuid").equals(playerid.toString())) {
-
-                    return r.getInt("blocks");
-
-                } else {
-
-                    return 0;
-                }
-
-            } while (r.next());
-        } else {
-
-            return 0;
-        }
-
-    }
-
     public static void loadAllDynmap() {
         DynmapUtil.clearMarkersArea();
         DynmapUtil.clearMarkersWarp();
 
-        for (String name : regions.keySet()) {
-
+        regions.keySet().forEach((name) -> {
             RegionData s = regions.get(name);
 
-            if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(s.server)) {
-                if (!(projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.FINISHED) || projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.HIDDEN))) {
-                    if (s.type.equals("cuboid")) {
-                        DynmapUtil.createMarkeronLoadCuboid(s.name, projectsUUID.get(s.idproject), (CuboidRegion) s.region);
+            if (Mcproject.getPluginInstance().getNameserver().equalsIgnoreCase(s.getServer())) {
+                if (!(projectsAll.get(projectsUUID.get(s.getIdproject())).getStatus().equals(ProjectStatus.FINISHED) || projectsAll.get(projectsUUID.get(s.getIdproject())).getStatus().equals(ProjectStatus.HIDDEN))) {
+                    if (s.getType().equals("cuboid")) {
+                        DynmapUtil.createMarkeronLoadCuboid(s.getName(), projectsUUID.get(s.getIdproject()), (CuboidRegion) s.getRegion());
                     } else {
-                        DynmapUtil.createMarkeronLoad(s.name, projectsUUID.get(s.idproject), (PrismoidRegion) s.region);
+                        DynmapUtil.createMarkeronLoad(s.getName(), projectsUUID.get(s.getIdproject()), (PrismoidRegion) s.getRegion());
                     }
 
                 }
             }
+        });
 
-        }
-
-        for (UUID name : warps.keySet()) {
+        warps.keySet().forEach((name) -> {
             WarpData s = warps.get(name);
-            if (!(projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.FINISHED) || projectsAll.get(projectsUUID.get(s.idproject)).status.equals(ProjectStatus.HIDDEN))) {
-                if (Mcproject.getPluginInstance().nameserver.equalsIgnoreCase(s.server)) {
-                    String n = regionsUUID.get(s.idregion).toUpperCase() + " (" + projectsUUID.get(s.idproject).toLowerCase() + ")";
-                    DynmapUtil.createMarkerWarp(n, s.location, s.wl);
+            if (!(projectsAll.get(projectsUUID.get(s.getIdproject())).getStatus().equals(ProjectStatus.FINISHED) || projectsAll.get(projectsUUID.get(s.getIdproject())).getStatus().equals(ProjectStatus.HIDDEN))) {
+                if (Mcproject.getPluginInstance().getNameserver().equalsIgnoreCase(s.getServer())) {
+                    String n = regionsUUID.get(s.getIdregion()).toUpperCase() + " (" + projectsUUID.get(s.getIdproject()).toLowerCase() + ")";
+                    DynmapUtil.createMarkerWarp(n, s.getLocation(), s.getWl());
 
                 }
             }
-        }
+        });
 
     }
 

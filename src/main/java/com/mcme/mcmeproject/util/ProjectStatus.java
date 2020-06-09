@@ -18,7 +18,7 @@ package com.mcme.mcmeproject.util;
 
 /**
  *
- * @author fraspace5
+ * @author Fraspace5
  */
 public enum ProjectStatus {
 

@@ -18,6 +18,8 @@ package com.mcme.mcmeproject.data;
 
 import java.util.List;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -25,13 +27,16 @@ import java.util.UUID;
  */
 public class ProjectStatistics {
 
-    public Integer blocks;
-
-    public List<UUID> players;
-
-    public Integer min;
-
-    public List<UUID> projects;
+    @Getter
+    @Setter
+    private Integer blocks;
+    @Getter
+    private List<UUID> players;
+    @Setter
+    @Getter
+    private Integer min;
+    @Getter
+    private List<UUID> projects;
 
     public ProjectStatistics(Integer bl, List<UUID> pl, Integer mi, List<UUID> pr) {
 

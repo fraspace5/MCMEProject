@@ -37,8 +37,7 @@ public class ProjectHelp extends ProjectCommand {
     @Override
     protected void execute(CommandSender cs, String... args) {
         sendHelpStartMessage(cs);
-        Map<String, ProjectCommand> commands = ((ProjectCommandExecutor) Bukkit.getPluginCommand("project")
-                .getExecutor()).getCommands();
+        Map<String, ProjectCommand> commands = ((ProjectCommandExecutor) Bukkit.getPluginCommand("project").getExecutor()).getCommands();
         if (args.length > 0) {
             ProjectCommand command = commands.get(args[0]);
             if (command == null) {
@@ -56,14 +55,14 @@ public class ProjectHelp extends ProjectCommand {
             }
         } else {
             Set<String> keys = commands.keySet();
-            for (String key : keys) {
+            keys.forEach((key) -> {
                 String description = commands.get(key).getShortDescription();
                 if (description != null) {
                     sendDescriptionMessage(cs, key, description);
                 } else {
                     sendNoDescriptionMessage(cs, key);
                 }
-            }
+            });
         }
         sendManualMessage(cs);
     }
@@ -83,7 +82,6 @@ public class ProjectHelp extends ProjectCommand {
     private void sendNoDescriptionMessage(CommandSender cs, String arg) {
         PluginData.getMessageUtil().sendNoPrefixInfoMessage(cs, "/project " + arg + ": There is no help for this command.");
     }
-    //TODO
 
     private void sendManualMessage(CommandSender cs) {
         PluginData.getMessageUtil().sendNoPrefixInfoMessage(cs, "Manual:https://www.mcmiddleearth.com/community/resources/mcmeproject-plugin-guide.147/ ");

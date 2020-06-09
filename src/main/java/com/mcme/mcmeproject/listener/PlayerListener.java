@@ -24,6 +24,7 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.data.ProjectStatistics;
 import com.mcme.mcmeproject.data.RegionData;
 import com.mcme.mcmeproject.util.ProjectStatus;
+import com.mcme.mcmeproject.util.bungee;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import com.mcmiddleearth.pluginutil.region.Region;
@@ -39,6 +40,7 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -54,186 +56,16 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 public class PlayerListener implements Listener {
 
-    //for hours of work
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
 
-        Player pl = e.getPlayer();
-        UUID uuid = pl.getUniqueId();
-        Location loc = pl.getLocation();
-        List<String> reg = new ArrayList<>();
-        for (String region : PluginData.regions.keySet()) {
-            Region re = PluginData.regions.get(region).region;
-            if (re.isInside(loc)) {
-                reg.add(region);
-            }
-        }
-
-        if (!reg.isEmpty()) {
-            String weightMax = reg.get(0);
-
-            for (String re : reg) {
-                if (PluginData.regions.get(re).weight > PluginData.regions.get(weightMax).weight) {
-                    weightMax = re;
-                }
-            }
-            RegionData region = PluginData.regions.get(weightMax);
-
-            if (region.region.isInside(loc)) {
-
-                if (PluginData.getTemporaryBlocks().containsKey(pl.getUniqueId())) {
-
-                    if (PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.containsKey(region.idproject)) {
-
-                        Integer l = PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.get(region.idproject) + 1;
-
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.remove(region.idproject);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.put(region.idproject, l);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.remove(region.idproject);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.put(region.idproject, System.currentTimeMillis());
-
-                    } else {
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.put(region.idproject, 1);
-
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.put(region.idproject, System.currentTimeMillis());
-                    }
-
-                } else {
-
-                    HashMap<UUID, Integer> r = new HashMap();
-                    HashMap<UUID, Long> s = new HashMap();
-                    s.put(region.idproject, System.currentTimeMillis());
-                    r.put(region.idproject, 1);
-
-                    PluginData.getTemporaryBlocks().put(pl.getUniqueId(), new PlayersData(r, s));
-
-                }
-                if (PluginData.getMin().containsKey(uuid)) {
-
-                    PluginData.getMin().remove(uuid);
-                    PluginData.getMin().put(uuid, true);
-
-                } else {
-
-                    PluginData.getMin().put(uuid, true);
-                }
-                if (PluginData.getAllblocks().containsKey(region.idproject)) {
-                    int i = PluginData.getAllblocks().get(region.idproject) + 1;
-                    PluginData.getAllblocks().remove(region.idproject);
-                    PluginData.getAllblocks().put(region.idproject, i);
-
-                } else {
-
-                    PluginData.getAllblocks().put(region.idproject, 1);
-                }
-
-                if (PluginData.getTodayStat().containsKey("today")) {
-                    PluginData.getTodayStat().get("today").blocks = PluginData.getTodayStat().get("today").blocks + 1;
-                    if (!PluginData.getTodayStat().get("today").projects.contains(region.idproject)) {
-                        PluginData.getTodayStat().get("today").projects.add(region.idproject);
-
-                    }
-                } else {
-                    List<UUID> l = new ArrayList();
-                    List<UUID> pr = new ArrayList();
-                    pr.add(region.idproject);
-                    PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0, pr));
-
-                }
-
-            }
-        }
+        elaborateEvent(e);
 
     }
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
-        Player pl = e.getPlayer();
-        UUID uuid = pl.getUniqueId();
-        Location loc = pl.getLocation();
-        List<String> reg = new ArrayList<>();
-        for (String region : PluginData.regions.keySet()) {
-            Region re = PluginData.regions.get(region).region;
-            if (re.isInside(loc)) {
-                reg.add(region);
-            }
-        }
-
-        if (!reg.isEmpty()) {
-            String weightMax = reg.get(0);
-
-            for (String re : reg) {
-                if (PluginData.regions.get(re).weight > PluginData.regions.get(weightMax).weight) {
-                    weightMax = re;
-                }
-            }
-
-            RegionData region = PluginData.regions.get(weightMax);
-
-            if (region.region.isInside(loc)) {
-
-                if (PluginData.getTemporaryBlocks().containsKey(pl.getUniqueId())) {
-
-                    if (PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.containsKey(region.idproject)) {
-
-                        Integer l = PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.get(region.idproject) + 1;
-
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.remove(region.idproject);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.put(region.idproject, l);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.remove(region.idproject);
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.put(region.idproject, System.currentTimeMillis());
-
-                    } else {
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).r.put(region.idproject, 1);
-
-                        PluginData.getTemporaryBlocks().get(pl.getUniqueId()).lastplayed.put(region.idproject, System.currentTimeMillis());
-                    }
-
-                } else {
-
-                    HashMap<UUID, Integer> r = new HashMap();
-                    HashMap<UUID, Long> s = new HashMap();
-                    s.put(region.idproject, System.currentTimeMillis());
-                    r.put(region.idproject, 1);
-
-                    PluginData.getTemporaryBlocks().put(pl.getUniqueId(), new PlayersData(r, s));
-
-                }
-                if (PluginData.getMin().containsKey(uuid)) {
-
-                    PluginData.getMin().remove(uuid);
-                    PluginData.getMin().put(uuid, true);
-
-                } else {
-
-                    PluginData.getMin().put(uuid, true);
-                }
-                if (PluginData.getAllblocks().containsKey(region.idproject)) {
-                    int i = PluginData.getAllblocks().get(region.idproject) + 1;
-                    PluginData.getAllblocks().remove(region.idproject);
-                    PluginData.getAllblocks().put(region.idproject, i);
-
-                } else {
-
-                    PluginData.getAllblocks().put(region.idproject, 1);
-                }
-
-                if (PluginData.getTodayStat().containsKey("today")) {
-                    PluginData.getTodayStat().get("today").blocks = PluginData.getTodayStat().get("today").blocks + 1;
-                    if (!PluginData.getTodayStat().get("today").projects.contains(region.idproject)) {
-                        PluginData.getTodayStat().get("today").projects.add(region.idproject);
-
-                    }
-                } else {
-                    List<UUID> l = new ArrayList();
-                    List<UUID> pr = new ArrayList();
-                    pr.add(region.idproject);
-                    PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0, pr));
-
-                }
-
-            }
-        }
+        elaborateEvent(e);
 
     }
 
@@ -246,9 +78,9 @@ public class PlayerListener implements Listener {
 
             @Override
             public void run() {
-                if (Mcproject.getPluginInstance().nameserver.equals("default")) {
+                if (Mcproject.getPluginInstance().getNameserver().equals("default")) {
 
-                    Mcproject.getPluginInstance().sendNameServer(p);
+                    bungee.sendNameServer(p);
                     PluginData.loadAllDynmap();
 
                 }
@@ -256,16 +88,16 @@ public class PlayerListener implements Listener {
 
         }.runTaskLater(Mcproject.getPluginInstance(), 150L);
 
-        System.out.println("Project " + Mcproject.getPluginInstance().nameserver);
+        System.out.println("Project " + Mcproject.getPluginInstance().getNameserver());
 
         new BukkitRunnable() {
 
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool WHERE player_uuid = '" + p.getUniqueId().toString() + "' ;";
+                    String statement = "SELECT * FROM mcmeproject_news_bool WHERE player_uuid = '" + p.getUniqueId().toString() + "' ;";
 
-                    Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(statement);
+                    Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
                     statm1.setQueryTimeout(10);
                     final ResultSet r = statm1.executeQuery(statement);
 
@@ -286,8 +118,8 @@ public class PlayerListener implements Listener {
 
                         } else {
 
-                            String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool (bool, player_uuid) VALUES (true,'" + p.getUniqueId().toString() + "') ; ";
-                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                            String stat = "INSERT INTO mcmeproject_news_bool (bool, player_uuid) VALUES (true,'" + p.getUniqueId().toString() + "') ; ";
+                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                             statm.setQueryTimeout(10);
                             statm.executeUpdate(stat);
                             new BukkitRunnable() {
@@ -315,18 +147,16 @@ public class PlayerListener implements Listener {
             @Override
             public void run() {
 
-                for (String project : PluginData.getToday()) {
+                PluginData.getToday().forEach((project) -> {
+                    ProjectData d = PluginData.getProjectsAll().get(project);
 
-                    ProjectData d = PluginData.projectsAll.get(project);
+                    if (d.getHead().equals(p.getUniqueId())) {
 
-                    if (d.head.equals(p.getUniqueId())) {
-
-                        PlayersRunnable.updatedReminderRunnable(project, p, d.updated);
-                    } else if (d.assistants.contains(p.getUniqueId())) {
-                        PlayersRunnable.updatedReminderRunnable(project, p, d.updated);
+                        PlayersRunnable.updatedReminderRunnable(project, p, d.getUpdated());
+                    } else if (d.getAssistants().contains(p.getUniqueId())) {
+                        PlayersRunnable.updatedReminderRunnable(project, p, d.getUpdated());
                     }
-
-                }
+                });
             }
 
         }.runTaskAsynchronously(Mcproject.getPluginInstance());
@@ -338,46 +168,145 @@ public class PlayerListener implements Listener {
 
         Player pl = e.getPlayer();
         Location loc = pl.getLocation();
-        for (String project : PluginData.projectsAll.keySet()) {
-            if (PluginData.regionsReadable.containsKey(PluginData.projectsAll.get(project).idproject)) {
+        PluginData.getProjectsAll().keySet().forEach((project) -> {
+            if (PluginData.getRegionsReadable().containsKey(PluginData.getProjectsAll().get(project).getIdproject())) {
 
-                for (String region : PluginData.regionsReadable.get(PluginData.projectsAll.get(project).idproject)) {
-                    Region r = PluginData.regions.get(region).region;
-                    ProjectData p = PluginData.projectsAll.get(project);
-                    if (PluginData.informedRegion.containsKey(PluginData.regions.get(region).idr)) {
-                        if (r.isInside(loc) && !p.status.equals(ProjectStatus.FINISHED) && !p.status.equals(ProjectStatus.HIDDEN)) {
+                PluginData.getRegionsReadable().get(PluginData.getProjectsAll().get(project).getIdproject()).forEach((region) -> {
+                    Region r = PluginData.getRegions().get(region).getRegion();
+                    ProjectData p = PluginData.getProjectsAll().get(project);
+                    if (PluginData.getInformedRegion().containsKey(PluginData.getRegions().get(region).getIdr())) {
+                        if (r.isInside(loc) && !p.getStatus().equals(ProjectStatus.FINISHED) && !p.getStatus().equals(ProjectStatus.HIDDEN)) {
 
-                            if (!PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
+                            if (!PluginData.getInformedRegion().get(PluginData.getRegions().get(region).getIdr()).contains(pl.getUniqueId())) {
                                 FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-                                message.addSimple("Welcome " + pl.getName() + " in the area of : " + ChatColor.RED + p.name.toUpperCase() + " project");
-                                if (PluginData.regionsReadable.get(PluginData.projectsAll.get(project).idproject).size() != 1) {
+                                message.addSimple("Welcome " + pl.getName() + " in the area of : " + ChatColor.RED + p.getName().toUpperCase() + " project");
+                                if (PluginData.getRegionsReadable().get(PluginData.getProjectsAll().get(project).getIdproject()).size() != 1) {
                                     message.addSimple("\n" + ChatColor.GREEN + "The area name is: " + ChatColor.RED + region);
                                 }
                                 message.send(pl);
-                                PluginData.informedRegion.get(PluginData.regions.get(region).idr).add(pl.getUniqueId());
+                                PluginData.getInformedRegion().get(PluginData.getRegions().get(region).getIdr()).add(pl.getUniqueId());
 
                             }
 
-                        } else if (!r.isNear(loc, 100) && PluginData.informedRegion.get(PluginData.regions.get(region).idr).contains(pl.getUniqueId())) {
-                            PluginData.informedRegion.get(PluginData.regions.get(region).idr).remove(pl.getUniqueId());
+                        } else if (!r.isNear(loc, 100) && PluginData.getInformedRegion().get(PluginData.getRegions().get(region).getIdr()).contains(pl.getUniqueId())) {
+                            PluginData.getInformedRegion().get(PluginData.getRegions().get(region).getIdr()).remove(pl.getUniqueId());
                         }
                     } else {
                         List<UUID> l = new ArrayList();
-                        PluginData.informedRegion.put(PluginData.regions.get(region).idr, l);
+                        PluginData.getInformedRegion().put(PluginData.getRegions().get(region).getIdr(), l);
                     }
-                }
+                });
             }
-
-        }
+        });
 
     }
 
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
-        for (List<UUID> area : PluginData.informedRegion.values()) {
+        PluginData.getInformedRegion().values().forEach((area) -> {
             if (area.contains(event.getPlayer().getUniqueId())) {
                 area.remove(event.getPlayer().getUniqueId());
             }
+        });
+    }
+
+    private void elaborateEvent(Event e) {
+
+        Player pl = null;
+        if (e instanceof BlockBreakEvent) {
+            pl = ((BlockBreakEvent) e).getPlayer();
+        } else if (e instanceof BlockPlaceEvent) {
+            pl = ((BlockPlaceEvent) e).getPlayer();
+        }
+     
+        if (pl != null) {
+            UUID uuid = pl.getUniqueId();
+            Location loc = pl.getLocation();
+            List<String> reg = new ArrayList<>();
+            PluginData.getRegions().keySet().forEach((region) -> {
+                Region re = PluginData.getRegions().get(region).getRegion();
+                if (re.isInside(loc)) {
+                    reg.add(region);
+                }
+            });
+
+            if (!reg.isEmpty()) {
+                String weightMax = reg.get(0);
+
+                for (String re : reg) {
+                    if (PluginData.getRegions().get(re).getWeight() > PluginData.getRegions().get(weightMax).getWeight()) {
+                        weightMax = re;
+                    }
+                }
+                RegionData region = PluginData.getRegions().get(weightMax);
+
+                if (region.getRegion().isInside(loc)) {
+
+                    if (PluginData.getTemporaryBlocks().containsKey(pl.getUniqueId())) {
+
+                        if (PluginData.getTemporaryBlocks().get(pl.getUniqueId()).getR().containsKey(region.getIdproject())) {
+
+                            Integer l = PluginData.getTemporaryBlocks().get(pl.getUniqueId()).getR().get(region.getIdproject()) + 1;
+
+                            PluginData.getTemporaryBlocks().get(pl.getUniqueId()).getR().remove(region.getIdproject());
+                            PluginData.getTemporaryBlocks().get(pl.getUniqueId()).getR().put(region.getIdproject(), l);
+                            PluginData.getTemporaryBlocks().get(pl.getUniqueId()).getLastplayed().remove(region.getIdproject());
+                            PluginData.getTemporaryBlocks().get(pl.getUniqueId()).getLastplayed().put(region.getIdproject(), System.currentTimeMillis());
+
+                        } else {
+                            PluginData.getTemporaryBlocks().get(pl.getUniqueId()).getR().put(region.getIdproject(), 1);
+
+                            PluginData.getTemporaryBlocks().get(pl.getUniqueId()).getLastplayed().put(region.getIdproject(), System.currentTimeMillis());
+                        }
+
+                    } else {
+
+                        HashMap<UUID, Integer> r = new HashMap();
+                        HashMap<UUID, Long> s = new HashMap();
+                        s.put(region.getIdproject(), System.currentTimeMillis());
+                        r.put(region.getIdproject(), 1);
+
+                        PluginData.getTemporaryBlocks().put(pl.getUniqueId(), new PlayersData(r, s));
+
+                    }
+                    if (PluginData.getMin().containsKey(uuid)) {
+
+                        PluginData.getMin().remove(uuid);
+                        PluginData.getMin().put(uuid, true);
+
+                    } else {
+
+                        PluginData.getMin().put(uuid, true);
+                    }
+                    if (PluginData.getAllblocks().containsKey(region.getIdproject())) {
+                        int i = PluginData.getAllblocks().get(region.getIdproject()) + 1;
+                        PluginData.getAllblocks().remove(region.getIdproject());
+                        PluginData.getAllblocks().put(region.getIdproject(), i);
+
+                    } else {
+
+                        PluginData.getAllblocks().put(region.getIdproject(), 1);
+                    }
+
+                    if (PluginData.getTodayStat().containsKey("today")) {
+
+                        PluginData.getTodayStat().get("today").setBlocks(PluginData.getTodayStat().get("today").getBlocks() + 1);
+
+                        if (!PluginData.getTodayStat().get("today").getProjects().contains(region.getIdproject())) {
+                            PluginData.getTodayStat().get("today").getProjects().add(region.getIdproject());
+
+                        }
+                    } else {
+                        List<UUID> l = new ArrayList();
+                        List<UUID> pr = new ArrayList();
+                        pr.add(region.getIdproject());
+                        PluginData.getTodayStat().put("today", new ProjectStatistics(1, l, 0, pr));
+
+                    }
+
+                }
+            }
+
         }
     }
 

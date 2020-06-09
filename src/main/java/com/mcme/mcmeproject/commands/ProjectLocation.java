@@ -19,12 +19,13 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.util.DynmapUtil;
+import com.mcme.mcmeproject.util.bungee;
+import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,106 +41,74 @@ public class ProjectLocation extends ProjectCommand {
         setShortDescription(": Set a warp for a project region");
         setUsageDescription(" <ProjectName> <RegionName>: Set your current location as region warp location.");
     }
-    private boolean manager;
-
-    private boolean head;
 
     @Override
     protected void execute(CommandSender cs, final String... args) {
 
         Player pl = (Player) cs;
         final Location loc = pl.getLocation();
-        if (cs instanceof Player) {
-            head = false;
-            manager = false;
-            if (PluginData.projectsAll.containsKey(args[0])) {
 
-                if (playerPermission(args[0], cs)) {
-                    if (PluginData.regions.containsKey(args[1]) && PluginData.regions.get(args[1]).idproject.equals(PluginData.projectsAll.get(args[0]).idproject)) {
-                        if (PluginData.regions.get(args[1]).isInside(loc)) {
+        if (PluginData.getProjectsAll().containsKey(args[0])) {
 
-                            String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
+            if (utils.playerPermission(args[0], cs)) {
 
-                            new BukkitRunnable() {
+                if (PluginData.getRegions().containsKey(args[1]) && PluginData.getRegions().get(args[1]).getIdproject().equals(PluginData.getProjectsAll().get(args[0]).getIdproject())) {
 
-                                @Override
-                                public void run() {
+                    if (PluginData.getRegions().get(args[1]).isInside(loc)) {
 
-                                    try {
-                                        if (PluginData.warps.containsKey(PluginData.regions.get(args[1]).idr)) {
-                                            String stat2 = "DELETE " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data WHERE idregion = '" + PluginData.regions.get(args[1]).idr.toString() + "' ;";
+                        String n = args[1].toUpperCase() + " (" + args[0].toLowerCase() + ")";
 
-                                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat2);
-                                            statm.setQueryTimeout(10);
-                                            statm.executeUpdate(stat2);
+                        new BukkitRunnable() {
 
-                                            DynmapUtil.deleteWarp(n);
-                                        }
+                            @Override
+                            public void run() {
 
-                                        String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).idproject.toString() + "','" + PluginData.regions.get(args[1]).idr.toString() + "','" + loc.getWorld().getName() + "','" + Mcproject.getPluginInstance().nameserver + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
-                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                                try {
+                                    if (PluginData.getWarps().containsKey(PluginData.getRegions().get(args[1]).getIdr())) {
+                                        String stat2 = "DELETE mcmeproject_warps_data WHERE idregion = '" + PluginData.getRegions().get(args[1]).getIdr().toString() + "' ;";
+
+                                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2);
                                         statm.setQueryTimeout(10);
-                                        statm.executeUpdate(stat);
-                                        PluginData.loadWarps();
-                                        Mcproject.getPluginInstance().sendReload(pl, "warps");
-                                    } catch (SQLException ex) {
-                                        Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                        statm.executeUpdate(stat2);
+
+                                        DynmapUtil.deleteWarp(n);
                                     }
 
+                                    String stat = "INSERT INTO mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "','" + PluginData.getRegions().get(args[1]).getIdr().toString() + "','" + loc.getWorld().getName() + "','" + Mcproject.getPluginInstance().getNameserver() + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
+                                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                    statm.setQueryTimeout(10);
+                                    statm.executeUpdate(stat);
+                                    PluginData.loadWarps();
+                                    bungee.sendReload(pl, "warps");
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                                 }
 
-                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                            }
 
-                            sendDone(cs);
-                            DynmapUtil.createMarkerWarp(n, loc, loc.getWorld().getName());
-                            PluginData.loadAllDynmap();
-                            Mcproject.getPluginInstance().sendReload(pl, "map");
+                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-                        } else {
-                            sendNoInside(cs);
-                        }
+                        sendDone(cs);
+                        DynmapUtil.createMarkerWarp(n, loc, loc.getWorld().getName());
+                        PluginData.loadAllDynmap();
+                        bungee.sendReload(pl, "map");
+
                     } else {
-
-                        sendNoRegion(cs, args[1], args[0]);
-
+                        sendNoInside(cs);
                     }
                 } else {
-                    sendNoPermission(cs);
+
+                    sendNoRegion(cs, args[1], args[0]);
+
                 }
-
-            } else {
-
-                sendNoProject(cs);
-
             }
 
-        }
-
-    }
-
-    public boolean playerPermission(final String prr, CommandSender cs) {
-        final Player pl = (Player) cs;
-
-        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
-            manager = true;
-
-        }
-        if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
-            head = true;
-
-        }
-
-        if (manager || head || pl.hasPermission("project.owner")) {
-            return true;
         } else {
-            sendNoPermission(cs);
-            return false;
+
+            sendNoProject(cs);
+
         }
 
-    }
-
-    private void sendNoPermission(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
     }
 
     private void sendNoProject(CommandSender cs) {

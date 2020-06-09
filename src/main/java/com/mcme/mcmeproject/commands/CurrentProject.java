@@ -56,7 +56,7 @@ public class CurrentProject  {
                             try {
                                 ProjectData proj = PluginData.getProjectsAll().get(args[0]);
                                 String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data ;";
-                                final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                                final ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
                                 projects.clear();
                                 if (r.first()) {
                                     do {
@@ -80,17 +80,17 @@ public class CurrentProject  {
 
                                     assist.add(pl.getUniqueId());
                                     String s = serialize(assist);
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET plcurrent = '" + s + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                    Mcproject.getPluginInstance().con.prepareStatement(stat).executeUpdate();
+                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET plcurrent = '" + s + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+                                    Mcproject.getPluginInstance().getConnection().prepareStatement(stat).executeUpdate();
                                     final List<UUID> assist2 = getList(r, projects.get(0));
 
                                     assist2.remove(pl.getUniqueId());
                                     String s2 = serialize(assist2);
                                     String stat2 = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET plcurrent = '" + s2 + "' WHERE idproject = '" + projects.get(0).toString() + "' ;";
-                                    Mcproject.getPluginInstance().con.prepareStatement(stat2).executeUpdate();
+                                    Mcproject.getPluginInstance().getConnection().prepareStatement(stat2).executeUpdate();
                                     PluginData.loadProjects();
                                     Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                    sendDone(cs, proj.name);
+                                    sendDone(cs, proj.getName());
                                 }
 
                             } catch (SQLException ex) {

@@ -29,7 +29,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
- * @author fraspace5
+ * @author Fraspace5
  */
 public class ProjectNews extends ProjectCommand {
 
@@ -42,160 +42,157 @@ public class ProjectNews extends ProjectCommand {
     @Override
     protected void execute(final CommandSender cs, final String... args) {
 
-        if (cs instanceof Player) {
-            final Player pl = (Player) cs;
+        final Player pl = (Player) cs;
 
-            if (args[0].equals("true") || args[0].equals("false")) {
-                new BukkitRunnable() {
+        if (args[0].equals("true") || args[0].equals("false")) {
+            new BukkitRunnable() {
 
-                    @Override
-                    public void run() {
+                @Override
+                public void run() {
 
-                        try {
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
-                            Statement statm1 = Mcproject.getPluginInstance().con.prepareStatement(statement);
-                            statm1.setQueryTimeout(10);
-                            final ResultSet r = statm1.executeQuery(statement);
-                        
-                            if (r.first()) {
-                                switch (args[0]) {
-                                    case "true":
+                    try {
+                        String statement = "SELECT * FROM mcmeproject_news_bool WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                        Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
+                        statm1.setQueryTimeout(10);
+                        final ResultSet r = statm1.executeQuery(statement);
 
-                                        if (r.getBoolean("bool") == false) {
-                                            new BukkitRunnable() {
+                        if (r.first()) {
+                            switch (args[0]) {
+                                case "true":
 
-                                                @Override
-                                                public void run() {
+                                    if (r.getBoolean("bool") == false) {
+                                        new BukkitRunnable() {
 
-                                                    try {
-                                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool SET bool = 1 WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
-                                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                                        statm.setQueryTimeout(10);
-                                                        statm.executeUpdate(stat);
-                                                    } catch (SQLException ex) {
-                                                        Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
-                                                    }
+                                            @Override
+                                            public void run() {
 
+                                                try {
+                                                    String stat = "UPDATE mcmeproject_news_bool SET bool = 1 WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                                                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                                    statm.setQueryTimeout(10);
+                                                    statm.executeUpdate(stat);
+                                                } catch (SQLException ex) {
+                                                    Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
                                                 }
 
-                                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                            }
 
-                                            sendDone(cs);
-                                        } else {
-                                            sendTrue(cs);
+                                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                                        sendDone(cs);
+                                    } else {
+                                        sendTrue(cs);
+                                    }
+
+                                    break;
+
+                                case "false":
+                                    if (r.getBoolean("bool") == true) {
+
+                                        new BukkitRunnable() {
+
+                                            @Override
+                                            public void run() {
+
+                                                try {
+                                                    String stat = "UPDATE mcmeproject_news_bool SET bool = 0 WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                                                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                                    statm.setQueryTimeout(10);
+                                                    statm.executeUpdate(stat);
+                                                } catch (SQLException ex) {
+                                                    Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                                }
+
+                                            }
+
+                                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                        sendDone(cs);
+                                    } else {
+                                        sendFalse(cs);
+                                    }
+                                    break;
+                                default:
+
+                                    new BukkitRunnable() {
+
+                                        @Override
+                                        public void run() {
+
+                                            try {
+                                                String stat = "UPDATE mcmeproject_news_bool SET bool = 0 WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
+                                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                                statm.setQueryTimeout(10);
+                                                statm.executeUpdate(stat);
+                                            } catch (SQLException ex) {
+                                                Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+
                                         }
 
-                                        break;
+                                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-                                    case "false":
-                                        if (r.getBoolean("bool") == true) {
-
-                                            new BukkitRunnable() {
-
-                                                @Override
-                                                public void run() {
-
-                                                    try {
-                                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool SET bool = 0 WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
-                                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                                        statm.setQueryTimeout(10);
-                                                        statm.executeUpdate(stat);
-                                                    } catch (SQLException ex) {
-                                                        Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
-                                                    }
-
-                                                }
-
-                                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
-                                            sendDone(cs);
-                                        } else {
-                                            sendFalse(cs);
-                                        }
-                                        break;
-                                    default:
-
-                                        new BukkitRunnable() {
-
-                                            @Override
-                                            public void run() {
-
-                                                try {
-                                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool SET bool = 0 WHERE player_uuid = '" + pl.getUniqueId().toString() + "' ;";
-                                                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                                    statm.setQueryTimeout(10);
-                                                    statm.executeUpdate(stat);
-                                                } catch (SQLException ex) {
-                                                    Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
-                                                }
-
-                                            }
-
-                                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                                        break;
-
-                                }
-
-                            } else {
-
-                                switch (args[0]) {
-                                    case "true":
-                                        new BukkitRunnable() {
-
-                                            @Override
-                                            public void run() {
-
-                                                try {
-                                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool (bool, player_uuid) VALUES(1,'" + pl.getUniqueId().toString() + "');";
-                                                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                                    statm.setQueryTimeout(10);
-                                                    statm.executeUpdate(stat);
-                                                    sendDone(cs);
-                                                } catch (SQLException ex) {
-                                                    Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
-                                                }
-
-                                            }
-
-                                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
-                                        break;
-                                    case "false":
-                                        new BukkitRunnable() {
-
-                                            @Override
-                                            public void run() {
-
-                                                try {
-                                                    String stat = "INSERT INTO " + Mcproject.getPluginInstance().database + ".mcmeproject_news_bool (bool, player_uuid) VALUES(0,'" + pl.getUniqueId().toString() + "');";
-                                                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                                    statm.setQueryTimeout(10);
-                                                    statm.executeUpdate(stat);
-                                                    sendDone(cs);
-                                                } catch (SQLException ex) {
-                                                    Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
-                                                }
-
-                                            }
-
-                                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
-                                        break;
-
-                                }
+                                    break;
 
                             }
 
-                        } catch (SQLException ex) {
-                            Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                        } else {
+
+                            switch (args[0]) {
+                                case "true":
+                                    new BukkitRunnable() {
+
+                                        @Override
+                                        public void run() {
+
+                                            try {
+                                                String stat = "INSERT INTO mcmeproject_news_bool (bool, player_uuid) VALUES(1,'" + pl.getUniqueId().toString() + "');";
+                                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                                statm.setQueryTimeout(10);
+                                                statm.executeUpdate(stat);
+                                                sendDone(cs);
+                                            } catch (SQLException ex) {
+                                                Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+
+                                        }
+
+                                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                    break;
+                                case "false":
+                                    new BukkitRunnable() {
+
+                                        @Override
+                                        public void run() {
+
+                                            try {
+                                                String stat = "INSERT INTO mcmeproject_news_bool (bool, player_uuid) VALUES(0,'" + pl.getUniqueId().toString() + "');";
+                                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                                statm.setQueryTimeout(10);
+                                                statm.executeUpdate(stat);
+                                                sendDone(cs);
+                                            } catch (SQLException ex) {
+                                                Logger.getLogger(ProjectNews.class.getName()).log(Level.SEVERE, null, ex);
+                                            }
+
+                                        }
+
+                                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                                    break;
+
+                            }
+
                         }
 
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                }
 
-            } else {
-                sendError(cs);
-            }
+            }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
+        } else {
+            sendError(cs);
         }
 
     }

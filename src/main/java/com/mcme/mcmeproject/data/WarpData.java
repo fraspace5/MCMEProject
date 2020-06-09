@@ -17,9 +17,8 @@
 package com.mcme.mcmeproject.data;
 
 import java.util.UUID;
-import org.bukkit.Bukkit;
+import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.World;
 
 /**
  *
@@ -27,17 +26,18 @@ import org.bukkit.World;
  */
 public class WarpData {
 
-    public final UUID idregion;
+    @Getter
+    private final UUID idregion;
+    @Getter
+    private final UUID idproject;
+    @Getter
+    private final Location location;
+    @Getter
+    private final String wl;
+    @Getter
+    private final String server;
 
-    public final UUID idproject;
-
-    public final Location location;
-
-    public final String wl;
-    
-    public final String server;
-
-    public WarpData(UUID idp, UUID idr, Location l, String nameserver,String world) {
+    public WarpData(UUID idp, UUID idr, Location l, String nameserver, String world) {
 
         idregion = idr;
 

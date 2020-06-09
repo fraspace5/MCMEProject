@@ -18,6 +18,7 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
+import com.mcme.mcmeproject.util.utils;
 import com.mcmiddleearth.pluginutil.message.FancyMessage;
 import com.mcmiddleearth.pluginutil.message.MessageType;
 import static java.lang.Integer.parseInt;
@@ -49,56 +50,125 @@ public class ProjectStatistics extends ProjectCommand {
     @Override
     protected void execute(final CommandSender cs, final String... args) {
 
-        if (cs instanceof Player) {
-            Player pl = (Player) cs;
-            if (args[0].equalsIgnoreCase("today")) {
-                new BukkitRunnable() {
+        Player pl = (Player) cs;
+        if (args[0].equalsIgnoreCase("today")) {
+            new BukkitRunnable() {
 
-                    @Override
-                    public void run() {
-                        try {
-                            Calendar cal = Calendar.getInstance();                    
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "';";
-                            ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                @Override
+                public void run() {
+                    try {
+                        Calendar cal = Calendar.getInstance();
+                        String statement = "SELECT * FROM mcmeproject_statistics_data WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "';";
+                        ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
 
-                            if (r.first()) {
-                                int blocks = r.getInt("blocks");
-                                int minutes = r.getInt("minutes");
-                                List<UUID> plsUUID = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                List<UUID> prsUUID = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
-                                sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "today", pl);
-                            } else {
-                                List<UUID> prsUUID = new ArrayList();
-                                sendMessage(0, 0, 0, prsUUID, "today", pl);
-                            }
-
-                        } catch (SQLException ex) {
-
-                            Logger.getLogger(ProjectStatistics.class.getName()).log(Level.SEVERE, null, ex);
+                        if (r.first()) {
+                            int blocks = r.getInt("blocks");
+                            int minutes = r.getInt("minutes");
+                            List<UUID> plsUUID = utils.convertListUUID(utils.unserialize(r.getString("players")));
+                            List<UUID> prsUUID = utils.convertListUUID(utils.unserialize(r.getString("projects")));
+                            sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "today", pl);
+                        } else {
+                            List<UUID> prsUUID = new ArrayList();
+                            sendMessage(0, 0, 0, prsUUID, "today", pl);
                         }
 
+                    } catch (SQLException ex) {
+
+                        Logger.getLogger(ProjectStatistics.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                }
 
-            } else if (args[0].equalsIgnoreCase("week")) {
+            }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-                Long onewago = System.currentTimeMillis() - 604800000;
+        } else if (args[0].equalsIgnoreCase("week")) {
 
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(onewago);
-                Calendar now = Calendar.getInstance();
-                List<Calendar> listCal = createListDate(cal, now);
+            Long onewago = System.currentTimeMillis() - 604800000;
 
-                new BukkitRunnable() {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(onewago);
+            Calendar now = Calendar.getInstance();
+            List<Calendar> listCal = createListDate(cal, now);
 
-                    @Override
-                    public void run() {
-                        try {
-                            Calendar cal = Calendar.getInstance();
+            new BukkitRunnable() {
 
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data ;";
-                            ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
+                @Override
+                public void run() {
+                    try {
+                        Calendar cal = Calendar.getInstance();
+
+                        String statement = "SELECT * FROM mcmeproject_statistics_data ;";
+                        ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
+
+                        int blocks = 0;
+                        int minutes = 0;
+                        List<UUID> plsUUID = new ArrayList<>();
+                        List<UUID> prsUUID = new ArrayList<>();
+                        for (Calendar firstDate : listCal) {
+                            int day = firstDate.get(Calendar.DAY_OF_MONTH);
+                            int month = firstDate.get(Calendar.MONTH);
+                            int year = firstDate.get(Calendar.YEAR);
+
+                            if (r.first()) {
+                                do {
+
+                                    if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
+                                            && r.getString("month").equalsIgnoreCase(String.valueOf(month))
+                                            && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
+
+                                        blocks = blocks + r.getInt("blocks");
+                                        minutes = minutes + r.getInt("minutes");
+                                        List<UUID> plsUUID2 = utils.convertListUUID(utils.unserialize(r.getString("players")));
+                                        List<UUID> prsUUID2 = utils.convertListUUID(utils.unserialize(r.getString("projects")));
+
+                                        plsUUID2.forEach((player) -> {
+                                            if (!plsUUID.contains(player)) {
+                                                plsUUID.add(player);
+                                            }
+                                        });
+                                        prsUUID2.forEach((pr) -> {
+                                            if (!prsUUID.contains(pr)) {
+                                                prsUUID.add(pr);
+                                            }
+                                        });
+
+                                    }
+
+                                } while (r.next());
+
+                            }
+                        }
+
+                        sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "week", pl);
+
+                    } catch (SQLException ex) {
+
+                        Logger.getLogger(ProjectStatistics.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+
+            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+        } else if (args[0].equalsIgnoreCase("month")) {
+
+            Long onemago = System.currentTimeMillis() - 2678400000L;
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(onemago);
+            Calendar now = Calendar.getInstance();
+            List<Calendar> listCal = createListDate(cal, now);
+
+            new BukkitRunnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        Calendar cal = Calendar.getInstance();
+
+                        String statement = "SELECT * FROM mcmeproject_statistics_data ;";
+                        ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
+                        if (r.first()) {
 
                             int blocks = 0;
                             int minutes = 0;
@@ -108,7 +178,6 @@ public class ProjectStatistics extends ProjectCommand {
                                 int day = firstDate.get(Calendar.DAY_OF_MONTH);
                                 int month = firstDate.get(Calendar.MONTH);
                                 int year = firstDate.get(Calendar.YEAR);
-
                                 if (r.first()) {
                                     do {
 
@@ -118,19 +187,19 @@ public class ProjectStatistics extends ProjectCommand {
 
                                             blocks = blocks + r.getInt("blocks");
                                             minutes = minutes + r.getInt("minutes");
-                                            List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                            List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
+                                            List<UUID> plsUUID2 = utils.convertListUUID(utils.unserialize(r.getString("players")));
+                                            List<UUID> prsUUID2 = utils.convertListUUID(utils.unserialize(r.getString("projects")));
 
-                                            for (UUID player : plsUUID2) {
+                                            plsUUID2.forEach((player) -> {
                                                 if (!plsUUID.contains(player)) {
                                                     plsUUID.add(player);
                                                 }
-                                            }
-                                            for (UUID pr : prsUUID2) {
+                                            });
+                                            prsUUID2.forEach((pr) -> {
                                                 if (!prsUUID.contains(pr)) {
                                                     prsUUID.add(pr);
                                                 }
-                                            }
+                                            });
 
                                         }
 
@@ -139,182 +208,112 @@ public class ProjectStatistics extends ProjectCommand {
                                 }
                             }
 
-                            sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "week", pl);
+                            sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "month", pl);
 
-                        } catch (SQLException ex) {
-
-                            Logger.getLogger(ProjectStatistics.class.getName()).log(Level.SEVERE, null, ex);
+                        } else {
+                            sendErrorNoData(cs);
                         }
 
+                    } catch (SQLException ex) {
+
+                        Logger.getLogger(ProjectStatistics.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                }
 
-            } else if (args[0].equalsIgnoreCase("month")) {
+            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+        } else if (args[0].equalsIgnoreCase("custom")) {
+            if (validateDate(args[1])) {
+                if (validateDate(args[2])) {
 
-                Long onemago = System.currentTimeMillis() - 2678400000L;
+                    Calendar first = Calendar.getInstance();
+                    Calendar second = Calendar.getInstance();
 
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(onemago);
-                Calendar now = Calendar.getInstance();
-                List<Calendar> listCal = createListDate(cal, now);
+                    String[] fir = unserialize(args[1]);
+                    String[] sec = unserialize(args[2]);
 
-                new BukkitRunnable() {
+                    first.set(parseInt(fir[2]), parseInt(fir[1]) - 1, parseInt(fir[0]));
+                    second.set(parseInt(sec[2]), parseInt(sec[1]) - 1, parseInt(sec[0]));
 
-                    @Override
-                    public void run() {
-                        try {
-                            Calendar cal = Calendar.getInstance();
+                    List<Calendar> listCal = createListDate(first, second);
+                    new BukkitRunnable() {
 
-                            String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data ;";
-                            ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-                            if (r.first()) {
+                        @Override
+                        public void run() {
+                            try {
+                                Calendar cal = Calendar.getInstance();
 
-                                int blocks = 0;
-                                int minutes = 0;
-                                List<UUID> plsUUID = new ArrayList<>();
-                                List<UUID> prsUUID = new ArrayList<>();
-                                for (Calendar firstDate : listCal) {
-                                    int day = firstDate.get(Calendar.DAY_OF_MONTH);
-                                    int month = firstDate.get(Calendar.MONTH);
-                                    int year = firstDate.get(Calendar.YEAR);
-                                    if (r.first()) {
-                                        do {
+                                String statement = "SELECT * FROM mcmeproject_statistics_data ;";
+                                final ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
+                                if (r.first()) {
 
-                                            if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
-                                                    && r.getString("month").equalsIgnoreCase(String.valueOf(month))
-                                                    && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
+                                    int blocks = 0;
+                                    int minutes = 0;
+                                    List<UUID> plsUUID = new ArrayList<>();
+                                    List<UUID> prsUUID = new ArrayList<>();
+                                    for (Calendar firstDate : listCal) {
+                                        int day = firstDate.get(Calendar.DAY_OF_MONTH);
+                                        int month = firstDate.get(Calendar.MONTH);
+                                        int year = firstDate.get(Calendar.YEAR);
+                                        if (r.first()) {
+                                            do {
 
-                                                blocks = blocks + r.getInt("blocks");
-                                                minutes = minutes + r.getInt("minutes");
-                                                List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                                List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
+                                                if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
+                                                        && r.getString("month").equalsIgnoreCase(String.valueOf(month))
+                                                        && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
 
-                                                for (UUID player : plsUUID2) {
-                                                    if (!plsUUID.contains(player)) {
-                                                        plsUUID.add(player);
-                                                    }
-                                                }
-                                                for (UUID pr : prsUUID2) {
-                                                    if (!prsUUID.contains(pr)) {
-                                                        prsUUID.add(pr);
-                                                    }
-                                                }
+                                                    blocks = blocks + r.getInt("blocks");
+                                                    minutes = minutes + r.getInt("minutes");
+                                                    List<UUID> plsUUID2 = utils.convertListUUID(utils.unserialize(r.getString("players")));
+                                                    List<UUID> prsUUID2 = utils.convertListUUID(utils.unserialize(r.getString("projects")));
 
-                                            }
-
-                                        } while (r.next());
-
-                                    }
-                                }
-
-                                sendMessage(blocks, minutes, plsUUID.size(), prsUUID, "month", pl);
-
-                            } else {
-                                sendErrorNoData(cs);
-                            }
-
-                        } catch (SQLException ex) {
-
-                            Logger.getLogger(ProjectStatistics.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-
-                    }
-
-                }.runTaskAsynchronously(Mcproject.getPluginInstance());
-            } else if (args[0].equalsIgnoreCase("custom")) {
-                if (validateDate(args[1])) {
-                    if (validateDate(args[2])) {
-
-                        Calendar first = Calendar.getInstance();
-                        Calendar second = Calendar.getInstance();
-
-                        String[] fir = unserialize(args[1]);
-                        String[] sec = unserialize(args[2]);
-
-                        first.set(parseInt(fir[2]), parseInt(fir[1]) - 1, parseInt(fir[0]));
-                        second.set(parseInt(sec[2]), parseInt(sec[1]) - 1, parseInt(sec[0]));
-
-                        List<Calendar> listCal = createListDate(first, second);
-                        new BukkitRunnable() {
-
-                            @Override
-                            public void run() {
-                                try {
-                                    Calendar cal = Calendar.getInstance();
-
-                                    String statement = "SELECT * FROM " + Mcproject.getPluginInstance().database + ".mcmeproject_statistics_data ;";
-                                    final ResultSet r = Mcproject.getPluginInstance().con.prepareStatement(statement).executeQuery();
-                                    if (r.first()) {
-
-                                        int blocks = 0;
-                                        int minutes = 0;
-                                        List<UUID> plsUUID = new ArrayList<>();
-                                        List<UUID> prsUUID = new ArrayList<>();
-                                        for (Calendar firstDate : listCal) {
-                                            int day = firstDate.get(Calendar.DAY_OF_MONTH);
-                                            int month = firstDate.get(Calendar.MONTH);
-                                            int year = firstDate.get(Calendar.YEAR);
-                                            if (r.first()) {
-                                                do {
-
-                                                    if (r.getString("day").equalsIgnoreCase(String.valueOf(day))
-                                                            && r.getString("month").equalsIgnoreCase(String.valueOf(month))
-                                                            && r.getString("year").equalsIgnoreCase(String.valueOf(year))) {
-
-                                                        blocks = blocks + r.getInt("blocks");
-                                                        minutes = minutes + r.getInt("minutes");
-                                                        List<UUID> plsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("players")));
-                                                        List<UUID> prsUUID2 = PluginData.convertListUUID(PluginData.unserialize(r.getString("projects")));
-
-                                                        for (UUID player : plsUUID2) {
-                                                            if (!plsUUID.contains(player)) {
-                                                                plsUUID.add(player);
-                                                            }
+                                                    plsUUID2.forEach((player) -> {
+                                                        if (!plsUUID.contains(player)) {
+                                                            plsUUID.add(player);
                                                         }
-                                                        for (UUID pr : prsUUID2) {
-                                                            if (!prsUUID.contains(pr)) {
-                                                                prsUUID.add(pr);
-                                                            }
+                                                    });
+                                                    prsUUID2.forEach((pr) -> {
+                                                        if (!prsUUID.contains(pr)) {
+                                                            prsUUID.add(pr);
                                                         }
+                                                    });
 
-                                                    }
+                                                }
 
-                                                } while (r.next());
+                                            } while (r.next());
 
-                                            }
                                         }
-
-                                        sendMessage(blocks, minutes, plsUUID.size(), prsUUID, args[1] + " to " + args[2], pl);
-
-                                    } else {
-                                        sendErrorNoData(cs);
                                     }
 
-                                } catch (SQLException ex) {
+                                    sendMessage(blocks, minutes, plsUUID.size(), prsUUID, args[1] + " to " + args[2], pl);
 
-                                    Logger.getLogger(ProjectStatistics.class.getName()).log(Level.SEVERE, null, ex);
+                                } else {
+                                    sendErrorNoData(cs);
                                 }
 
+                            } catch (SQLException ex) {
+
+                                Logger.getLogger(ProjectStatistics.class.getName()).log(Level.SEVERE, null, ex);
                             }
 
-                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                        }
 
-                    } else {
-                        sendErrorSecondDate(cs);
-                    }
+                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
                 } else {
-                    sendErrorFirstDate(cs);
+                    sendErrorSecondDate(cs);
                 }
             } else {
-
-                sendInvalidUsage(cs);
+                sendErrorFirstDate(cs);
             }
+        } else {
+
+            sendInvalidUsage(cs);
         }
 
     }
 
-    public static void sendMessage(int blocks, int minutes, int players, List<UUID> projects, String type, Player pl) {
+    private static void sendMessage(int blocks, int minutes, int players, List<UUID> projects, String type, Player pl) {
 
         FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
         message.addSimple(ChatColor.BOLD + "Period selected: '" + ChatColor.GOLD + type + "\n");
@@ -323,25 +322,24 @@ public class ProjectStatistics extends ProjectCommand {
         message.addSimple(ChatColor.GREEN + "Blocks : " + blocks + "\n");
         if (!projects.isEmpty()) {
             message.addSimple(ChatColor.GREEN + "Projects players worked on : ");
-            for (UUID value : projects) {
+            projects.forEach((value) -> {
                 int index = projects.size() - 1;
 
                 UUID val = projects.get(index);
                 if (!value.equals(val)) {
 
-                    message.addFancy(PluginData.projectsUUID.get(value) + ", ", "/project details" + PluginData.projectsUUID.get(value), PluginData.projectsAll.get(PluginData.projectsUUID.get(value)).description);
+                    message.addFancy(PluginData.getProjectsUUID().get(value) + ", ", "/project details" + PluginData.getProjectsUUID().get(value), PluginData.getProjectsAll().get(PluginData.getProjectsUUID().get(value)).getDescription());
                 } else {
-                    message.addFancy(PluginData.projectsUUID.get(value) + "", "/project details" + PluginData.projectsUUID.get(value), PluginData.projectsAll.get(PluginData.projectsUUID.get(value)).description);
+                    message.addFancy(PluginData.getProjectsUUID().get(value) + "", "/project details" + PluginData.getProjectsUUID().get(value), PluginData.getProjectsAll().get(PluginData.getProjectsUUID().get(value)).getDescription());
                 }
-
-            }
+            });
         }
 
         message.send(pl);
 
     }
 
-    public List<Calendar> createListDate(Calendar first, Calendar second) {
+    private List<Calendar> createListDate(Calendar first, Calendar second) {
         List<Calendar> datesInRange = new ArrayList<>();
         Calendar start = (Calendar) first.clone();
         datesInRange.add((Calendar) second.clone());
@@ -353,19 +351,13 @@ public class ProjectStatistics extends ProjectCommand {
         return datesInRange;
     }
 
-    public boolean validateDate(String date) {
+    private boolean validateDate(String date) {
         String regex = "^([0-2][0-9]||3[0-1])/(0[0-9]||1[0-2])/([0-9][0-9])?[0-9][0-9]$";
 
-        if (date.matches(regex)) {
-
-            return true;
-
-        } else {
-            return false;
-        }
+        return date.matches(regex);
     }
 
-    public static String[] unserialize(String line) {
+    private static String[] unserialize(String line) {
         String[] dataArray = line.split("/");
 
         return dataArray;

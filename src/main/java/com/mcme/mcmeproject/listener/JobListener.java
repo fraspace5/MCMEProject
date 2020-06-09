@@ -41,9 +41,9 @@ public class JobListener implements Listener {
         String jobname = e.getJobName();
         String project = e.getJobProject();
         if (!project.equalsIgnoreCase("nothing")) {
-            if (!PluginData.projectsAll.get(project).jobs.contains(jobname)) {
+            if (!PluginData.getProjectsAll().get(project).getJobs().contains(jobname)) {
 
-                final List<String> jobs = PluginData.projectsAll.get(project).jobs;
+                final List<String> jobs = PluginData.getProjectsAll().get(project).getJobs();
 
                 jobs.add(jobname);
 
@@ -52,8 +52,8 @@ public class JobListener implements Listener {
                     @Override
                     public void run() {
                         try {
-                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.projectsAll.get(project).idproject.toString() + "' ;";
-                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                            String stat = "UPDATE mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.getProjectsAll().get(project).getIdproject().toString() + "' ;";
+                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                             statm.setQueryTimeout(10);
                             statm.executeUpdate(stat);
                             PluginData.loadProjects();
@@ -76,9 +76,9 @@ public class JobListener implements Listener {
         String jobname = e.getJobName();
         String project = e.getJobProject();
         if (!project.equalsIgnoreCase("nothing")) {
-            if (PluginData.projectsAll.get(project).jobs.contains(jobname)) {
+            if (PluginData.getProjectsAll().get(project).getJobs().contains(jobname)) {
 
-                final List<String> jobs = PluginData.projectsAll.get(project).jobs;
+                final List<String> jobs = PluginData.getProjectsAll().get(project).getJobs();
 
                 jobs.remove(jobname);
 
@@ -87,8 +87,8 @@ public class JobListener implements Listener {
                     @Override
                     public void run() {
                         try {
-                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.projectsAll.get(project).idproject.toString() + "' ;";
-                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
+                            String stat = "UPDATE mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.getProjectsAll().get(project).getIdproject().toString() + "' ;";
+                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
                             statm.setQueryTimeout(10);
                             statm.executeUpdate(stat);
                             PluginData.loadProjects();
@@ -104,15 +104,13 @@ public class JobListener implements Listener {
 
     }
 
-    public String serialize(List<String> intlist) {
+    private String serialize(List<String> intlist) {
 
         StringBuilder builder = new StringBuilder();
 
-        for (String s : intlist) {
-
+        intlist.forEach((s) -> {
             builder.append(s + ";");
-
-        }
+        });
 
         return builder.toString();
 

@@ -18,6 +18,8 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
+import com.mcme.mcmeproject.util.bungee;
+import com.mcme.mcmeproject.util.utils;
 import static java.lang.Double.parseDouble;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -38,114 +40,81 @@ public class ProjectPercentage extends ProjectCommand {
         setShortDescription(": Sets the percentage of the project.");
         setUsageDescription(" <ProjectName> <Percentage>: Set the percentage value of a project.");
     }
-    private boolean manager;
-
-    private boolean head;
 
     @Override
     protected void execute(CommandSender cs, final String... args) {
 
-        if (cs instanceof Player) {
-            manager = false;
-            head = false;
-            if (PluginData.projectsAll.containsKey(args[0])) {
-                Player pl = (Player) cs;
-                if (playerPermission(args[0], cs)) {
-                    if (args[1].endsWith("%")) {
+        if (PluginData.getProjectsAll().containsKey(args[0])) {
+            Player pl = (Player) cs;
+            if (utils.playerPermission(args[0], cs)) {
+                if (args[1].endsWith("%")) {
 
-                        new BukkitRunnable() {
+                    new BukkitRunnable() {
 
-                            @Override
-                            public void run() {
+                        @Override
+                        public void run() {
 
-                                try {
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                    statm.setQueryTimeout(10);
-                                    statm.executeUpdate(stat);
-                                    PluginData.loadProjects();
-                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-
+                            try {
+                                String stat = "UPDATE mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                statm.setQueryTimeout(10);
+                                statm.executeUpdate(stat);
+                                PluginData.loadProjects();
+                                bungee.sendReload(pl, "projects");
+                            } catch (SQLException ex) {
+                                Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                        }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                        sendDone(cs);
-                    } else {
-
-                        try {
-                            if (parseDouble(args[1]) > 100.0) {
-
-                                sendNoPercentage(cs);
-
-                            } else {
-
-                                new BukkitRunnable() {
-
-                                    @Override
-                                    public void run() {
-
-                                        try {
-                                            String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                            Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                            statm.setQueryTimeout(10);
-                                            statm.executeUpdate(stat);
-                                            PluginData.loadProjects();
-                                            Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                        } catch (SQLException ex) {
-                                            Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
-
-                                    }
-
-                                }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                                sendDone(cs);
-
-                            }
-                        } catch (NumberFormatException e) {
-                            PluginData.getMessageUtil().sendErrorMessage(cs, "It should be a number or it should end with % ");
 
                         }
+
+                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                    sendDone(cs);
+                } else {
+
+                    try {
+                        if (parseDouble(args[1]) > 100.0) {
+
+                            sendNoPercentage(cs);
+
+                        } else {
+
+                            new BukkitRunnable() {
+
+                                @Override
+                                public void run() {
+
+                                    try {
+                                        String stat = "UPDATE mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+                                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                        statm.setQueryTimeout(10);
+                                        statm.executeUpdate(stat);
+                                        PluginData.loadProjects();
+                                        bungee.sendReload(pl, "projects");
+                                    } catch (SQLException ex) {
+                                        Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+
+                                }
+
+                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                            sendDone(cs);
+
+                        }
+                    } catch (NumberFormatException e) {
+                        PluginData.getMessageUtil().sendErrorMessage(cs, "It should be a number or it should end with % ");
+
                     }
-
                 }
-            } else {
-
-                sendNoProject(cs);
 
             }
-
-        }
-
-    }
-
-    public boolean playerPermission(final String prr, CommandSender cs) {
-        final Player pl = (Player) cs;
-
-        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
-            manager = true;
-
-        }
-        if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
-            head = true;
-
-        }
-
-        if (manager || head || pl.hasPermission("project.owner")) {
-            return true;
         } else {
-            sendNoPermission(cs);
-            return false;
+
+            sendNoProject(cs);
+
         }
 
-    }
-
-    private void sendNoPermission(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
     }
 
     private void sendNoProject(CommandSender cs) {

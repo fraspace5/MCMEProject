@@ -18,6 +18,7 @@ package com.mcme.mcmeproject.data;
 
 import java.util.HashMap;
 import java.util.UUID;
+import lombok.Getter;
 
 /**
  *
@@ -25,9 +26,10 @@ import java.util.UUID;
  */
 public class PlayersData {
 
-    public static HashMap<UUID, Integer> r;
-
-    public static HashMap<UUID, Long> lastplayed;
+    @Getter
+    private final HashMap<UUID, Integer> r;
+    @Getter
+    private final HashMap<UUID, Long> lastplayed;
 
     public PlayersData(HashMap ss, HashMap<UUID, Long> l) {
 

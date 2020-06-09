@@ -19,6 +19,8 @@ package com.mcme.mcmeproject.commands;
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.data.ProjectData;
+import com.mcme.mcmeproject.util.bungee;
+import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -42,103 +44,74 @@ public class ProjectRemove extends ProjectCommand {
         setShortDescription(": Remove a manager from the list");
         setUsageDescription(" <ProjectName> <PlayerName>: Remove a manager from a project");
     }
-    private boolean manager;
-
-    private boolean head;
 
     @Override
     protected void execute(final CommandSender cs, final String... args) {
 
-        if (cs instanceof Player) {
-            manager = false;
-            head = false;
-            Player pl = (Player) cs;
-            if (PluginData.projectsAll.containsKey(args[0])) {
-                if (playerPermission(args[0], cs)) {
-                    new BukkitRunnable() {
+        Player pl = (Player) cs;
+        
+        if (PluginData.getProjectsAll().containsKey(args[0])) {
+            
+            if (utils.playerPermission(args[0], cs)) {
+                
+                new BukkitRunnable() {
 
-                        @Override
-                        public void run() {
+                    @Override
+                    public void run() {
 
-                            try {
-                                OfflinePlayer n = Bukkit.getOfflinePlayer(args[1]);
-                                UUID uuid = n.getUniqueId();
-                                ProjectData p = PluginData.getProjectsAll().get(args[0]);
+                        try {
+                         
+                            OfflinePlayer n = Bukkit.getOfflinePlayer(args[1]);
+                            UUID uuid = n.getUniqueId();
+                            ProjectData p = PluginData.getProjectsAll().get(args[0]);
 
-                                if (!p.assistants.contains(uuid)) {
+                            if (!p.getAssistants().contains(uuid)) {
 
-                                    sendManagerError(cs, args[1], args[0]);
+                                sendManagerError(cs, args[1], args[0]);
 
-                                } else {
+                            } else {
 
-                                    final List<UUID> assist = p.assistants;
+                                final List<UUID> assist = p.getAssistants();
 
-                                    assist.remove(uuid);
-                                    String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                    Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                    statm.setQueryTimeout(10);
-                                    statm.executeUpdate(stat);
-                                    sendManager(cs, args[1]);
-                                    PluginData.loadProjects();
-                                    Mcproject.getPluginInstance().sendReload(pl, "projects");
+                                assist.remove(uuid);
+                                String stat = "UPDATE mcmeproject_project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                statm.setQueryTimeout(10);
+                                statm.executeUpdate(stat);
+                                sendManager(cs, args[1]);
+                                PluginData.loadProjects();
+                                bungee.sendReload(pl, "projects");
 
-                                }
-                            } catch (SQLException ex) {
-                                Logger.getLogger(ProjectAdd.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
+                        } catch (SQLException ex) {
+                            Logger.getLogger(ProjectAdd.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
-                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+                    }
 
-                }
-            } else {
-
-                sendNoProject(cs);
+                }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
             }
-
-        }
-
-    }
-
-    public boolean playerPermission(final String prr, CommandSender cs) {
-        final Player pl = (Player) cs;
-
-        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
-            manager = true;
-
-        }
-        if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
-            head = true;
-
-        }
-
-        if (manager || head || pl.hasPermission("project.owner")) {
-            return true;
         } else {
-            sendNoPermission(cs);
-            return false;
+
+            sendNoProject(cs);
+
         }
 
     }
 
-    public String serialize(List<UUID> intlist) {
+    private String serialize(List<UUID> intlist) {
 
         StringBuilder builder = new StringBuilder();
         if (!intlist.isEmpty()) {
-            for (UUID s : intlist) {
-
-                builder.append(s.toString() + ";");
-
-            }
+         
+            intlist.forEach((s) -> {
+                builder.append(s.toString()).append(";");
+            });
+            
         }
         return builder.toString();
 
-    }
-
-    private void sendNoPermission(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
     }
 
     private void sendNoProject(CommandSender cs) {

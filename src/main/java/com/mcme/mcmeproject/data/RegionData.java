@@ -18,6 +18,7 @@ package com.mcme.mcmeproject.data;
 
 import java.util.UUID;
 import com.mcmiddleearth.pluginutil.region.Region;
+import lombok.Getter;
 import org.bukkit.Location;
 
 /**
@@ -26,21 +27,22 @@ import org.bukkit.Location;
  */
 public class RegionData {
 
-    public final String name;
+    @Getter
+    private final String name;
+    @Getter
+    private final UUID idr;
+    @Getter
+    private final UUID idproject;
+    @Getter
+    private final Region region;
+    @Getter
+    private final String server;
+    @Getter
+    private final String type;
+    @Getter
+    private final Integer weight;
 
-    public final UUID idr;
-    
-    public final UUID idproject;
-
-    public final Region region;
-
-    public final String server;
-
-    public final String type;
-    
-    public final Integer weight;
-
-    public RegionData(String namem, UUID idregion, UUID idpr, Region rn, String sr, String t,Integer wei) {
+    public RegionData(String namem, UUID idregion, UUID idpr, Region rn, String sr, String t, Integer wei) {
 
         name = namem;
 
@@ -53,7 +55,7 @@ public class RegionData {
         server = sr;
 
         type = t;
-        
+
         weight = wei;
 
     }

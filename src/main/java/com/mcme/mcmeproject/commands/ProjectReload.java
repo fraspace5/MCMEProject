@@ -37,104 +37,102 @@ public class ProjectReload extends ProjectCommand {
 
     @Override
     protected void execute(final CommandSender cs, final String... args) {
-        if (cs instanceof Player) {
-            Player pl = (Player) cs;
-            switch (args[0]) {
-                case "all":
-                    pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
-                    try {
 
-                        new BukkitRunnable() {
+        Player pl = (Player) cs;
+        switch (args[0]) {
+            case "all":
+                pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
+                try {
 
-                            @Override
-                            public void run() {
+                    new BukkitRunnable() {
 
-                                PluginData.loadProjects();
-                                PluginData.loadRegions();
-                                pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Projects");
-                                pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Regions");
-                                new BukkitRunnable() {
+                        @Override
+                        public void run() {
 
-                                    @Override
-                                    public void run() {
-                                        PluginData.loadWarps();
-                                        pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Warps");
-                                        new BukkitRunnable() {
+                            PluginData.loadProjects();
+                            PluginData.loadRegions();
+                            pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Projects");
+                            pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Regions");
+                            new BukkitRunnable() {
 
-                                            @Override
-                                            public void run() {
-                                                PluginData.loadAllDynmap();
-                                                pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Map");
-                                                pl.sendMessage(ChatColor.GREEN + "Reload Completed, no errors found");
-                                            }
+                                @Override
+                                public void run() {
+                                    PluginData.loadWarps();
+                                    pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Warps");
+                                    new BukkitRunnable() {
 
-                                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                                    }
+                                        @Override
+                                        public void run() {
+                                            PluginData.loadAllDynmap();
+                                            pl.sendMessage(ChatColor.GREEN + "Reload Completed for " + ChatColor.BLUE + "Map");
+                                            pl.sendMessage(ChatColor.GREEN + "Reload Completed, no errors found");
+                                        }
 
-                                }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                            }
+                                    }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                                }
 
-                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                            }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+                        }
 
-                    } catch (Exception e) {
-                        pl.sendMessage(ChatColor.RED + "Errors Found - " + e.getClass().getName());
+                    }.runTaskLater(Mcproject.getPluginInstance(), 20L);
+
+                } catch (IllegalArgumentException | IllegalStateException e) {
+                    pl.sendMessage(ChatColor.RED + "Errors Found - " + e.getClass().getName());
+                }
+                break;
+            case "projects":
+                PluginData.loadProjects();
+                pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
+                new BukkitRunnable() {
+
+                    @Override
+                    public void run() {
+                        pl.sendMessage(ChatColor.GREEN + "Reload Completed");
                     }
-                    break;
-                case "projects":
-                    PluginData.loadProjects();
-                    pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
-                    new BukkitRunnable() {
 
-                        @Override
-                        public void run() {
-                            pl.sendMessage(ChatColor.GREEN + "Reload Completed");
-                        }
+                }.runTaskLater(Mcproject.getPluginInstance(), 40L);
+                break;
+            case "map":
+                PluginData.loadAllDynmap();
+                pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
+                new BukkitRunnable() {
 
-                    }.runTaskLater(Mcproject.getPluginInstance(), 40L);
-                    break;
-                case "map":
-                    PluginData.loadAllDynmap();
-                    pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
-                    new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        pl.sendMessage(ChatColor.GREEN + "Reload Completed");
+                    }
 
-                        @Override
-                        public void run() {
-                            pl.sendMessage(ChatColor.GREEN + "Reload Completed");
-                        }
+                }.runTaskLater(Mcproject.getPluginInstance(), 40L);
+                break;
+            case "regions":
+                PluginData.loadRegions();
+                pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
+                new BukkitRunnable() {
 
-                    }.runTaskLater(Mcproject.getPluginInstance(), 40L);
-                    break;
-                case "regions":
-                    PluginData.loadRegions();
-                    pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
-                    new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        pl.sendMessage(ChatColor.GREEN + "Reload Completed");
+                    }
 
-                        @Override
-                        public void run() {
-                            pl.sendMessage(ChatColor.GREEN + "Reload Completed");
-                        }
+                }.runTaskLater(Mcproject.getPluginInstance(), 40L);
+                break;
+            case "warps":
+                PluginData.loadWarps();
+                pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
+                new BukkitRunnable() {
 
-                    }.runTaskLater(Mcproject.getPluginInstance(), 40L);
-                    break;
-                case "warps":
-                    PluginData.loadWarps();
-                    pl.sendMessage(ChatColor.GREEN + "Wait for the reload");
-                    new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        pl.sendMessage(ChatColor.GREEN + "Reload Completed");
+                    }
 
-                        @Override
-                        public void run() {
-                            pl.sendMessage(ChatColor.GREEN + "Reload Completed");
-                        }
+                }.runTaskLater(Mcproject.getPluginInstance(), 40L);
+                break;
 
-                    }.runTaskLater(Mcproject.getPluginInstance(), 40L);
-                    break;
+            default:
+                pl.sendMessage(ChatColor.RED + "You need to say what you want to reload...");
 
-                default:
-                    pl.sendMessage(ChatColor.RED + "You need to say what you want to reload...");
-
-                    break;
-
-            }
+                break;
 
         }
 

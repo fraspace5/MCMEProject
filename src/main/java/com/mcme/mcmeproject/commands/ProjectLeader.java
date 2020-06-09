@@ -18,6 +18,8 @@ package com.mcme.mcmeproject.commands;
 
 import com.mcme.mcmeproject.Mcproject;
 import com.mcme.mcmeproject.data.PluginData;
+import com.mcme.mcmeproject.util.bungee;
+import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
@@ -41,84 +43,49 @@ public class ProjectLeader extends ProjectCommand {
         setUsageDescription(" <ProjectName> <PlayerName>: Set <PlayerName> as Head project  ");
     }
 
-    private boolean manager;
-
-    private boolean head;
-
     @Override
     protected void execute(CommandSender cs, final String... args) {
 
-        if (cs instanceof Player) {
-            head = false;
-            manager = false;
-            if (PluginData.projectsAll.containsKey(args[0])) {
-                Player pl = (Player) cs;
-                if (playerPermission(args[0], cs)) {
-                    try {
-                        if (Bukkit.getOfflinePlayer(args[1]).hasPlayedBefore()) {
+        if (PluginData.getProjectsAll().containsKey(args[0])) {
+            Player pl = (Player) cs;
+            if (utils.playerPermission(args[0], cs)) {
 
-                            OfflinePlayer n = Bukkit.getOfflinePlayer(args[1]);
-                            final UUID uuid = n.getUniqueId();
+                if (Bukkit.getOfflinePlayer(args[1]).hasPlayedBefore()) {
 
-                            new BukkitRunnable() {
+                    OfflinePlayer n = Bukkit.getOfflinePlayer(args[1]);
+                    final UUID uuid = n.getUniqueId();
+                    new BukkitRunnable() {
 
-                                @Override
-                                public void run() {
+                        @Override
+                        public void run() {
 
-                                    try {
-                                        String stat = "UPDATE " + Mcproject.getPluginInstance().database + ".mcmeproject_project_data SET staff_uuid = '" + uuid.toString() + "' WHERE idproject = '" + PluginData.projectsAll.get(args[0]).idproject.toString() + "' ;";
-                                        Statement statm = Mcproject.getPluginInstance().con.prepareStatement(stat);
-                                        statm.setQueryTimeout(10);
-                                        statm.executeUpdate(stat);
-                                        PluginData.loadProjects();
-                                        Mcproject.getPluginInstance().sendReload(pl, "projects");
-                                    } catch (SQLException ex) {
-                                        Logger.getLogger(ProjectLeader.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }
+                            try {
+                                String stat = "UPDATE mcmeproject_project_data SET staff_uuid = '" + uuid.toString() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
+                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+                                statm.setQueryTimeout(10);
+                                statm.executeUpdate(stat);
+                                PluginData.loadProjects();
+                                bungee.sendReload(pl, "projects");
 
-                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                            sendDone(cs);
-                        } else {
-                            sendNoPlayer(cs);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(ProjectLeader.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-                    } catch (NullPointerException e) {
-                    }
-                }
-            } else {
 
-                sendNoProject(cs);
+                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+                    sendDone(cs);
+                } else {
+                    sendNoPlayer(cs);
+                }
 
             }
-
-        }
-
-    }
-
-    public boolean playerPermission(final String prr, CommandSender cs) {
-        final Player pl = (Player) cs;
-
-        if (PluginData.projectsAll.get(prr).assistants.contains(pl.getUniqueId())) {
-            manager = true;
-
-        }
-        if (PluginData.projectsAll.get(prr).head.equals(pl.getUniqueId())) {
-            head = true;
-
-        }
-
-        if (manager || head || pl.hasPermission("project.owner")) {
-            return true;
         } else {
-            sendNoPermission(cs);
-            return false;
+
+            sendNoProject(cs);
+
         }
 
-    }
-
-    private void sendNoPermission(CommandSender cs) {
-        PluginData.getMessageUtil().sendErrorMessage(cs, "You can't manage this project");
     }
 
     private void sendNoProject(CommandSender cs) {

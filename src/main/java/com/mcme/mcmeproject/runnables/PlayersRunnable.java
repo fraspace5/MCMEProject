@@ -47,35 +47,34 @@ public class PlayersRunnable {
             @Override
             public void run() {
 
-                for (UUID player : PluginData.getMin().keySet()) {
+                PluginData.getMin().keySet().forEach((player) -> {
                     try {
                         OfflinePlayer n = Bukkit.getOfflinePlayer(player);
                         Location loc = n.getPlayer().getLocation();
                         if (PluginData.getMin().get(player)) {
 
-                            for (String region : PluginData.regions.keySet()) {
-
-                                Region r = PluginData.regions.get(region).region;
-
+                            PluginData.getRegions().keySet().forEach((region) -> {
+                                Region r = PluginData.getRegions().get(region).getRegion();
                                 if (r.isInside(loc)) {
+                                    UUID idproject = PluginData.getRegions().get(region).getIdproject();
 
-                                    if (PluginData.getTemporaryMinute().containsKey(PluginData.regions.get(region).idproject)) {
+                                    if (PluginData.getTemporaryMinute().containsKey(idproject)) {
 
-                                        Integer l = PluginData.getTemporaryMinute().get(PluginData.regions.get(region).idproject) + 1;
-                                        PluginData.getTemporaryMinute().remove(PluginData.regions.get(region).idproject);
-                                        PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, l);
+                                        Integer l = PluginData.getTemporaryMinute().get(idproject) + 1;
+                                        PluginData.getTemporaryMinute().remove(idproject);
+                                        PluginData.getTemporaryMinute().put(idproject, l);
 
                                     } else {
-                                        PluginData.getTemporaryMinute().put(PluginData.regions.get(region).idproject, 1);
+                                        PluginData.getTemporaryMinute().put(idproject, 1);
                                     }
 
                                     if (PluginData.getTodayStat().containsKey("today")) {
-                                        PluginData.getTodayStat().get("today").min = PluginData.getTodayStat().get("today").min + 1;
-                                        if (!PluginData.getTodayStat().get("today").players.contains(player)) {
-                                            PluginData.getTodayStat().get("today").players.add(player);
+                                        PluginData.getTodayStat().get("today").setMin(PluginData.getTodayStat().get("today").getMin() + 1);
+                                        if (!PluginData.getTodayStat().get("today").getPlayers().contains(player)) {
+                                            PluginData.getTodayStat().get("today").getPlayers().add(player);
 
-                                            if (!PluginData.getTodayStat().get("today").projects.contains(PluginData.regions.get(region).idproject)) {
-                                                PluginData.getTodayStat().get("today").projects.add(PluginData.regions.get(region).idproject);
+                                            if (!PluginData.getTodayStat().get("today").getProjects().contains(idproject)) {
+                                                PluginData.getTodayStat().get("today").getProjects().add(idproject);
 
                                             }
 
@@ -83,7 +82,7 @@ public class PlayersRunnable {
                                     } else {
                                         List<UUID> l = new ArrayList();
                                         List<UUID> pr = new ArrayList();
-                                        pr.add(PluginData.regions.get(region).idproject);
+                                        pr.add(idproject);
                                         l.add(player);
                                         PluginData.getTodayStat().put("today", new ProjectStatistics(0, l, 1, pr));
 
@@ -91,17 +90,15 @@ public class PlayersRunnable {
 
                                     PluginData.getMin().remove(player);
                                     PluginData.getMin().put(player, false);
-
                                 }
-
-                            }
+                            });
 
                         }
 
                     } catch (NullPointerException e) {
 
                     }
-                }
+                });
 
             }
 
@@ -130,10 +127,8 @@ public class PlayersRunnable {
             @Override
             public void run() {
 
-                ProjectData d = PluginData.projectsAll.get(project);
-                if (time.equals(d.updated)) {
-
-                    Player p = pl;
+                ProjectData d = PluginData.getProjectsAll().get(project);
+                if (time.equals(d.getUpdated())) {
 
                     FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
 
@@ -141,7 +136,7 @@ public class PlayersRunnable {
 
                     message.addClickable(ChatColor.GREEN + "\n" + "Click here to update", "/project progress " + project);
 
-                    message.send(p);
+                    message.send(pl);
 
                 } else {
 

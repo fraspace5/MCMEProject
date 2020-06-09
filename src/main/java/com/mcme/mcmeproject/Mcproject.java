@@ -16,9 +16,6 @@
  */
 package com.mcme.mcmeproject;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.mcme.mcmeproject.commands.ProjectCommandExecutor;
 import com.mcme.mcmeproject.runnables.PlayersRunnable;
 import com.mcme.mcmeproject.data.PluginData;
@@ -26,12 +23,8 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.listener.JobListener;
 import com.mcme.mcmeproject.listener.PlayerListener;
 import com.mcme.mcmeproject.runnables.SystemRunnable;
+import com.mcme.mcmeproject.util.bungee;
 import com.mcmiddleearth.thegaffer.ext.ExternalProjectHandler;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -44,45 +37,38 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
  * @author Fraspace5
  */
-public class Mcproject extends JavaPlugin implements Listener, PluginMessageListener, ExternalProjectHandler {
+public class Mcproject extends JavaPlugin implements Listener, ExternalProjectHandler {
 
     static final Logger Logger = Bukkit.getLogger();
     @Getter
-    public ConsoleCommandSender clogger = this.getServer().getConsoleSender();
+    private ConsoleCommandSender clogger = this.getServer().getConsoleSender();
     @Getter
-    public Connection con;
+    private Connection connection;
 
-    @Getter
-    String host = this.getConfig().getString("host");
-    @Getter
-    String port = this.getConfig().getString("port");
-    @Getter
-    public String database = this.getConfig().getString("database");
-    @Getter
-    String username = this.getConfig().getString("username");
-    @Getter
-    String password = this.getConfig().getString("password");
+    /**
+     * Database variables
+     */
+    private final String host = this.getConfig().getString("host");
+    private final String port = this.getConfig().getString("port");
+    private final String database = this.getConfig().getString("database");
+    private final String username = this.getConfig().getString("username");
+    private final String password = this.getConfig().getString("password");
+    /**
+     *
+     */
 
     @Setter
     @Getter
-    public String nameserver;
+    private String nameserver;
 
-    /*
-    
-    private void checkUpdate() {
-        final UpdaterCheck updater = new UpdaterCheck(this);
-    }
-     */
     @Getter
     private static Mcproject pluginInstance;
 
@@ -94,25 +80,28 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         try {
             openConnection();
         } catch (SQLException ex) {
+
             clogger.sendMessage(ChatColor.DARK_GRAY + "[" + ChatColor.BLUE + "MCMEProject" + ChatColor.DARK_GRAY + "] - " + ChatColor.RED + "Database error! (McMeProject)");
-            Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
             Bukkit.getPluginManager().disablePlugin(this);
+
         }
 
         getCommand("project").setExecutor(new ProjectCommandExecutor());
         getCommand("project").setTabCompleter(new ProjectCommandExecutor());
+
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+        this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new bungee());
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new JobListener(), this);
+
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
         clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v" + this.getDescription().getVersion() + " enabled!");
         clogger.sendMessage(ChatColor.GREEN + "---------------------------------------");
+
         if (this.isEnabled()) {
             Mcproject.getPluginInstance().setNameserver("default");
             onStart();
-            //  checkUpdate();
-            ConnectionRunnable();
+            SystemRunnable.ConnectionRunnable();
 
         }
 
@@ -125,220 +114,14 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
         clogger.sendMessage(ChatColor.BLUE + "MCMEProject Plugin v" + this.getDescription().getVersion() + " disabled!");
         clogger.sendMessage(ChatColor.RED + "---------------------------------------");
         try {
-            con.close();
+            connection.close();
         } catch (SQLException ex) {
             Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    @Override
-    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-        if (!channel.equals("BungeeCord")) {
-            return;
-        }
-        ByteArrayDataInput in = ByteStreams.newDataInput(message);
-        String subchannel = in.readUTF();
-
-        if (subchannel.equals("reload")) {
-            try {
-                short len = in.readShort();
-                byte[] msgbytes = new byte[len];
-                in.readFully(msgbytes);
-                DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-                String somedata = msgin.readUTF(); // Read the data in the same way you wrote it
-
-                switch (somedata) {
-
-                    case "all":
-                        PluginData.loadProjects();
-                        new BukkitRunnable() {
-
-                            @Override
-                            public void run() {
-                                PluginData.loadRegions();
-                                new BukkitRunnable() {
-
-                                    @Override
-                                    public void run() {
-                                        PluginData.loadWarps();
-                                        new BukkitRunnable() {
-
-                                            @Override
-                                            public void run() {
-                                                PluginData.loadAllDynmap();
-
-                                            }
-
-                                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                                    }
-
-                                }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                            }
-
-                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-
-                        break;
-                    case "map":
-                        PluginData.loadAllDynmap();
-                        break;
-                    case "regions":
-                        PluginData.loadRegions();
-                        break;
-                    case "warps":
-                        PluginData.loadWarps();
-                        break;
-                    case "projects":
-                        PluginData.loadProjects();
-                        break;
-                    default:
-                        PluginData.loadProjects();
-                        new BukkitRunnable() {
-
-                            @Override
-                            public void run() {
-                                PluginData.loadRegions();
-                                new BukkitRunnable() {
-
-                                    @Override
-                                    public void run() {
-                                        PluginData.loadWarps();
-                                        new BukkitRunnable() {
-
-                                            @Override
-                                            public void run() {
-                                                PluginData.loadAllDynmap();
-
-                                            }
-
-                                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                                    }
-
-                                }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                            }
-
-                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                        break;
-
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        } else if (subchannel.equals("GetServer")) {
-            String servern = in.readUTF();
-            Mcproject.getPluginInstance().setNameserver(servern);
-        }
-
-    }
-
-    public void sendNameServer(Player player) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-
-        out.writeUTF("GetServer");
-
-        player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-    }
-
-    public void sendReload(Player player, String s) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-
-        out.writeUTF("Forward"); // So BungeeCord knows to forward it
-        out.writeUTF("ALL");
-        out.writeUTF("reload"); // The channel name to check if this your data
-
-        ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
-        DataOutputStream msgout = new DataOutputStream(msgbytes);
-        switch (s) {
-
-            case "all":
-                try {
-                msgout.writeUTF("all"); // You can do anything you want with msgout
-
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-            break;
-            case "map":
-                try {
-                msgout.writeUTF("map");
-
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-            break;
-            case "regions":
-                try {
-                msgout.writeUTF("regions");
-
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-            break;
-            case "warps":
-                try {
-                msgout.writeUTF("warps");
-
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-            break;
-            case "projects":
-                try {
-                msgout.writeUTF("projects"); // You can do anything you want with msgout
-
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-            break;
-            default:
-                 try {
-                msgout.writeUTF("all"); // You can do anything you want with msgout
-
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-            break;
-
-        }
-
-        out.writeShort(msgbytes.toByteArray().length);
-        out.write(msgbytes.toByteArray());
-
-        player.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-    }
-
-
-    /*
-     public void onInitiateFile() throws IOException {
-     projectFolder = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "project");
-     databool = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "databool.yml");
-     time = new File(Bukkit.getServer().getPluginManager().getPlugin("McMeProject").getDataFolder(), "otherdata.yml");
-
-     if (!projectFolder.exists()) {
-
-     projectFolder.mkdir();
-
-     }
-
-     if (!databool.exists()) {
-
-     databool.createNewFile();
-     }
-
-     if (PluginData.getMain() == true) {
-
-     if (!time.exists()) {
-
-     time.createNewFile();
-     PluginData.saveTime(time, System.currentTimeMillis());
-     }
-
-     }
-
-     }
-     */
     public void openConnection() throws SQLException {
-        if (con != null && !con.isClosed()) {
+        if (connection != null && !connection.isClosed()) {
             return;
         }
         if (Mcproject.getPluginInstance().password.equalsIgnoreCase("default")) {
@@ -350,7 +133,7 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                 @Override
                 public void run() {
                     try {
-                        con = DriverManager.getConnection("jdbc:mysql://" + Mcproject.getPluginInstance().host + ":"
+                        connection = DriverManager.getConnection("jdbc:mysql://" + Mcproject.getPluginInstance().host + ":"
                                 + Mcproject.getPluginInstance().port + "/"
                                 + Mcproject.getPluginInstance().database + "?useSSL=false&allowPublicKeyRetrieval=true",
                                 Mcproject.getPluginInstance().username,
@@ -418,8 +201,9 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                                 + "  `projects` LONGTEXT ,\n"
                                 + "  `players` LONGTEXT );";
 
-                        con.createStatement().execute(st1);
-                        con.createStatement().execute(st2);
+                        connection.createStatement().execute(st1);
+                        connection.createStatement().execute(st2);
+                        connection.createStatement().execute(st3);
 
                         new BukkitRunnable() {
 
@@ -427,23 +211,10 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                             public void run() {
 
                                 try {
-                                    con.createStatement().execute(st3);
-                                    con.createStatement().execute(st5);
-                                } catch (SQLException ex) {
-                                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-                                }
 
-                            }
-
-                        }.runTaskLater(Mcproject.getPluginInstance(), 20L);
-                        new BukkitRunnable() {
-
-                            @Override
-                            public void run() {
-
-                                try {
-                                    con.createStatement().execute(st6);
-                                    con.createStatement().execute(st7);
+                                    connection.createStatement().execute(st5);
+                                    connection.createStatement().execute(st6);
+                                    connection.createStatement().execute(st7);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -451,21 +222,20 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
                             }
 
                         }.runTaskLater(Mcproject.getPluginInstance(), 40L);
-
                         new BukkitRunnable() {
 
                             @Override
                             public void run() {
 
                                 try {
-                                    con.createStatement().execute(st8);
+                                    connection.createStatement().execute(st8);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
                                 }
 
                             }
 
-                        }.runTaskLater(Mcproject.getPluginInstance(), 60L);
+                        }.runTaskLater(Mcproject.getPluginInstance(), 40L);
 
                     } catch (SQLException ex) {
                         Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
@@ -476,39 +246,10 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
     }
 
-    @Override
-    public Set<String> getProjectNames() {
-        return PluginData.getProjectsAll().keySet();
-    }
-
-    public void ConnectionRunnable() {
-
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-                try {
-                    if (!con.isValid(5)) {
-                        con.close();
-
-                        openConnection();
-
-                    }
-                } catch (SQLException ex) {
-                    Logger.getLogger(Mcproject.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-            }
-
-        }.runTaskTimerAsynchronously(Mcproject.getPluginInstance(), 150L, 1000L);
-
-    }
-
-    public void onStart() {
+    private void onStart() {
         SystemRunnable.startDatabaseRecoveryRunnable();
         PlayersRunnable.AddMinuteRunnable();
         PlayersRunnable.SetTodayUpdatedRunnable();
-
         SystemRunnable.PlayersDataBlocksRunnable();
         SystemRunnable.variableDataMinutesRunnable();
         SystemRunnable.variableDataBlocksRunnable();
@@ -516,8 +257,31 @@ public class Mcproject extends JavaPlugin implements Listener, PluginMessageList
 
     }
 
+    
+    /**
+     * Prepare Statements for SQL database
+     */
+    private void prepareStatements() {
+
+    }
+
+    /**
+     * API method 1/2
+     *
+     * @return All projects
+     */
     public Map<String, ProjectData> getProjects() {
-        return PluginData.projectsAll;
+        return PluginData.getProjectsAll();
+    }
+
+    /**
+     * API Method 2/2
+     *
+     * @return All projects names
+     */
+    @Override
+    public Set<String> getProjectNames() {
+        return PluginData.getProjectsAll().keySet();
     }
 
 }
