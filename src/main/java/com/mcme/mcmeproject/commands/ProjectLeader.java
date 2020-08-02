@@ -21,7 +21,6 @@ import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,10 +59,11 @@ public class ProjectLeader extends ProjectCommand {
                         public void run() {
 
                             try {
-                                String stat = "UPDATE mcmeproject_project_data SET staff_uuid = '" + uuid.toString() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
-                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                statm.setQueryTimeout(10);
-                                statm.executeUpdate(stat);
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(1, "staff_uuid");
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(2, uuid.toString());
+                                Mcproject.getPluginInstance().getUpdateInformations().setLong(3, System.currentTimeMillis());
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(4, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                Mcproject.getPluginInstance().getUpdateInformations().executeUpdate();
                                 PluginData.loadProjects();
                                 bungee.sendReload(pl, "projects");
 

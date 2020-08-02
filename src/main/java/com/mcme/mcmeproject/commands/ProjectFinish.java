@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -40,9 +39,6 @@ public class ProjectFinish extends ProjectCommand {
         setShortDescription(": Sets a project as finished");
         setUsageDescription(" <ProjectName> : Use this command to set a project as finished");
     }
-    private boolean manager;
-
-    private boolean head;
 
     @Override
     protected void execute(CommandSender cs, final String... args) {
@@ -50,7 +46,7 @@ public class ProjectFinish extends ProjectCommand {
         if (PluginData.getProjectsAll().containsKey(args[0])) {
             Player pl = (Player) cs;
             if (utils.playerPermission(args[0], cs)) {
-              
+
                 if (PluginData.getProjectsAll().get(args[0]).getStatus().equals(ProjectStatus.FINISHED)) {
 
                     sendProjectError(cs);
@@ -63,10 +59,12 @@ public class ProjectFinish extends ProjectCommand {
                         public void run() {
 
                             try {
-                                String stat = "UPDATE mcmeproject_project_data SET status = '" + ProjectStatus.FINISHED.toString() + "', main = 0, endDate = '" + System.currentTimeMillis() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
-                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                statm.setQueryTimeout(10);
-                                statm.executeUpdate(stat);
+                             
+                                Mcproject.getPluginInstance().getUpdateFinish().setString(1, ProjectStatus.FINISHED.toString());
+                                Mcproject.getPluginInstance().getUpdateFinish().setLong(2, System.currentTimeMillis());
+                                Mcproject.getPluginInstance().getUpdateFinish().setLong(3, System.currentTimeMillis());
+                                Mcproject.getPluginInstance().getUpdateFinish().setString(4, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                Mcproject.getPluginInstance().getUpdateFinish().executeUpdate();
                                 PluginData.loadProjects();
 
                                 bungee.sendReload(pl, "projects");

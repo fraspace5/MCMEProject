@@ -21,7 +21,6 @@ import com.mcme.mcmeproject.data.PluginData;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -54,10 +53,13 @@ public class ProjectName extends ProjectCommand {
                         public void run() {
 
                             try {
-                                String stat = "UPDATE mcmeproject_project_data SET name = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
-                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                statm.setQueryTimeout(10);
-                                statm.executeUpdate(stat);
+
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(1, "name");
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(2, args[1]);
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(3, String.valueOf(System.currentTimeMillis()));
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(4, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                Mcproject.getPluginInstance().getUpdateInformations().executeUpdate();
+
                                 PluginData.loadProjects();
                                 bungee.sendReload(pl, "projects");
 

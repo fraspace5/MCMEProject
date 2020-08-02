@@ -51,15 +51,17 @@ public class JobListener implements Listener {
 
                     @Override
                     public void run() {
+
                         try {
-                            String stat = "UPDATE mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.getProjectsAll().get(project).getIdproject().toString() + "' ;";
-                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                            statm.setQueryTimeout(10);
-                            statm.executeUpdate(stat);
+                            Mcproject.getPluginInstance().getUpdateWithoutUpdated().setString(1, "jobs");
+                            Mcproject.getPluginInstance().getUpdateWithoutUpdated().setString(2, serialize(jobs));
+                            Mcproject.getPluginInstance().getUpdateWithoutUpdated().setString(3, PluginData.getProjectsAll().get(project).getIdproject().toString());
+                            Mcproject.getPluginInstance().getUpdateWithoutUpdated().executeUpdate();
                             PluginData.loadProjects();
                         } catch (SQLException ex) {
                             Logger.getLogger(JobListener.class.getName()).log(Level.SEVERE, null, ex);
                         }
+
                     }
 
                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
@@ -70,40 +72,40 @@ public class JobListener implements Listener {
 
     }
 
-    @EventHandler
-    public void onJobEnd(JobEndEvent e) {
-
-        String jobname = e.getJobName();
-        String project = e.getJobProject();
-        if (!project.equalsIgnoreCase("nothing")) {
-            if (PluginData.getProjectsAll().get(project).getJobs().contains(jobname)) {
-
-                final List<String> jobs = PluginData.getProjectsAll().get(project).getJobs();
-
-                jobs.remove(jobname);
-
-                new BukkitRunnable() {
-
-                    @Override
-                    public void run() {
-                        try {
-                            String stat = "UPDATE mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE idproject = '" + PluginData.getProjectsAll().get(project).getIdproject().toString() + "' ;";
-                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                            statm.setQueryTimeout(10);
-                            statm.executeUpdate(stat);
-                            PluginData.loadProjects();
-                        } catch (SQLException ex) {
-                            Logger.getLogger(JobListener.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-
-                }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-            }
-        }
-
-    }
-
+    /**
+     *
+     * @EventHandler public void onJobEnd(JobEndEvent e) {
+     *
+     * String jobname = e.getJobName(); String project = e.getJobProject(); if
+     * (!project.equalsIgnoreCase("nothing")) { if
+     * (PluginData.getProjectsAll().get(project).getJobs().contains(jobname)) {
+     *
+     * final List<String> jobs =
+     * PluginData.getProjectsAll().get(project).getJobs();
+     *
+     * jobs.remove(jobname);
+     *
+     * new BukkitRunnable() {
+     *
+     * @Override public void run() { try { String stat = "UPDATE
+     * mcmeproject_project_data SET jobs = '" + serialize(jobs) + "' WHERE
+     * idproject = '" +
+     * PluginData.getProjectsAll().get(project).getIdproject().toString() + "'
+     * ;"; Statement statm =
+     * Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
+     * statm.setQueryTimeout(10); statm.executeUpdate(stat);
+     * PluginData.loadProjects(); } catch (SQLException ex) {
+     * Logger.getLogger(JobListener.class.getName()).log(Level.SEVERE, null,
+     * ex); } }
+     *
+     * }.runTaskAsynchronously(Mcproject.getPluginInstance());
+     *
+     * }
+     * }
+     *
+     * }
+     *
+     */
     private String serialize(List<String> intlist) {
 
         StringBuilder builder = new StringBuilder();

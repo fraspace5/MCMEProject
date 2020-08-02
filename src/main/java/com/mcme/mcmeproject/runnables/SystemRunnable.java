@@ -115,11 +115,8 @@ public class SystemRunnable {
                 try {
 
                     if (!PluginData.getTemporaryMinute().isEmpty()) {
-                        String statement = "SELECT * FROM mcmeproject_project_data ;";
 
-                        Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                        statm1.setQueryTimeout(10);
-                        final ResultSet r = statm1.executeQuery(statement);
+                        final ResultSet r = Mcproject.getPluginInstance().getSelectProjects().executeQuery();
 
                         if (r.first()) {
                             StringBuilder ss = new StringBuilder();
@@ -167,9 +164,7 @@ public class SystemRunnable {
                     if (!PluginData.getAllblocks().isEmpty()) {
                         String statement = "SELECT * FROM mcmeproject_project_data ;";
 
-                        Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                        statm1.setQueryTimeout(10);
-                        final ResultSet r = statm1.executeQuery(statement);
+                        final ResultSet r = Mcproject.getPluginInstance().getSelectProjects().executeQuery();
 
                         if (r.first()) {
                             StringBuilder ss = new StringBuilder();
@@ -212,11 +207,8 @@ public class SystemRunnable {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM mcmeproject_people_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                    statm.setQueryTimeout(10);
-                    final ResultSet r = statm.executeQuery(statement);
+                    final ResultSet r = Mcproject.getPluginInstance().getSelectPeopleData().executeQuery();
                     PluginData.getTemporaryBlocks().keySet().forEach((idplayer) -> {
                         PluginData.getTemporaryBlocks().get(idplayer).getR().keySet().forEach((idproject) -> {
                             if (!totalList.contains(idproject)) {
@@ -361,11 +353,11 @@ public class SystemRunnable {
                         try {
                             Calendar cal = Calendar.getInstance();
 
-                            String statement = "SELECT * FROM mcmeproject_statistics_data WHERE day =" + cal.get(Calendar.DAY_OF_MONTH) + " AND month = " + cal.get(Calendar.MONTH) + " AND year =" + cal.get(Calendar.YEAR) + " ;";
+                            Mcproject.getPluginInstance().getSelectStatisticPerDay().setString(1, String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
+                            Mcproject.getPluginInstance().getSelectStatisticPerDay().setString(2, String.valueOf(cal.get(Calendar.MONTH)));
+                            Mcproject.getPluginInstance().getSelectStatisticPerDay().setString(3, String.valueOf(cal.get(Calendar.YEAR)));
+                            ResultSet r = Mcproject.getPluginInstance().getSelectStatisticPerDay().executeQuery();
 
-                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                            statm.setQueryTimeout(10);
-                            final ResultSet r = statm.executeQuery(statement);
                             if (PluginData.getTodayStat().containsKey("today")) {
 
                                 if (r.first()) {

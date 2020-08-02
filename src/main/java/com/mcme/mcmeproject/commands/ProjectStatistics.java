@@ -58,8 +58,11 @@ public class ProjectStatistics extends ProjectCommand {
                 public void run() {
                     try {
                         Calendar cal = Calendar.getInstance();
-                        String statement = "SELECT * FROM mcmeproject_statistics_data WHERE day = '" + cal.get(Calendar.DAY_OF_MONTH) + "' AND month = '" + cal.get(Calendar.MONTH) + "' AND year = '" + cal.get(Calendar.YEAR) + "';";
-                        ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
+
+                        Mcproject.getPluginInstance().getSelectStatisticPerDay().setString(1, String.valueOf(cal.get(Calendar.DAY_OF_MONTH)));
+                        Mcproject.getPluginInstance().getSelectStatisticPerDay().setString(2, String.valueOf(cal.get(Calendar.MONTH)));
+                        Mcproject.getPluginInstance().getSelectStatisticPerDay().setString(3, String.valueOf(cal.get(Calendar.YEAR)));
+                        ResultSet r = Mcproject.getPluginInstance().getSelectStatisticPerDay().executeQuery();
 
                         if (r.first()) {
                             int blocks = r.getInt("blocks");
@@ -97,8 +100,7 @@ public class ProjectStatistics extends ProjectCommand {
                     try {
                         Calendar cal = Calendar.getInstance();
 
-                        String statement = "SELECT * FROM mcmeproject_statistics_data ;";
-                        ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
+                        final ResultSet r = Mcproject.getPluginInstance().getSelectStatistic().executeQuery();
 
                         int blocks = 0;
                         int minutes = 0;
@@ -167,7 +169,7 @@ public class ProjectStatistics extends ProjectCommand {
                         Calendar cal = Calendar.getInstance();
 
                         String statement = "SELECT * FROM mcmeproject_statistics_data ;";
-                        ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
+                        final ResultSet r = Mcproject.getPluginInstance().getSelectStatistic().executeQuery();
                         if (r.first()) {
 
                             int blocks = 0;
@@ -243,8 +245,7 @@ public class ProjectStatistics extends ProjectCommand {
                             try {
                                 Calendar cal = Calendar.getInstance();
 
-                                String statement = "SELECT * FROM mcmeproject_statistics_data ;";
-                                final ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
+                                final ResultSet r = Mcproject.getPluginInstance().getSelectStatistic().executeQuery();
                                 if (r.first()) {
 
                                     int blocks = 0;

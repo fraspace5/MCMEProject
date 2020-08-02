@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -45,9 +44,9 @@ public class ProjectShow extends ProjectCommand {
     protected void execute(final CommandSender cs, final String... args) {
 
         if (PluginData.getProjectsAll().containsKey(args[0])) {
-           
+
             Player pl = (Player) cs;
-            
+
             if (utils.playerPermission(args[0], cs)) {
 
                 switch (PluginData.getProjectsAll().get(args[0]).getStatus()) {
@@ -58,10 +57,12 @@ public class ProjectShow extends ProjectCommand {
                             public void run() {
 
                                 try {
-                                    String stat = "UPDATE mcmeproject_project_data SET status = '" + ProjectStatus.SHOWED.toString() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
-                                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                    statm.setQueryTimeout(10);
-                                    statm.executeUpdate(stat);
+                                    Mcproject.getPluginInstance().getUpdateStatus().setString(1, ProjectStatus.SHOWED.toString());
+                                    Mcproject.getPluginInstance().getUpdateStatus().setString(2, "0");
+                                    Mcproject.getPluginInstance().getUpdateStatus().setLong(3, System.currentTimeMillis());
+                                    Mcproject.getPluginInstance().getUpdateStatus().setString(4, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                    Mcproject.getPluginInstance().getUpdateStatus().executeUpdate();
+                                    
                                     PluginData.loadProjects();
                                     bungee.sendReload(pl, "projects");
                                     sendDone(cs);

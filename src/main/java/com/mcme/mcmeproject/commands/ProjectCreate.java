@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.util.ProjectStatus;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -54,10 +53,23 @@ public class ProjectCreate extends ProjectCommand {
 
                     try {
 
-                        String stat = "INSERT INTO mcmeproject_project_data (idproject, name, staff_uuid, startDate, percentage, link, time, description, updated, status, main, jobs, minutes, endDate, assistants, plcurrent) VALUES ('" + utils.createId().toString() + "', '" + args[0] + "', '" + pl.getUniqueId().toString() + "', '" + System.currentTimeMillis() + "', '0', 'nothing', '" + System.currentTimeMillis() + "', ' ', '" + System.currentTimeMillis() + "', '" + ProjectStatus.HIDDEN.name().toUpperCase() + "', 0, ' ', '0', '0', ' ', ' ') ;";
-                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                        statm.setQueryTimeout(10);
-                        statm.execute(stat);
+                        Mcproject.getPluginInstance().getInsertProject().setString(1, utils.createId().toString());
+                        Mcproject.getPluginInstance().getInsertProject().setString(2, args[0]);
+                        Mcproject.getPluginInstance().getInsertProject().setString(3, pl.getUniqueId().toString());
+                        Mcproject.getPluginInstance().getInsertProject().setLong(4, System.currentTimeMillis());
+                        Mcproject.getPluginInstance().getInsertProject().setString(5, "0");
+                        Mcproject.getPluginInstance().getInsertProject().setString(6, "nothing");
+                        Mcproject.getPluginInstance().getInsertProject().setLong(7, System.currentTimeMillis());
+                        Mcproject.getPluginInstance().getInsertProject().setString(8, " ");
+                        Mcproject.getPluginInstance().getInsertProject().setLong(9, System.currentTimeMillis());
+                        Mcproject.getPluginInstance().getInsertProject().setString(10, ProjectStatus.HIDDEN.name().toUpperCase());
+                        Mcproject.getPluginInstance().getInsertProject().setString(11, "0");
+                        Mcproject.getPluginInstance().getInsertProject().setString(12, " ");
+                        Mcproject.getPluginInstance().getInsertProject().setString(13, "0");
+                        Mcproject.getPluginInstance().getInsertProject().setString(14, "0");
+                        Mcproject.getPluginInstance().getInsertProject().setString(15, " ");
+                        Mcproject.getPluginInstance().getInsertProject().setString(16, " ");
+                        Mcproject.getPluginInstance().getInsertProject().executeUpdate();
                         sendCreated(cs, args[0]);
                         PluginData.loadProjects();
 

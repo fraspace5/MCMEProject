@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -49,7 +48,7 @@ public class ProjectAdd extends ProjectCommand {
     protected void execute(final CommandSender cs, final String... args) {
 
         final Player pl = (Player) cs;
-        
+
         if (PluginData.getProjectsAll().containsKey(args[0])) {
             if (utils.playerPermission(args[0], cs)) {
                 try {
@@ -72,14 +71,14 @@ public class ProjectAdd extends ProjectCommand {
 
                                     if (Bukkit.getOfflinePlayer(args[1]).hasPlayedBefore()) {
                                         final List<UUID> assist = p.getAssistants();
-
                                         assist.add(n.getUniqueId());
                                         String s = serialize(assist);
-                                        String stat = "UPDATE mcmeproject_project_data SET assistants = '" + s + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
 
-                                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                        statm.executeUpdate(stat);
-                                        statm.setQueryTimeout(10);
+                                        Mcproject.getPluginInstance().getUpdateInformations().setString(1, "assistants");
+                                        Mcproject.getPluginInstance().getUpdateInformations().setString(2, s);
+                                        Mcproject.getPluginInstance().getUpdateInformations().setLong(3, System.currentTimeMillis());
+                                        Mcproject.getPluginInstance().getUpdateInformations().setString(4, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                        Mcproject.getPluginInstance().getUpdateInformations().executeUpdate();
                                         PluginData.loadProjects();
 
                                         bungee.sendReload(pl, "projects");

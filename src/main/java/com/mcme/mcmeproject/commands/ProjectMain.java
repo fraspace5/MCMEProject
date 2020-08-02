@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -43,7 +42,7 @@ public class ProjectMain extends ProjectCommand {
         setUsageDescription(" <ProjectName> true|false : Set this project as main");
     }
 
-    private static List<String> mainproject = new ArrayList();
+    private List<String> mainproject = new ArrayList();
 
     @Override
     protected void execute(CommandSender cs, final String... args) {
@@ -67,10 +66,13 @@ public class ProjectMain extends ProjectCommand {
                                 public void run() {
 
                                     try {
-                                        String stat = "UPDATE mcmeproject_project_data SET main = 1 WHERE idproject = '" + pr.getIdproject().toString() + "' ;";
-                                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                        statm.setQueryTimeout(10);
-                                        statm.executeUpdate(stat);
+
+                                        Mcproject.getPluginInstance().getUpdateInformations().setString(1, "main");
+                                        Mcproject.getPluginInstance().getUpdateInformations().setString(2, "1");
+                                        Mcproject.getPluginInstance().getUpdateInformations().setLong(3, System.currentTimeMillis());
+                                        Mcproject.getPluginInstance().getUpdateInformations().setString(4, pr.getIdproject().toString());
+                                        Mcproject.getPluginInstance().getUpdateInformations().executeUpdate();
+
                                         sendDone(cs, args[0]);
                                         PluginData.loadProjects();
                                         bungee.sendReload(pl, "projects");
@@ -95,10 +97,12 @@ public class ProjectMain extends ProjectCommand {
                             public void run() {
 
                                 try {
-                                    String stat = "UPDATE mcmeproject_project_data SET main = 0 WHERE idproject = '" + pr.getIdproject().toString() + "' ;";
-                                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                    statm.setQueryTimeout(10);
-                                    statm.executeUpdate(stat);
+                                    Mcproject.getPluginInstance().getUpdateInformations().setString(1, "main");
+                                    Mcproject.getPluginInstance().getUpdateInformations().setString(2, "0");
+                                    Mcproject.getPluginInstance().getUpdateInformations().setLong(3, System.currentTimeMillis());
+                                    Mcproject.getPluginInstance().getUpdateInformations().setString(4, pr.getIdproject().toString());
+                                    Mcproject.getPluginInstance().getUpdateInformations().executeUpdate();
+                                    
                                     sendDoneOff(cs, args[0]);
                                     PluginData.loadProjects();
                                     bungee.sendReload(pl, "projects");
@@ -123,7 +127,7 @@ public class ProjectMain extends ProjectCommand {
 
     }
 
-    private static void createList() {
+    private void createList() {
         mainproject.clear();
         PluginData.getProjectsAll().keySet().forEach((name) -> {
             if (PluginData.getProjectsAll().get(name).isMain()) {

@@ -115,7 +115,7 @@ public class CurrentProject  {
 
     }
 
-    public String serialize(List<UUID> intlist) {
+    private String serialize(List<UUID> intlist) {
 
         StringBuilder builder = new StringBuilder();
         if (!intlist.isEmpty()) {
@@ -129,7 +129,7 @@ public class CurrentProject  {
 
     }
 
-    public List<UUID> getList(ResultSet r, UUID uuid) throws SQLException {
+    private List<UUID> getList(ResultSet r, UUID uuid) throws SQLException {
         List<UUID> list = new ArrayList();
         if (r.first()) {
             do {

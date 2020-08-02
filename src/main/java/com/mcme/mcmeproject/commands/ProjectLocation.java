@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.util.DynmapUtil;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.Location;
@@ -65,19 +64,21 @@ public class ProjectLocation extends ProjectCommand {
 
                                 try {
                                     if (PluginData.getWarps().containsKey(PluginData.getRegions().get(args[1]).getIdr())) {
-                                        String stat2 = "DELETE mcmeproject_warps_data WHERE idregion = '" + PluginData.getRegions().get(args[1]).getIdr().toString() + "' ;";
 
-                                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2);
-                                        statm.setQueryTimeout(10);
-                                        statm.executeUpdate(stat2);
-
+                                        Mcproject.getPluginInstance().getDeleteWarp().setString(1, PluginData.getRegions().get(args[1]).getIdr().toString());
+                                        Mcproject.getPluginInstance().getDeleteWarp().executeUpdate();
                                         DynmapUtil.deleteWarp(n);
                                     }
 
-                                    String stat = "INSERT INTO mcmeproject_warps_data (idproject, idregion, world, server, x, y, z ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "','" + PluginData.getRegions().get(args[1]).getIdr().toString() + "','" + loc.getWorld().getName() + "','" + Mcproject.getPluginInstance().getNameserver() + "','" + loc.getX() + "','" + loc.getY() + "','" + loc.getZ() + "') ;";
-                                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                    statm.setQueryTimeout(10);
-                                    statm.executeUpdate(stat);
+                                    Mcproject.getPluginInstance().getInsertWarp().setString(1, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                    Mcproject.getPluginInstance().getInsertWarp().setString(2, PluginData.getRegions().get(args[1]).getIdr().toString());
+                                    Mcproject.getPluginInstance().getInsertWarp().setString(3, loc.getWorld().getName());
+                                    Mcproject.getPluginInstance().getInsertWarp().setString(4, Mcproject.getPluginInstance().getNameserver());
+                                    Mcproject.getPluginInstance().getInsertWarp().setDouble(5, loc.getX());
+                                    Mcproject.getPluginInstance().getInsertWarp().setDouble(6, loc.getY());
+                                    Mcproject.getPluginInstance().getInsertWarp().setDouble(7, loc.getZ());
+
+                                    Mcproject.getPluginInstance().getDeleteWarp().executeUpdate();
                                     PluginData.loadWarps();
                                     bungee.sendReload(pl, "warps");
                                 } catch (SQLException ex) {

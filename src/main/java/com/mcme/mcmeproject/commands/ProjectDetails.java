@@ -66,13 +66,15 @@ public class ProjectDetails extends ProjectCommand {
                 public void run() {
 
                     try {
-                        String statement = "SELECT * FROM mcmeproject_news_data WHERE player_uuid = '" + pl.getUniqueId().toString() + "' AND idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
 
-                        final ResultSet r = Mcproject.getPluginInstance().getConnection().prepareStatement(statement).executeQuery();
+                        Mcproject.getPluginInstance().getSelectNewsDataId().setString(1, pl.getUniqueId().toString());
+                        Mcproject.getPluginInstance().getSelectNewsDataId().setString(2, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                        final ResultSet r = Mcproject.getPluginInstance().getSelectNewsDataId().executeQuery();
 
                         if (!r.first()) {
-                            String stat = "INSERT INTO mcmeproject_news_data (idproject, player_uuid) VALUES ('" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "','" + pl.getUniqueId().toString() + "') ;";
-                            Mcproject.getPluginInstance().getConnection().prepareStatement(stat).executeUpdate();
+                            Mcproject.getPluginInstance().getInsertNewsData().setString(1, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                            Mcproject.getPluginInstance().getInsertNewsData().setString(2, pl.getUniqueId().toString());
+                            Mcproject.getPluginInstance().getInsertNewsData().executeUpdate();
                         }
                     } catch (SQLException ex) {
                         Logger.getLogger(ProjectDetails.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,9 +93,8 @@ public class ProjectDetails extends ProjectCommand {
                         try {
                             ProjectData pr = PluginData.getProjectsAll().get(args[0]);
 
-                            String stat2 = "SELECT * FROM mcmeproject_people_data WHERE idproject = '" + pr.getIdproject().toString() + "' ;";
-
-                            final ResultSet r2 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2).executeQuery();
+                            Mcproject.getPluginInstance().getSelectPeopleData().setString(1, pr.getIdproject().toString());
+                            final ResultSet r2 = Mcproject.getPluginInstance().getSelectPeopleData().executeQuery();
 
                             Long r = (pr.getTime() - System.currentTimeMillis());
                             Long f = (System.currentTimeMillis() - pr.getUpdated());
@@ -159,11 +160,11 @@ public class ProjectDetails extends ProjectCommand {
 
                                 jj(pr);
                                 if (!jobs.isEmpty()) {
-                                    message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
+                                    message.addSimple(ChatColor.AQUA + "\n" + "Jobs hosted last month: " + "\n" + job());
 
                                     message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
                                 } else {
-                                    message.addSimple(ChatColor.AQUA + "\n" + "No jobs linked to this project");
+                                    message.addSimple(ChatColor.AQUA + "\n" + "No jobs hosted last month");
                                     message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
                                 }
 
@@ -197,7 +198,7 @@ public class ProjectDetails extends ProjectCommand {
 
                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
-            } else {
+            } else if (PluginData.getProjectsAll().get(args[0]).getStatus() == ProjectStatus.SHOWED) {
                 new BukkitRunnable() {
 
                     @Override
@@ -205,9 +206,8 @@ public class ProjectDetails extends ProjectCommand {
                         try {
                             ProjectData pr = PluginData.getProjectsAll().get(args[0]);
 
-                            String stat2 = "SELECT * FROM mcmeproject_people_data WHERE idproject = '" + pr.getIdproject().toString() + "' ;";
-
-                            final ResultSet r2 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2).executeQuery();
+                            Mcproject.getPluginInstance().getSelectPeopleData().setString(1, pr.getIdproject().toString());
+                            final ResultSet r2 = Mcproject.getPluginInstance().getSelectPeopleData().executeQuery();
 
                             Long r = (pr.getTime() - System.currentTimeMillis());
                             Long f = (System.currentTimeMillis() - pr.getUpdated());
@@ -249,11 +249,11 @@ public class ProjectDetails extends ProjectCommand {
                             jj(pr);
 
                             if (!jobs.isEmpty()) {
-                                message.addSimple(ChatColor.AQUA + "\n" + "Jobs linked to this project: " + "\n" + job());
+                                message.addSimple(ChatColor.AQUA + "\n" + "Jobs hosted last month: " + "\n" + job());
 
                                 message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
                             } else {
-                                message.addSimple(ChatColor.RED + "\n" + "No jobs linked to this project");
+                                message.addSimple(ChatColor.RED + "\n" + "No jobs hosted last month");
                                 message.addSimple("\n" + ChatColor.GOLD + "+--------------------+");
                             }
 
@@ -283,6 +283,8 @@ public class ProjectDetails extends ProjectCommand {
 
                 }.runTaskAsynchronously(Mcproject.getPluginInstance());
 
+            } else {
+                sendProjectError(cs);
             }
 
         } else {
@@ -293,7 +295,7 @@ public class ProjectDetails extends ProjectCommand {
 
     }
 
-    public static String people(ResultSet r) throws NullPointerException, SQLException {
+    private static String people(ResultSet r) throws NullPointerException, SQLException {
         pers.clear();
 
         if (r.first()) {
@@ -366,6 +368,10 @@ public class ProjectDetails extends ProjectCommand {
                 } else if (JobDatabase.getActiveJobs().get(value).isPrivate()) {
 
                 } else {
+                    jobs.add(value);
+                }
+            } else if (JobDatabase.getInactiveJobs().containsKey(value)) {
+                if (System.currentTimeMillis() - JobDatabase.getInactiveJobs().get(value).getEndTime() < 2678400000L) {
                     jobs.add(value);
                 }
             }

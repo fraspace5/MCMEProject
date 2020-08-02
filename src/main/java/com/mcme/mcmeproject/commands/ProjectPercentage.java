@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import static java.lang.Double.parseDouble;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -48,28 +47,9 @@ public class ProjectPercentage extends ProjectCommand {
             Player pl = (Player) cs;
             if (utils.playerPermission(args[0], cs)) {
                 if (args[1].endsWith("%")) {
+                    
+                    sendPercentage(args, pl, args[1].substring(0, args[1].length() - 1), cs);
 
-                    new BukkitRunnable() {
-
-                        @Override
-                        public void run() {
-
-                            try {
-                                String stat = "UPDATE mcmeproject_project_data SET percentage = '" + args[1].substring(0, args[1].length() - 1) + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
-                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                statm.setQueryTimeout(10);
-                                statm.executeUpdate(stat);
-                                PluginData.loadProjects();
-                                bungee.sendReload(pl, "projects");
-                            } catch (SQLException ex) {
-                                Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-
-                        }
-
-                    }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                    sendDone(cs);
                 } else {
 
                     try {
@@ -79,27 +59,7 @@ public class ProjectPercentage extends ProjectCommand {
 
                         } else {
 
-                            new BukkitRunnable() {
-
-                                @Override
-                                public void run() {
-
-                                    try {
-                                        String stat = "UPDATE mcmeproject_project_data SET percentage = '" + args[1] + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
-                                        Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                        statm.setQueryTimeout(10);
-                                        statm.executeUpdate(stat);
-                                        PluginData.loadProjects();
-                                        bungee.sendReload(pl, "projects");
-                                    } catch (SQLException ex) {
-                                        Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-
-                                }
-
-                            }.runTaskAsynchronously(Mcproject.getPluginInstance());
-
-                            sendDone(cs);
+                            sendPercentage(args, pl, args[1], cs);
 
                         }
                     } catch (NumberFormatException e) {
@@ -127,6 +87,33 @@ public class ProjectPercentage extends ProjectCommand {
 
     private void sendDone(CommandSender cs) {
         PluginData.getMessageUtil().sendInfoMessage(cs, "Percentage updated!");
+    }
+
+    private void sendPercentage(String[] args, Player pl, String percentage, CommandSender cs) {
+
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+
+                try {
+                    Mcproject.getPluginInstance().getUpdateInformations().setString(1, "percentage");
+                    Mcproject.getPluginInstance().getUpdateInformations().setString(2, percentage);
+                    Mcproject.getPluginInstance().getUpdateInformations().setLong(3, System.currentTimeMillis());
+                    Mcproject.getPluginInstance().getUpdateInformations().setString(4, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                    Mcproject.getPluginInstance().getUpdateInformations().executeUpdate();
+
+                    PluginData.loadProjects();
+                    bungee.sendReload(pl, "projects");
+                } catch (SQLException ex) {
+                    Logger.getLogger(ProjectFinish.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        }.runTaskAsynchronously(Mcproject.getPluginInstance());
+
+        sendDone(cs);
     }
 
 }

@@ -40,7 +40,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import static java.lang.Integer.parseInt;
-import java.sql.Statement;
 
 /**
  *
@@ -87,15 +86,25 @@ public class ProjectArea extends ProjectCommand {
 
                                         PrismoidRegion r = new PrismoidRegion(loc, (com.sk89q.worldedit.regions.Polygonal2DRegion) weRegion);
                                         try {
-                                            String stat = "INSERT INTO mcmeproject_regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server, weight ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "','" + utils.createId().toString() + "','" + args[2] + "','prismoid','" + serialize(r.getXPoints()) + "','" + serialize(r.getZPoints()) + "','" + r.getMinY() + "','" + r.getMaxY() + "','" + pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().getNameserver() + "','" + parseInt(args[3]) + "' ) ;";
-                                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                            statm.executeUpdate(stat);
+
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(1, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(2, utils.createId().toString());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(3, args[2]);
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(4, "prismoid");
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(5, serialize(r.getXPoints()));
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(6, serialize(r.getZPoints()));
+                                            Mcproject.getPluginInstance().getInsertRegion().setInt(7, r.getMinY());
+                                            Mcproject.getPluginInstance().getInsertRegion().setInt(8, r.getMaxY());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(9, pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(10, Mcproject.getPluginInstance().getNameserver());
+                                            Mcproject.getPluginInstance().getInsertRegion().setInt(11, parseInt(args[3]));
+                                            Mcproject.getPluginInstance().getInsertRegion().executeUpdate();
+
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();
                                             bungee.sendReload(pl, "regions");
                                             bungee.sendReload(pl, "warps");
 
-                                            statm.setQueryTimeout(10);
                                         } catch (SQLException | NumberFormatException ex) {
                                             if (ex instanceof NumberFormatException) {
                                                 PluginData.getMessageUtil().sendErrorMessage(cs, "It should be an integer number");
@@ -127,14 +136,25 @@ public class ProjectArea extends ProjectCommand {
                                         Vector minCorner = r.getMinCorner();
                                         Vector maxCorner = r.getMaxCorner();
                                         try {
-                                            String stat = "INSERT INTO mcmeproject_regions_data (idproject, idregion, name, type, xlist, zlist, ymin, ymax, location, server, weight ) VALUES ('" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "','" + utils.createId().toString() + "','" + args[2] + "','cuboid','" + minCorner.getBlockX() + ";" + maxCorner.getBlockX() + "','" + minCorner.getBlockZ() + ";" + maxCorner.getBlockZ() + "','" + minCorner.getBlockY() + "','" + maxCorner.getBlockY() + "','" + pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ() + "','" + Mcproject.getPluginInstance().getNameserver() + "','" + parseInt(args[3]) + "' ) ;";
-                                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                            statm.executeUpdate(stat);
+
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(1, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(2, utils.createId().toString());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(3, args[2]);
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(4, "cuboid");
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(5, minCorner.getBlockX() + ";" + maxCorner.getBlockX());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(6, minCorner.getBlockZ() + ";" + maxCorner.getBlockZ());
+                                            Mcproject.getPluginInstance().getInsertRegion().setInt(7, minCorner.getBlockY());
+                                            Mcproject.getPluginInstance().getInsertRegion().setInt(8, maxCorner.getBlockY());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(9, pl.getLocation().getWorld().getName() + ";" + pl.getLocation().getX() + ";" + pl.getLocation().getY() + ";" + pl.getLocation().getZ());
+                                            Mcproject.getPluginInstance().getInsertRegion().setString(10, Mcproject.getPluginInstance().getNameserver());
+                                            Mcproject.getPluginInstance().getInsertRegion().setInt(11, parseInt(args[3]));
+                                            Mcproject.getPluginInstance().getInsertRegion().executeUpdate();
+
                                             PluginData.loadRegions();
                                             PluginData.loadWarps();
                                             bungee.sendReload(pl, "regions");
                                             bungee.sendReload(pl, "warps");
-                                            statm.setQueryTimeout(10);
+
                                         } catch (SQLException | NumberFormatException ex) {
                                             if (ex instanceof NumberFormatException) {
                                                 PluginData.getMessageUtil().sendErrorMessage(cs, "It should be an integer number");
@@ -180,14 +200,12 @@ public class ProjectArea extends ProjectCommand {
                                 public void run() {
 
                                     try {
-                                        String stat = "DELETE FROM mcmeproject_regions_data WHERE idregion = '" + PluginData.getRegions().get(args[2]).getIdr().toString() + "' ;";
-                                        Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                        statm1.executeUpdate(stat);
-                                        String stat2 = "DELETE FROM mcmeproject_warps_data WHERE idregion = '" + PluginData.getRegions().get(args[2]).getIdr().toString() + "' ;";
-                                        Statement statm2 = Mcproject.getPluginInstance().getConnection().prepareStatement(stat2);
-                                        statm2.executeUpdate(stat);
-                                        statm1.setQueryTimeout(10);
-                                        statm2.setQueryTimeout(10);
+
+                                        Mcproject.getPluginInstance().getDeleteRegion().setString(1, PluginData.getRegions().get(args[2]).getIdr().toString());
+                                        Mcproject.getPluginInstance().getDeleteRegion().executeUpdate();
+
+                                        Mcproject.getPluginInstance().getDeleteWarp().setString(1, PluginData.getRegions().get(args[2]).getIdr().toString());
+                                        Mcproject.getPluginInstance().getDeleteWarp().executeUpdate();
 
                                         sendDel(cs);
                                         PluginData.loadRegions();

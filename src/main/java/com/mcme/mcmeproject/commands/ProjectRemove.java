@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.data.ProjectData;
 import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -49,18 +48,18 @@ public class ProjectRemove extends ProjectCommand {
     protected void execute(final CommandSender cs, final String... args) {
 
         Player pl = (Player) cs;
-        
+
         if (PluginData.getProjectsAll().containsKey(args[0])) {
-            
+
             if (utils.playerPermission(args[0], cs)) {
-                
+
                 new BukkitRunnable() {
 
                     @Override
                     public void run() {
 
                         try {
-                         
+
                             OfflinePlayer n = Bukkit.getOfflinePlayer(args[1]);
                             UUID uuid = n.getUniqueId();
                             ProjectData p = PluginData.getProjectsAll().get(args[0]);
@@ -74,10 +73,13 @@ public class ProjectRemove extends ProjectCommand {
                                 final List<UUID> assist = p.getAssistants();
 
                                 assist.remove(uuid);
-                                String stat = "UPDATE mcmeproject_project_data SET assistants = '" + serialize(assist) + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
-                                Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                                statm.setQueryTimeout(10);
-                                statm.executeUpdate(stat);
+                                
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(1, "assistants");
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(2, serialize(assist));
+                                Mcproject.getPluginInstance().getUpdateInformations().setLong(3, System.currentTimeMillis());
+                                Mcproject.getPluginInstance().getUpdateInformations().setString(4, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                                Mcproject.getPluginInstance().getUpdateInformations().executeUpdate();
+                                
                                 sendManager(cs, args[1]);
                                 PluginData.loadProjects();
                                 bungee.sendReload(pl, "projects");
@@ -104,11 +106,11 @@ public class ProjectRemove extends ProjectCommand {
 
         StringBuilder builder = new StringBuilder();
         if (!intlist.isEmpty()) {
-         
+
             intlist.forEach((s) -> {
                 builder.append(s.toString()).append(";");
             });
-            
+
         }
         return builder.toString();
 

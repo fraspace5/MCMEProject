@@ -44,7 +44,7 @@ import static java.lang.Double.parseDouble;
 import com.mcmiddleearth.pluginutil.region.CuboidRegion;
 import org.bukkit.Location;
 import com.mcmiddleearth.pluginutil.region.PrismoidRegion;
-import java.sql.Statement;
+import java.util.Map.Entry;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 /**
@@ -118,11 +118,9 @@ public class PluginData {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM mcmeproject_project_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                    statm.setQueryTimeout(10);
-                    final ResultSet r = statm.executeQuery(statement);
+                    final ResultSet r = Mcproject.getPluginInstance().getSelectProjects().executeQuery();
+
                     if (r.first()) {
                         do {
                             Integer milliweeks = 1000 * 60 * 60 * 24 * 7;
@@ -159,9 +157,7 @@ public class PluginData {
                 try {
                     String statement = "SELECT * FROM mcmeproject_regions_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                    statm.setQueryTimeout(10);
-                    final ResultSet r = statm.executeQuery(statement);
+                    final ResultSet r = Mcproject.getPluginInstance().getSelectRegions().executeQuery();
 
                     if (r.first()) {
                         do {
@@ -259,11 +255,8 @@ public class PluginData {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM mcmeproject_warps_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                    statm.setQueryTimeout(10);
-                    final ResultSet r = statm.executeQuery(statement);
+                    final ResultSet r = Mcproject.getPluginInstance().getSelectWarps().executeQuery();
 
                     if (r.first()) {
                         do {
@@ -299,11 +292,8 @@ public class PluginData {
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM mcmeproject_project_data ;";
 
-                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                    statm.setQueryTimeout(10);
-                    final ResultSet r = statm.executeQuery(statement);
+                    final ResultSet r = Mcproject.getPluginInstance().getSelectProjects().executeQuery();
 
                     if (r.first()) {
                         do {
@@ -332,11 +322,9 @@ public class PluginData {
             public void run() {
 
                 try {
-                    String statement = "SELECT * FROM mcmeproject_news_data WHERE player_uuid = '" + e.getPlayer().getUniqueId().toString() + "' ;";
 
-                    Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                    statm.setQueryTimeout(10);
-                    final ResultSet r = statm.executeQuery(statement);
+                    Mcproject.getPluginInstance().getSelectNewsDataId().setString(1, e.getPlayer().getUniqueId().toString());
+                    final ResultSet r = Mcproject.getPluginInstance().getSelectProjects().executeQuery();;
 
                     for (final String name : projectsAll.keySet()) {
                         int i = 0;
@@ -361,42 +349,24 @@ public class PluginData {
                         }
                     }
 
-                    if (projects.size() == 1) {
+                    FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                    message.addSimple(ChatColor.GOLD + "Hi " + pl.getName() + ", welcome to MCME " + ChatColor.BLUE + projects.get(0) + "\n" + ChatColor.GOLD + "Currently we are working on these projects");
 
-                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
+                    for (Entry<String, ProjectData> pr : PluginData.getProjectsAll().entrySet()) {
 
-                        message.addSimple(ChatColor.GOLD + "Hi " + pl.getName() + ", project " + ChatColor.BLUE + projects.get(0) + ChatColor.GOLD + " has been updated ");
+                        if (pr.getValue().getStatus() == ProjectStatus.SHOWED && projects.contains(pr.getKey())) {
 
-                        message.addClickable(ChatColor.GREEN + "\n" + "Click here for more information", "/project details " + projects.get(0)).setRunDirect();
+                            message.addClickable(ChatColor.RED + "\n" + "+ " + pr.getKey() + ChatColor.GREEN + "[UPDATED]", "/project details " + projects.get(0)).setRunDirect();
 
-                        message.send(pl);
+                        } else if (pr.getValue().getStatus() == ProjectStatus.SHOWED && !projects.contains(pr.getKey())) {
 
-                    } else if (projects.size() > 1) {
-
-                        FancyMessage message = new FancyMessage(MessageType.INFO_NO_PREFIX, PluginData.getMessageUtil());
-
-                        message.addSimple(ChatColor.GOLD + "Hi " + pl.getName() + ",some projects " + ChatColor.GOLD + " have been updated: ");
-
-                        for (String n : projects) {
-                            int lastindex = projects.size() - 1;
-
-                            if (projects.indexOf(n) == 0) {
-
-                                message.addFancy(ChatColor.GREEN + "\n" + n + ",", "/project details " + n, "Click for more information about this project").setRunDirect();
-
-                            } else if (projects.indexOf(n) == lastindex) {
-
-                                message.addFancy(ChatColor.GREEN + n + ".", "/project details " + n, "Click for more information about this project").setRunDirect();
-
-                            } else {
-                                message.addFancy(ChatColor.GREEN + n + ",", "/project details " + n, "Click for more information about this project").setRunDirect();
-                            }
+                            message.addClickable(ChatColor.GREEN + "\n" + "+ " + pr.getKey(), "/project details " + projects.get(0)).setRunDirect();
 
                         }
 
-                        message.send(pl);
-
                     }
+                   
+                    message.send(pl);
 
                 } catch (SQLException ex) {
                     Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);

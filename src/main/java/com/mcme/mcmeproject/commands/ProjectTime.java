@@ -22,7 +22,6 @@ import com.mcme.mcmeproject.util.bungee;
 import com.mcme.mcmeproject.util.utils;
 import static java.lang.Long.parseLong;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.bukkit.command.CommandSender;
@@ -56,11 +55,11 @@ public class ProjectTime extends ProjectCommand {
 
                         try {
 
-                            String stat = "UPDATE mcmeproject_project_data SET time = '" + setTime(args[1], cs).toString() + "', updated = '" + System.currentTimeMillis() + "' WHERE idproject = '" + PluginData.getProjectsAll().get(args[0]).getIdproject().toString() + "' ;";
-
-                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                            statm.setQueryTimeout(10);
-                            statm.executeUpdate(stat);
+                            Mcproject.getPluginInstance().getUpdateInformations().setString(1, "time");
+                            Mcproject.getPluginInstance().getUpdateInformations().setString(2, setTime(args[1], cs).toString());
+                            Mcproject.getPluginInstance().getUpdateInformations().setLong(3, System.currentTimeMillis());
+                            Mcproject.getPluginInstance().getUpdateInformations().setString(4, PluginData.getProjectsAll().get(args[0]).getIdproject().toString());
+                            Mcproject.getPluginInstance().getUpdateInformations().executeUpdate();
                             PluginData.loadProjects();
                             bungee.sendReload(pl, "projects");
                             sendDone(cs);
@@ -88,7 +87,7 @@ public class ProjectTime extends ProjectCommand {
             if (t.endsWith("y")) {
 
                 Long r = 86400000 * (365 * parseLong(tt)) + System.currentTimeMillis();
-               
+
                 return r;
             } else if (t.endsWith("m")) {
 

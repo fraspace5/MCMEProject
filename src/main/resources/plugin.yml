@@ -2,7 +2,7 @@ version: ${project.version}
 name: ${project.artifactId}
 main: com.mcme.mcmeproject.Mcproject
 author: Fraspace5
-api-version: 1.15
+api-version: 1.16
 website: ${project.url}
 softdepend: [TheGaffer,dynmap,WorldEdit,PluginUtils]
 description: A plugin for the MCME server

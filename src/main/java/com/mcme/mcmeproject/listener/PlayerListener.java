@@ -30,7 +30,6 @@ import com.mcmiddleearth.pluginutil.message.MessageType;
 import com.mcmiddleearth.pluginutil.region.Region;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,14 +72,14 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
 
-        final Player p = e.getPlayer();
+        final Player pl = e.getPlayer();
         new BukkitRunnable() {
 
             @Override
             public void run() {
                 if (Mcproject.getPluginInstance().getNameserver().equals("default")) {
 
-                    bungee.sendNameServer(p);
+                    bungee.sendNameServer(pl);
                     PluginData.loadAllDynmap();
 
                 }
@@ -88,18 +87,14 @@ public class PlayerListener implements Listener {
 
         }.runTaskLater(Mcproject.getPluginInstance(), 150L);
 
-        System.out.println("Project " + Mcproject.getPluginInstance().getNameserver());
-
         new BukkitRunnable() {
 
             @Override
             public void run() {
                 try {
-                    String statement = "SELECT * FROM mcmeproject_news_bool WHERE player_uuid = '" + p.getUniqueId().toString() + "' ;";
+                    Mcproject.getPluginInstance().getSelectNewsBool().setString(1, pl.getUniqueId().toString());
 
-                    Statement statm1 = Mcproject.getPluginInstance().getConnection().prepareStatement(statement);
-                    statm1.setQueryTimeout(10);
-                    final ResultSet r = statm1.executeQuery(statement);
+                    final ResultSet r = Mcproject.getPluginInstance().getSelectNewsBool().executeQuery();
 
                     if (PluginData.getPlayernotification()) {
                         if (r.first()) {
@@ -118,10 +113,9 @@ public class PlayerListener implements Listener {
 
                         } else {
 
-                            String stat = "INSERT INTO mcmeproject_news_bool (bool, player_uuid) VALUES (true,'" + p.getUniqueId().toString() + "') ; ";
-                            Statement statm = Mcproject.getPluginInstance().getConnection().prepareStatement(stat);
-                            statm.setQueryTimeout(10);
-                            statm.executeUpdate(stat);
+                            Mcproject.getPluginInstance().getInsertNewsBool().setBoolean(1, true);
+                            Mcproject.getPluginInstance().getInsertNewsBool().setString(2, pl.getUniqueId().toString());
+                            Mcproject.getPluginInstance().getInsertNewsBool().executeUpdate();
                             new BukkitRunnable() {
 
                                 @Override
@@ -150,11 +144,11 @@ public class PlayerListener implements Listener {
                 PluginData.getToday().forEach((project) -> {
                     ProjectData d = PluginData.getProjectsAll().get(project);
 
-                    if (d.getHead().equals(p.getUniqueId())) {
+                    if (d.getHead().equals(pl.getUniqueId())) {
 
-                        PlayersRunnable.updatedReminderRunnable(project, p, d.getUpdated());
-                    } else if (d.getAssistants().contains(p.getUniqueId())) {
-                        PlayersRunnable.updatedReminderRunnable(project, p, d.getUpdated());
+                        PlayersRunnable.updatedReminderRunnable(project, pl, d.getUpdated());
+                    } else if (d.getAssistants().contains(pl.getUniqueId())) {
+                        PlayersRunnable.updatedReminderRunnable(project, pl, d.getUpdated());
                     }
                 });
             }
@@ -218,7 +212,7 @@ public class PlayerListener implements Listener {
         } else if (e instanceof BlockPlaceEvent) {
             pl = ((BlockPlaceEvent) e).getPlayer();
         }
-     
+
         if (pl != null) {
             UUID uuid = pl.getUniqueId();
             Location loc = pl.getLocation();
